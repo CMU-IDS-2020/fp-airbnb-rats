@@ -46,4 +46,4 @@ An image viewer for the image data that the instrument collects.
 These are just suggestions, but after meeting with the stakeholders we will work with them to scope the project and make a prioritized list of features to address.
 
 ## ➝ Resources
-To learn more about the NASA project, see PIXL for Scientists.
+To learn more about the NASA project, see [PIXL for Scientists](https://mars.nasa.gov/mars2020/spacecraft/instruments/pixl/for-scientists/).
