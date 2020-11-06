@@ -33,17 +33,17 @@ Some possible challenges will be to succinctly summarize the data while also dis
 
 ## ➝ Interactivity
 Some possible ways in which our application could support interactivity are:
-- [ ] Allowing the user to select which data points to analyze or summarize.
-- [ ] Allowing the users to clean the data.
-- [ ] Different levels of granularity when performing analysis.
-- [ ] Allowing the user to compare different data points.
-- [ ] Showing the user many different visualization formats at first glance while supporting deep dives into more specific visualizations.
-- [ ] Built-in statistical analysis of data such as mean, variance, and significance testing.
-- [ ] Providing features that support simple machine learning methods such as regression and classification.
-- [ ] Multi-user collaboration such as sharing visualizations, commenting on visualizations, and more.
-- [ ] Being able to compare a sample to spatially nearby samples.
-- [ ] An image viewer for the image data that the instrument collects.
-- [ ] These are just suggestions, but after meeting with the stakeholders we will work with them to scope the project and make a prioritized list of features to address.
+1. Allowing the user to select which data points to analyze or summarize.
+1. Allowing the users to clean the data.
+1. Different levels of granularity when performing analysis.
+1. Allowing the user to compare different data points.
+1. Showing the user many different visualization formats at first glance while supporting deep dives into more specific visualizations.
+1. Built-in statistical analysis of data such as mean, variance, and significance testing.
+1. Providing features that support simple machine learning methods such as regression and classification.
+1. Multi-user collaboration such as sharing visualizations, commenting on visualizations, and more.
+1. Being able to compare a sample to spatially nearby samples.
+1. An image viewer for the image data that the instrument collects.
+1. These are just suggestions, but after meeting with the stakeholders we will work with them to scope the project and make a prioritized list of features to address.
 
 ## ➝ Resources
 To learn more about the NASA project, see [PIXL for Scientists](https://mars.nasa.gov/mars2020/spacecraft/instruments/pixl/for-scientists/).
