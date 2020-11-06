@@ -43,7 +43,8 @@ Some possible ways in which our application could support interactivity are:
 1. Multi-user collaboration such as sharing visualizations, commenting on visualizations, and more.
 1. Being able to compare a sample to spatially nearby samples.
 1. An image viewer for the image data that the instrument collects.
-1. These are just suggestions, but after meeting with the stakeholders we will work with them to scope the project and make a prioritized list of features to address.
+
+These are just suggestions, but after meeting with the stakeholders we will work with them to scope the project and make a prioritized list of features to address.
 
 ## ➝ Resources
 To learn more about the NASA project, see [PIXL for Scientists](https://mars.nasa.gov/mars2020/spacecraft/instruments/pixl/for-scientists/).
