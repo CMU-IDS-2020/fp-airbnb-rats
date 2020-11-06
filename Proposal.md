@@ -4,11 +4,11 @@
 
 ## ➝ Project Abstract
 
-This project will be an interactive application in tandem with NASA JPL that aids scientists from the Mars 2020 Rover’s Planetary Instrument for X-Ray Lithochemistry (PIXL) team in analyzing astrobiological data. There exists a significant amount of data from the Mars 2020 project that is being used to explore the possibility of alien biosignatures. Researchers need an intuitive way to compare data including mineral concentrations, spatially located X-Ray samples, and ordinal channel comparisons.
+This project will be an **interactive application** in tandem with NASA JPL that aids scientists from the Mars 2020 Rover’s Planetary Instrument for X-Ray Lithochemistry (PIXL) team in analyzing astrobiological data. There exists a significant amount of data from the Mars 2020 project that is being used to explore the possibility of alien biosignatures. Researchers need an intuitive way to compare data including mineral concentrations, spatially located X-Ray samples, and ordinal channel comparisons.
 
-To summarize, the proposed problem that my team wishes to address is the lack of tooling available to efficiently analyze Mars Rover PIXL data in order to reach conclusions about the mineral composition of Mars. 
+To summarize, **the proposed problem** that my team wishes to address is the lack of tooling available to efficiently analyze Mars Rover PIXL data in order to reach conclusions about the mineral composition of Mars. 
 
-Members of the NASA team have already expressed interest in having visualizations, so our solution would be to work closely with them to create a specialized interactive application that supports their data analysis needs in ways that wouldn’t be possible using their existing tools.
+Members of the NASA team have already expressed interest in having visualizations, so **our solution** would be to work closely with them to create a specialized interactive application that supports their data analysis needs in ways that wouldn’t be possible using their existing tools.
 
 ## ➝ The Data
 
@@ -19,9 +19,9 @@ The x-ray energy histograms will reflect the chemistry of the element in the sam
 
 ## ➝ User Group
 
-The user group of the application is the NASA JPL Mars 2020 PIXL instrument team. Due to the nature of the project, the team consists of a variety of roles including sedimentologists, igneous petrologists, spectroscopists, and geochemists. Having direct access to our potential users will allow us to co-create visualization tools with them. We will be working closely with David Flannery, one of the Co-Investigators of the astrobiology segment of the team and whose availability is best suited for our project timeline. We would also be working in tandem with Scott Davidoff, the manager of NASA JPL’s Human Interfaces Group. One of our team members has worked closely with Scott in the past, and Scott has been our primary point of contact thus far. Another possible collaborator will be Austin Wright of the Polo Lab at Georgia Tech, who is exploring machine learning comparisons of the different mineral profiles.
+The user group of the application is the **NASA JPL Mars 2020 PIXL instrument team**. Due to the nature of the project, the team consists of a variety of roles including sedimentologists, igneous petrologists, spectroscopists, and geochemists. Having direct access to our potential users will allow us to co-create visualization tools with them. **We will be working closely with David Flannery**, one of the Co-Investigators of the astrobiology segment of the team and whose availability is best suited for our project timeline. We would also be working in tandem with Scott Davidoff, the manager of NASA JPL’s Human Interfaces Group. One of our team members has worked closely with Scott in the past, and Scott has been our primary point of contact thus far. Another possible collaborator will be Austin Wright of the Polo Lab at Georgia Tech, who is exploring machine learning comparisons of the different mineral profiles.
 
-We understand that collaborating with others adds a communication overhead, so our plan is to establish a regular meeting with the two primary stakeholders, Scott and David. If possible, we would ideally dedicate the first half of the meeting to general topics and feedback, while we spend the second half of the meeting with just David, doing a deep dive into the usability of the visualizations and performing user studies with him as needed.
+We understand that collaborating with others adds a communication overhead, so our plan is to establish a **regular meeting** with the two primary stakeholders, Scott and David. If possible, we would ideally dedicate the first half of the meeting to general topics and feedback, while we spend the second half of the meeting with just David, doing a deep dive into the usability of the visualizations and performing user studies with him as needed.
 
 ## ➝ Goals
 
