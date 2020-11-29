@@ -30,3 +30,12 @@ Update towards the end of the project.
 - [ ] A 5 minute video demonstration.
 - [ ] Update Readme according to Canvas instructions.
 - [ ] A detailed project report. The contact should submit the video and report as a PDF on Canvas.
+
+# Setting up
+
+`npm i` and `npm start` from the `/reactd3` and you should see a dashboard at `localhost:3000`
+
+No need to worry about the npm audit vulnerabilities - they're all related to react-scripts, which is just a dev dependency and shouldn't change the production build.
+
+# Special thanks
+@emeeks on github for his [repository](https://github.com/emeeks/d3_in_action_2) with starter code. 
