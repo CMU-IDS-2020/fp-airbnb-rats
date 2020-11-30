@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import './App.css'
-import { scaleLinear } from 'd3-scale'
-import { max, sum } from 'd3-array'
-import { select } from 'd3-selection'
-import { legendColor } from 'd3-svg-legend'
-import { transition } from 'd3-transition'
+import { scaleBand, scaleLinear } from 'd3-scale'
+import { range, extent } from 'd3-array'
 
 class BarChart extends Component {
   constructor(props){
@@ -22,58 +19,58 @@ class BarChart extends Component {
 
   createBarChart() {
     const node = this.node
-    const dataMax = max(this.props.data.map(d => sum(d.data)))
-    const barWidth = this.props.size[0] / this.props.data.length
-
-    const legend = legendColor()
-      .scale(this.props.colorScale)
-      .labels(["Wave 1", "Wave 2", "Wave 3", "Wave 4"])
-
-    select(node)
-      .selectAll("g.legend")
-      .data([0])
-      .enter()
-      .append("g")
-        .attr("class", "legend")
-        .call(legend)
-
-    select(node)
-      .select("g.legend")
-        .attr("transform", "translate(" + (this.props.size[0] - 100) + ", 20)")
-
-    const yScale = scaleLinear()
-      .domain([0, dataMax])
-      .range([0, this.props.size[1]])
-
-    select(node)
-      .selectAll("rect.bar")
-      .data(this.props.data)
-      .enter()
-      .append("rect")
-        .attr("class", "bar")
-        .on("mouseover", this.props.onHover)
-
-    select(node)
-      .selectAll("rect.bar")
-      .data(this.props.data)
-      .exit()
-        .remove()
-
-    select(node)
-      .selectAll("rect.bar")
-      .data(this.props.data)
-        .attr("x", (d,i) => i * barWidth)
-        .attr("y", d => this.props.size[1] - yScale(sum(d.data)))
-        .attr("height", d => yScale(sum(d.data)))
-        .attr("width", barWidth)
-        .style("fill", (d,i) => this.props.hoverElement === d.id ? "#FCBC34" : this.props.colorScale(d.launchday))
-        .style("stroke", "black")
-        .style("stroke-opacity", 0.25)
-
   }
 
   render() {
+      const selected = this.props.data.slice(1000,1005);
+      const keys = Object.keys(this.props.data[0]).slice(3)
+
+
+      const hx = scaleBand()
+	    .domain(keys)
+	    .range([0, this.props.size[0]])
+	    .padding(0.1)
+
+      const hy = scaleBand()
+	    .domain(range(selected.length))
+	    .range([this.props.size[1], 0])
+	    .padding(0.25)
+
+      const mh = hy.bandwidth();
+      const ry = new Map(keys.map(k => [
+	  k, scaleLinear()
+	      .domain(extent(this.props.data, d => d[k]))
+	      .range([mh, 0])
+      ]))
+
+      
+      const boxes = selected.map((d,i) => {
+	  const hdata = Object.keys(d)
+		.slice(3).map(x => {
+		    const o = {};
+		    o.x = hx(x);
+		    o.label = x;
+		    o.value = d[x];
+		    o.w = hx.bandwidth();
+		    o.h = ry.get(x)(d[x]);
+		    return o;
+		})
+
+	  const bars = hdata.map((d,j) =>
+	      <rect x={d.x}
+		    y={mh-d.h}
+		    width={d.w}
+		    height={d.h}
+		    key={`histbox-${i}-${j}`} />
+	  )
+
+	  return <g transform={`translate(0, ${hy(i)})`}
+		    fill={this.props.colorScale(i)}
+		    key={`hist-${i}`}>{bars}</g>
+      })
+
     return <svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>
+	{boxes}
     </svg>
   }
 }

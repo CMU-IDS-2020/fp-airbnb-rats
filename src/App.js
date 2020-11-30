@@ -2,15 +2,17 @@ import React, { Component } from 'react'
 import './App.css'
 import WorldMap from './WorldMap'
 import BarChart from './BarChart'
-import StreamGraph from './StreamGraph'
+//import StreamGraph from './StreamGraph'
 import Brush from './Brush'
 import StatLine from './StatLine'
 import worlddata from './world'
 import { range } from 'd3-array'
-import { scaleThreshold } from 'd3-scale'
+import { scaleOrdinal } from 'd3-scale'
+import { schemeTableau10 } from 'd3-scale-chromatic'
 import { geoCentroid } from 'd3-geo'
 import CardLayout from './CardLayout'
 import {Row, Col, Box} from 'jsxstyle'
+import data from './kingscourt_irregular'
 
 const appdata = worlddata.features
   .filter(d => geoCentroid(d)[0] < -20)
@@ -22,7 +24,7 @@ appdata
     d.data = range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
   })
 
-const colorScale = scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
+const colorScale = scaleOrdinal(schemeTableau10).domain([5,10,20,30])
 
 var resizeTimeout;
 const resize = function(onResize){
@@ -76,23 +78,13 @@ class App extends Component {
         <CardLayout changeBrush={this.onBrush} size={[this.state.screenWidth, 50]}>
           <Brush/>
         </CardLayout>
-        <CardLayout
-          title="Main graph"
-          hoverElement={this.state.hover} 
-          onHover={this.onHover} 
-          colorScale={colorScale} 
-          data={filteredAppdata} 
-          appdata={appdata}
-          size={[this.state.screenWidth, this.state.screenHeight / 2]}>
-          <StreamGraph/>
-        </CardLayout>
         <Row justifyContent="space-between">
           <CardLayout 
             title="World map"
             hoverElement={this.state.hover} 
             onHover={this.onHover} 
             colorScale={colorScale} 
-            data={filteredAppdata} 
+            data={data} 
             size={[this.state.screenWidth / 2, this.state.screenHeight / 2]}>
             <WorldMap />
           </CardLayout>
@@ -101,7 +93,7 @@ class App extends Component {
             hoverElement={this.state.hover} 
             onHover={this.onHover} 
             colorScale={colorScale} 
-            data={filteredAppdata} 
+            data={data} 
             size={[this.state.screenWidth / 2, this.state.screenHeight / 2]}>
             <BarChart/>
           </CardLayout>
