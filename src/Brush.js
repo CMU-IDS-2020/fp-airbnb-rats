@@ -65,7 +65,7 @@ class Brush extends Component {
         .attr("r", 25)
         .attr("cy",25)
         .style("fill", "white")
-        .style("stroke", "black")
+        .style("stroke", "white")
         .style("stroke-width", "4px")
         .style("opacity", .75);
 

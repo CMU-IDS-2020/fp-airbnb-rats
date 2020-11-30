@@ -3,6 +3,7 @@ import './App.css'
 import { stack, area, curveBasis, stackOrderInsideOut, stackOffsetWiggle } from 'd3-shape'
 import { range } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
+import StatLine from './StatLine'
 
 class StreamGraph extends Component {
   render() {
@@ -36,11 +37,12 @@ class StreamGraph extends Component {
         style={{fill: this.props.hoverElement === this.props.data[i]["id"] ? "#FCBC34" : this.props.colorScale(this.props.data[i].launchday), stroke: "black", strokeOpacity: 0.5 }}
       />)
 
-    return <svg width={this.props.size[0]} height={this.props.size[1]}>
+    return (<div><svg width={this.props.size[0]} height={this.props.size[1]}>
       <g transform={"translate(0," + (-this.props.size[1] / 2) + ")"}>
         {stacks}
       </g>
     </svg>
+    <StatLine allData={this.props.appdata} filteredData={this.props.data} /></div>)
   }
 }
 

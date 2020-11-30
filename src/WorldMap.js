@@ -4,6 +4,7 @@ import { geoMercator, geoPath } from 'd3-geo'
 
 class WorldMap extends Component {
   render() {
+    console.log(this.props)
     const projection = geoMercator()
       .scale(120)
       .translate([430,250])
