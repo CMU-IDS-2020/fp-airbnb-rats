@@ -26,6 +26,7 @@ class BarChart extends Component {
       const keys = Object.keys(this.props.data[0]).slice(3)
 
 
+
       const hx = scaleBand()
 	    .domain(keys)
 	    .range([0, this.props.size[0]])
@@ -42,6 +43,13 @@ class BarChart extends Component {
 	      .domain(extent(this.props.data, d => d[k]))
 	      .range([mh, 0])
       ]))
+
+      const labels = keys.map(k =>
+	  <text x={hx(k) + hx.bandwidth()/2}
+		y={10}
+		style={{textAnchor: "middle", fontSize: "8px"}}
+		font-family="sans-serif">{k.split('_')[0]}</text>
+      )
 
       
       const boxes = selected.map((d,i) => {
@@ -70,6 +78,7 @@ class BarChart extends Component {
       })
 
     return <svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>
+	{labels}
 	{boxes}
     </svg>
   }
