@@ -42,3 +42,14 @@ path.countries {
   stroke: #75739F;
   fill: #5EAFC6;
 }
+
+body, html, #root {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  position: relative;
+}
+
+*{
+  box-sizing: border-box;
+}

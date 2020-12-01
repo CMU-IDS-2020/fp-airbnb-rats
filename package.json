@@ -4,7 +4,8 @@
   "private": true,
   "homepage": "https://cmu-ids-2020.github.io/fp-airbnb-rats",
   "devDependencies": {
-    "react-scripts": "^4.0.1"
+    "react-scripts": "^4.0.1",
+    "@babel/core": "^7.7.7"
   },
   "dependencies": {
     "d3-array": "^2.8.0",
@@ -16,8 +17,8 @@
     "d3-selection": "^2.0.0",
     "d3-transition": "^2.0.0",
     "jsxstyle": "^2.4.0",
-    "react": "15.3.2",
-    "react-dom": "15.3.2"
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
   },
   "scripts": {
     "start": "react-scripts start",
