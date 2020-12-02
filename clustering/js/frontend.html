@@ -1,0 +1,64 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="clustering.js"></script>
+
+	<link rel="stylesheet" href="style.css">
+</head>
+<body onload="load_data()">
+
+	<h1>Clustering</h1>
+
+	<div id="content">
+
+		<div id="options">
+			<div id="km" onclick="selectedTechnique(this, 'red')" class="techniques">K-means</div>
+			<div id="km_so" class="sub_options">
+				<div>
+					<label>Please enter the number of clusters (K): </label>
+					<input id = "k_val" type="text" name="k"></input><br>
+					<label>Use dimensionality reduction while clustering? </label>
+					<input type="radio" id = "yes" value = "1" name="pca">PCA</input>
+					<input type="radio" id = "no" value = "0" name="pca">Not PCA</input><br>
+					<label>If you've selected PCA, please enter the percentage of variance to be retained: </label>
+					<input type="text" name="variance"></input><br>
+					<input type = "submit" onclick="submit_km()"></input>
+				</div>
+			</div>
+			<div id="hc" onclick="selectedTechnique(this, 'red')" class="techniques">Hierarchical</div>
+			<div id="hc_so" class="sub_options">
+				<div id="dendrogram">
+					Dendrogram goes here
+				</div>
+				<div>
+					<label>Please enter the number of clusters: </label>
+					<input type="text" name="num"></input><br>
+					<label>Linkage: </label>
+					<input type="radio" id = "ward" value = "ward" name="linkage">ward</input>
+					<input type="radio" id = "complete" value = "complete" name="linkage">complete</input>
+					<input type="radio" id = "average" value = "average" name="linkage">average</input>
+					<input type="radio" id = "single" value = "single" name="linkage">single</input>
+					<input type = "submit" onclick="submit_hc()"></input>
+				</div>
+			</div>
+			<div id="nc" onclick="selectedTechnique(this, 'red')" class="techniques">No Clusters</div>
+			<div id="nc_so" class="sub_options">
+				<div>
+					<label>Group by Maximum/Minimum: </label>
+					<input type="radio" id = "max" value = "max" name="maxmin">max</input>
+					<input type="radio" id = "min" value = "min" name="maxmin">min</input>
+					<input type = "submit" onclick="submit_nc()"></input>
+				</div>
+			</div>
+		</div>
+
+		<div id="viz">
+			
+		</div>
+
+	</div>
+
+</body>
+</html>
