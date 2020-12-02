@@ -2,16 +2,12 @@ from flask import Flask
 from flask_cors import CORS
 from flask import request
 import json
-
 import pandas as pd
-import streamlit as st
-import plotly.express as px
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
-import plotly.figure_factory as ff
 
 app = Flask(__name__)
 CORS(app)
