@@ -50,6 +50,7 @@ export default class CardLayout extends Component {
             height={this.props.size[1]}
             justifyContent="center"
             alignItems="center"
+            position="relative"
             >
                 {React.cloneElement(this.props.children, { ...newprops })}
             </Row>
