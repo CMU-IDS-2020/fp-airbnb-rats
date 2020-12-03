@@ -39,6 +39,8 @@ class Coords extends Component {
 		data1 = this.props.data;
 	}
 	
+      const flatgroup = this.props.dataGroups;
+      console.log(this.props.dataGroups);
       const pts1 = data1.map((d,i) =>
 	  <circle cx={d.X * beamparams[0] + beamparams[1]}
 		  cy={d.Y * beamparams[2] + beamparams[3]}

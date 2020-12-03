@@ -25,8 +25,6 @@ class BarChart extends Component {
       const selected = this.props.data.slice(1000,1005);
       const keys = Object.keys(this.props.data[0]).slice(3)
 
-
-
       const hx = scaleBand()
 	    .domain(keys)
 	    .range([0, this.props.size[0]])
