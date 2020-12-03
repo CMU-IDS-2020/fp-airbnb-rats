@@ -107,7 +107,7 @@ class App extends Component {
             onHover={this.onHover} 
             colorScale={colorScale} 
             data={data} 
-	    dataGroups={datagroups}
+	          dataGroups={this.state.dataGroups}
             size={[this.state.screenWidth * 1/3 - 10, this.state.screenHeight  * 2/3 - 10]}>
             <ContextImage />
           </CardLayout>

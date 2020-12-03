@@ -157,6 +157,7 @@ class ContextImage extends Component {
 						data={this.props.data} 
 						size={this.state.imgSize} 
 						colorScale={this.props.colorScale}
+						dataGroups={this.props.dataGroups}
 					/>) : "Loading image..."
 					}
 				</Box>
