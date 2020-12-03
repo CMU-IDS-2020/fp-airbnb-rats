@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import { scaleLinear } from 'd3-scale'
-import { extent } from 'd3-array'
+import React, { Component } from 'react';
+import { scaleLinear } from 'd3-scale';
+import { extent } from 'd3-array';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import {Box, Row, Inline} from 'jsxstyle'
-import './App.css'
-import contextImg from './data/kingscourt_ir/kingscourt_ir_context_image.jpg'
+import {Box, Row, Inline} from 'jsxstyle';
+import './App.css';
+import contextImg from './data/kingscourt_ir/kingscourt_ir_context_image.jpg';
 
-const beamparams = [45,100,-45,400]
-const imgparams = [628, 520]
+const beamparams = [45,100,-45,400];
+const imgparams = [628, 520];
 
 class Coords extends Component {
 
@@ -15,20 +15,20 @@ class Coords extends Component {
 	
 	const padding = 0;
 	
-	const data = this.props.data
+      const data = this.props.data;
 
-	const dataX = data.map((d) => d.X * beamparams[0] + beamparams[1])
-	const dataY = data.map((d) => d.Y * beamparams[2] + beamparams[3])
-	const minimumX = Math.min(...dataX) 
-	const minimumY = Math.min(...dataY)  
-	const maximumX = Math.max(...dataX)
-	const maximumY = Math.max(...dataY)
+      const dataX = data.map((d) => d.X * beamparams[0] + beamparams[1]);
+      const dataY = data.map((d) => d.Y * beamparams[2] + beamparams[3]);
+      const minimumX = Math.min(...dataX);
+      const minimumY = Math.min(...dataY);
+      const maximumX = Math.max(...dataX);
+      const maximumY = Math.max(...dataY);
 
-	const expansion = 0.04
-	const rangeX = (maximumX - minimumX) * (1 + expansion)
-	const rangeY = (maximumY - minimumY) * (1 + expansion)
-	const offsetX = (maximumX - minimumX) * (-1 * expansion/2)
-	const offsetY = (maximumY - minimumY) * (-1 * expansion/2)
+      const expansion = 0.04;
+      const rangeX = (maximumX - minimumX) * (1 + expansion);
+      const rangeY = (maximumY - minimumY) * (1 + expansion);
+      const offsetX = (maximumX - minimumX) * (-1 * expansion/2);
+      const offsetY = (maximumY - minimumY) * (-1 * expansion/2);
 	
 
 	let data1, data2;
@@ -39,23 +39,43 @@ class Coords extends Component {
 		data1 = this.props.data;
 	}
 	
-      const flatgroup = this.props.dataGroups;
-      console.log(this.props.dataGroups);
+      const getColGroup = (i) => {
+	  const g = this.props.dataGroups.filter(d => d.includes(i));
+	  if (g.length > 0) {
+	      let gID = -1;
+	      this.props.dataGroups.forEach((d,j) => {
+		  if (d.includes(i)) {
+		      gID = j;
+		  }
+	      });
+	      return gID;
+	  } else {
+	      return this.props.dataGroups.length;
+	  }
+      };
       const pts1 = data1.map((d,i) =>
 	  <circle cx={d.X * beamparams[0] + beamparams[1]}
 		  cy={d.Y * beamparams[2] + beamparams[3]}
 		  r={1}
-		  fill={this.props.colorScale((i + Math.floor(Math.random()*50))%5)}
+		  fill={this.props.colorScale(getColGroup(i))}
+		  opacity={getColGroup(i) >= this.props.dataGroups.length ? 0.35 : 1}
+		  onMouseEnter={k => getColGroup(i) >= this.props.dataGroups.length
+				? this.props.changeHoverPoint(null) 
+				: this.props.changeHoverPoint(i)}
 		  key={`circle-${i}`} />
-	  )
+      );
 
 	  const pts2 = data2.map((d,i) =>
 	  <circle cx={d.X * beamparams[0] + beamparams[1]}
 		  cy={d.Y * beamparams[2] + beamparams[3]}
 		  r={1}
-		  fill={this.props.colorScale((i + Math.floor(Math.random()*50))%5)}
+		  fill={this.props.colorScale(getColGroup(i))}
+		  opacity={getColGroup(i) >= this.props.dataGroups.length ? 0.35 : 1}
+		  onMouseEnter={k => getColGroup(i) >= this.props.dataGroups.length
+				? this.props.changeHoverPoint(null) 
+				: this.props.changeHoverPoint(i)}
 		  key={`circle-${i}`} />
-	  )
+	  );
 
     return (
 	<svg width={this.props.size[0]} height={this.props.size[1]}>
@@ -74,7 +94,7 @@ class Coords extends Component {
 		<g transform={`translate(${padding}, ${padding})`}>
 		{pts2}
 	    </g>
-	</svg>)
+	</svg>);
   }
 }
 
