@@ -179,6 +179,7 @@ class ContextImage extends Component {
 						size={this.state.imgSize} 
 						colorScale={this.props.colorScale}
 						dataGroups={this.props.dataGroups}
+						changeHoverPoint={this.props.changeHoverPoint}
 					/>) : "Loading image..."
 					}
 				</Box>
