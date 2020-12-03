@@ -5,4 +5,17 @@ let UIColors = {
     text: "#C0C3C8",
 }
 
-export {UIColors}
+let chartColors = [
+    "#FF00FF",
+    "#FF2244",
+    "#3355FF",
+    "#FF0022",
+    "#00FF22",
+    "#00FFFF",
+    "#3300FF",
+    "#FF4455",
+    "#FFAACC",
+    "#FF2200"
+]
+
+export {UIColors, chartColors}

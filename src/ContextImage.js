@@ -76,6 +76,37 @@ class Coords extends Component {
   }
 }
 
+class MenuToolButtons extends Component {
+
+	constructor(props){
+		super(props)
+		this.state = {
+			selectedTool: "zoom"
+		}
+		this.mapping = this.props.mapping
+		this.sst = this.props.setSelectedTool;
+	}
+
+	render(){
+		return (
+		<Row>{
+			this.mapping.map(
+				item => 
+				<Inline 
+					marginLeft="8px" 
+					key={item} 
+					hoverCursor="pointer"
+					textDecoration={this.state.selectedTool == item ? "underline" : ""}
+					props={{onClick: () => {this.sst(item); this.setState({selectedTool: item})}}}
+				>
+					{item}
+				</Inline>
+				)}
+		</Row>
+		)
+	}
+}
+
 class ContextImage extends Component {
 
 	constructor(props){
@@ -84,20 +115,19 @@ class ContextImage extends Component {
 			imgLoaded: false,
 			imgSize: [0, 0],
 			scale: 0.1,
-			offset: [0, 0]
+			offset: [0, 0],
+			selectedTool: "zoom"
 		}
 		this.onImageLoad = this.onImageLoad.bind(this)
+		this.setSelectedTool = this.setSelectedTool.bind(this)
 
-		const menuToolButtonMappings = {"pen": () => console.log("I am pen"), "zoom": () => console.log("I am zoom")}
+		const menuToolButtons = ["pen", "zoom"]
+			
+		props.setMenuTools(<MenuToolButtons mapping={menuToolButtons} setSelectedTool={this.setSelectedTool}/>)
+	}
 
-		const menuTools = (
-			<Row>{
-				Object.keys(menuToolButtonMappings).map(
-					item => 
-					<Inline marginLeft="8px" key={item} props={{onClick:menuToolButtonMappings[item]}}>{item}</Inline>
-					)}
-			</Row>)
-		props.setMenuTools(menuTools)
+	setSelectedTool(tool){
+		this.setState({selectedTool: tool})
 	}
 
 	onImageLoad(t){
@@ -105,9 +135,10 @@ class ContextImage extends Component {
 	}
 
 	render() {
-		return (
-		<TransformWrapper>
-        	<TransformComponent>
+
+	return (
+		<TransformWrapper options={{disabled: !(this.state.selectedTool == "zoom")}}>
+			<TransformComponent>
 			<Box 
 				position="relative" 
 			>
@@ -142,6 +173,7 @@ class ContextImage extends Component {
 			</TransformComponent>
 		</TransformWrapper>
 		)
+		
 	}
 }
 
