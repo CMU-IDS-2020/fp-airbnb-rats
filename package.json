@@ -18,7 +18,8 @@
     "d3-transition": "^2.0.0",
     "jsxstyle": "^2.4.0",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-dom": "^16.10.2",
+    "react-zoom-pan-pinch": "^1.6.1"
   },
   "scripts": {
     "start": "react-scripts start",

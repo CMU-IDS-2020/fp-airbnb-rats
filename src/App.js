@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import './App.css'
-import WorldMap from './WorldMap'
+import ContextImage from './ContextImage'
 import BarChart from './BarChart'
 import Cluster from './Cluster'
-//import StreamGraph from './StreamGraph'
-import StatLine from './StatLine'
 import worlddata from './world'
 import { range } from 'd3-array'
 import { scaleOrdinal } from 'd3-scale'
@@ -39,7 +37,7 @@ class App extends Component {
     this.onResize = this.onResize.bind(this)
     this.onHover = this.onHover.bind(this)
     this.onBrush = this.onBrush.bind(this)
-    this.state = { screenWidth: 1000, screenHeight: 500, hover: "none", brushExtent: [0,40] }
+    this.state = { screenWidth: 1000, screenHeight: 500, hover: 0, brushExtent: [0,40] }
   }
 
   onResize() {
@@ -50,7 +48,6 @@ class App extends Component {
   //when component mounts, start listening for resizing so we can update project sizes
   componentDidMount() {
       this.onResize();
-      console.log("component did mount")
       window.addEventListener('resize', () => resize(this.onResize));
   }
   //when component unmounts, stop listening
@@ -67,7 +64,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state)
     const filteredAppdata = appdata
       .filter((d,i) => d.launchday >= this.state.brushExtent[0] && d.launchday <= this.state.brushExtent[1])
     return (
@@ -90,7 +86,7 @@ class App extends Component {
             colorScale={colorScale} 
             data={data} 
             size={[this.state.screenWidth * 1/3 - 10, this.state.screenHeight  * 2/3 - 10]}>
-            <WorldMap />
+            <ContextImage />
           </CardLayout>
           <CardLayout 
             title="Comparison Sandbox"

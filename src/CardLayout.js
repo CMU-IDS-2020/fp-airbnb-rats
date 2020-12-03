@@ -1,11 +1,20 @@
 import React, { Component } from 'react'
 import {Col, Box, Row} from 'jsxstyle'
 import {UIColors} from './colors'
+import { thresholdFreedmanDiaconis } from 'd3-array';
 
 export default class CardLayout extends Component {
     constructor(props){
         super(props)
         this.children = props.children;
+        this.state = {
+            tools: ""
+        }
+        this.setMenuTools = this.setMenuTools.bind(this)
+    }
+
+    setMenuTools(t){
+        this.setState({tools: t})
     }
 
     render(){
@@ -14,6 +23,7 @@ export default class CardLayout extends Component {
         const hei = this.props.size[0]
         newprops.size[0] = this.props.size[0] - 30;
         newprops.size[1] = this.props.size[1] - 40;
+        newprops["setMenuTools"] = this.setMenuTools;
         return (
         <Col
             borderRadius="12px"
@@ -24,13 +34,16 @@ export default class CardLayout extends Component {
             backgroundColor={UIColors.header} 
             width={wid}
             height={40}
-            justifyContent="flex-start"
+            justifyContent="space-between"
             alignItems="center"
             textTransform="uppercase"
             fontWeight="600"
             paddingLeft="12px"
+            paddingRight="12px"
+            zIndex="2"
             >
-                {this.props.title}
+                <Box>{this.props.title}</Box>
+                <Box>{this.state.tools}</Box>
             </Row>
             <Row             
             width={wid}

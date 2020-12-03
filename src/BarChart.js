@@ -44,10 +44,11 @@ class BarChart extends Component {
 	      .range([mh, 0])
       ]))
 
-      const labels = keys.map(k =>
+      const labels = keys.map((k, i) =>
 	  <text x={hx(k) + hx.bandwidth()/2}
 		y={10}
 		fill="white"
+		key={"histogram" + i}
 		style={{textAnchor: "middle", fontSize: "8px"}}
 		fontFamily="sans-serif">{k.split('_')[0]}</text>
       )
