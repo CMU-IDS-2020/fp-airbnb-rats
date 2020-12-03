@@ -53,6 +53,7 @@ class Coords extends Component {
 	      return this.props.dataGroups.length;
 	  }
       };
+
       const pts1 = data1.map((d,i) =>
 	  <circle cx={d.X * beamparams[0] + beamparams[1]}
 		  cy={d.Y * beamparams[2] + beamparams[3]}

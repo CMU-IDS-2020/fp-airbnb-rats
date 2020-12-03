@@ -64,9 +64,9 @@ class App extends Component {
     this.setState({dataGroups: data})
   }
 
-    changeHoverPoint(pt) {
-	this.setState({hoverPoint: pt});
-    }
+changeHoverPoint(pt) {
+    this.setState({hoverPoint: pt});
+}
 
   onResize() {
       console.log("resize event", window.innerWidth)
@@ -114,7 +114,7 @@ class App extends Component {
             colorScale={colorScale} 
             data={data} 
 	    dataGroups={this.state.dataGroups}
-	    hoverPoint={null}
+	    hoverPoint={this.state.hoverPoint}
 	    changeHoverPoint={this.changeHoverPoint}
             size={[this.state.screenWidth * 1/3 - 10, this.state.screenHeight  * 2/3 - 10]}>
             <ContextImage />
@@ -126,8 +126,8 @@ class App extends Component {
             colorScale={colorScale} 
             data={data} 
             dataGroups={this.state.dataGroups}
-	      changeHoverPoint={this.changeHoverPoint}
-	    hoverPoint={null}
+	    changeHoverPoint={this.changeHoverPoint}
+	    hoverPoint={this.state.hoverPoint}
             size={[this.state.screenWidth * 2/3 - 10, this.state.screenHeight * 2/3 - 10]}>
             <BarChart/>
           </CardLayout>
