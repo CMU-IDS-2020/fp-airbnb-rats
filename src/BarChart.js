@@ -46,9 +46,10 @@ class BarChart extends Component {
 	    .padding(0.25);
 
       const mh = hy.bandwidth();
+      const gpoints = this.props.dataGroups.map(d => d.map(p =>this.props.data[p])).flat()
       const ry = new Map(keys.map(k => [
 	  k, scaleLinear()
-	      .domain(extent(this.props.data, d => d[k]))
+	      .domain(extent(gpoints, d => d[k]))
 	      .range([mh, 0])
       ]));
 
@@ -105,7 +106,6 @@ class BarChart extends Component {
 		  />
 		  );
 	      })
-	      console.log(lns)
 	  }
 	  const res = this.props.hoverPoint !== null && currentGroup === i
 		? <g>{bars}{lns}</g>
