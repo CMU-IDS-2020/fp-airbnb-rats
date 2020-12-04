@@ -61,6 +61,14 @@ class BarChart extends Component {
 		fontFamily="sans-serif">{k.split('_')[0]}</text>
       );
 
+      let currentGroup = null;
+      if (this.props.hoverPoint != null) {
+	  this.props.dataGroups.forEach((g, i) => {
+	    if (g.includes(this.props.hoverPoint)) {
+		currentGroup = i;
+	    }
+	  });
+      }
       
       const boxes = selected.map((d,i) => {
 	  const hdata = Object.keys(d)
@@ -70,7 +78,7 @@ class BarChart extends Component {
 		    o.label = x;
 		    o.value = d[x];
 		    o.w = hx.bandwidth();
-		    o.h = ry.get(x)(d[x]);
+		    o.h = Math.max(ry.get(x)(d[x]), 0);
 		    return o;
 		});
 
@@ -82,10 +90,35 @@ class BarChart extends Component {
 		    key={`histbox-${i}-${j}`} />
 	  );
 
+	  let lns;
+	  if (this.props.hoverPoint !== null) {
+	      const pt = this.props.data[this.props.hoverPoint];
+	      lns = Object.keys(pt).slice(3).map(k => {
+		  const y = ry.get(k)(pt[k]);
+		  return (
+		  <line x1={hx(k)}
+			x2={hx(k)+hx.bandwidth()}
+		      y1={y}
+		      y2={y}
+			stroke={"white"}
+			strokeWidth={0.5}
+		  />
+		  );
+	      })
+	      console.log(lns)
+	  }
+	  const res = this.props.hoverPoint !== null && currentGroup === i
+		? <g>{bars}{lns}</g>
+		: <g>{bars}</g>
+	  
 	  return <g transform={`translate(0, ${hy(i)})`}
 		    fill={this.props.colorScale(i)}
-		    opacity={this.props.hoverPoint != null ? 1.0 : 0.25}
-		    key={`hist-${i}`}>{bars}</g>
+		    opacity={this.props.hoverPoint != null
+			     ? i === currentGroup ? 1.0 : 0.25
+			     : 1.0}
+		    key={`hist-${i}`}>
+		     {res}
+		 </g>
       });
 
     return <svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>

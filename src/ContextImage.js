@@ -63,6 +63,7 @@ class Coords extends Component {
 		  onMouseEnter={k => getColGroup(i) >= this.props.dataGroups.length
 				? this.props.changeHoverPoint(null) 
 				: this.props.changeHoverPoint(i)}
+		  onMouseLeave={k => this.props.changeHoverPoint(null)}
 		  key={`circle-${i}`} />
       );
 
@@ -75,6 +76,7 @@ class Coords extends Component {
 		  onMouseEnter={k => getColGroup(i) >= this.props.dataGroups.length
 				? this.props.changeHoverPoint(null) 
 				: this.props.changeHoverPoint(i)}
+		  onMouseLeave={k => this.props.changeHoverPoint(null)}
 		  key={`circle-${i}`} />
 	  );
 
