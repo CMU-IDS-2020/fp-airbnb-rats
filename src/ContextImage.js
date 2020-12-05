@@ -9,11 +9,31 @@ import trackPointer from "./trackPointer";
 import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
 import {polygonContains} from 'd3-polygon';
-import { select } from "d3-selection";
+import { select, selectAll } from "d3-selection";
 import { chartColors } from "./colors";
 
 const beamparams = [45, 100, -45, 400];
 const imgparams = [628, 520];
+const defaultLasso = [
+	[366, 143],
+	[351, 135],
+	[337, 132],
+	[318, 130],
+	[294, 129],
+	[268, 132],
+	[247, 141],
+	[227, 159],
+	[209, 184],
+	[197, 214],
+	[192, 248],
+	[192, 281],
+	[201, 310],
+	[219, 331],
+	[263, 343],
+	[315, 339],
+	[370, 321],
+	[393, 298]
+]
 
 function lasso() {
   const lDispatch = dispatch("start", "lasso", "end");
@@ -43,6 +63,10 @@ function lasso() {
     return _ ? (lDispatch.on(...arguments), lasso) : lDispatch.on(...arguments);
   };
 
+  lasso.off = function (args) {
+    lDispatch.on(args, null);
+  };
+
   return lasso;
 }
 
@@ -50,9 +74,10 @@ class Coords extends Component {
   constructor(props) {
     super(props);
     this.createCoords = this.createCoords.bind(this);
-    this.data = this.props.data;
-    this.dataX = this.data.map((d) => d.X * beamparams[0] + beamparams[1]);
-    this.dataY = this.data.map((d) => d.Y * beamparams[2] + beamparams[3]);
+	this.data = this.props.data.slice()
+	this.data.forEach((d) => {d.X = d.X * beamparams[0] + beamparams[1]; d.Y = d.Y * beamparams[2] + beamparams[3]})
+    this.dataX = this.data.map((d) => d.X);
+	this.dataY = this.data.map((d) => d.Y);
 
     this.minimumX = Math.min(...this.dataX);
     this.minimumY = Math.min(...this.dataY);
@@ -64,42 +89,41 @@ class Coords extends Component {
     this.rangeY = (this.maximumY - this.minimumY) * (1 + expansion);
     this.offsetX = (this.maximumX - this.minimumX) * ((-1 * expansion) / 2);
 	this.offsetY = (this.maximumY - this.minimumY) * ((-1 * expansion) / 2);
-	this.state = {
-		refLoaded: false
-	}
 	this.coordRef = React.createRef();
+	
+	this.penOff;
+	this.penOn;
   }
 
   componentDidMount() {
 	this.createCoords();
-	this.createPenTool()
-	console.log("did mount", this)
-	if(this.coordRef.current){
-		this.setState({refLoaded: true});
-	}
+	let penFuncs = this.createPenTool()
+	this.penOff = penFuncs.penOff;
+	this.penOn = penFuncs.penOn;
+
+	this.penOff()
+
+	this.props.registerTool("pen", {on: this.penOn, off: this.penOff})
+	//this.penOff()
+	// console.log("did mount", this)
+	// if(this.coordRef.current){
+	// 	this.setState({refLoaded: true});
+	// }
   }
 
   componentDidUpdate() {
 	//this.createCoords();
-	if(this.coordRef.current && !this.state.refLoaded){
-		this.setState({refLoaded: true});
-	}
+	// if(this.coordRef.current && !this.state.refLoaded){
+	// 	this.setState({refLoaded: true});
+	// }
   }
 
   createPenTool(){
 		const selection = select(this.coordRef.current)
-		//console.log(selection, select(selection))
 		const svg = this.coordRef.current
 		console.log(svg)
 		const path = geoPath(),
-		l = selection.append("path").attr("class", "lasso"),
-		g = selection.append("g")
-		// points = g
-		//   .selectAll("circle")
-		//   .data(data)
-		//   .join("circle")
-		//   .attr("r", 1.5)
-		//   .attr("transform", d => `translate(${d})`);
+		l = selection.append("path").attr("class", "lasso")
 	
 	  selection.append("defs").append("style").text(`
 		  .selected {r: 2.5; fill: red}
@@ -107,41 +131,43 @@ class Coords extends Component {
 		`);
 	
 	  function draw(polygon) {
+
 		l.datum({
 		  type: "LineString",
 		  coordinates: polygon
 		}).attr("d", path);
 	
-		//const selected = polygon.length > 2 ? [] : data;
-	
+		//const selected = [];
+
+		//const selected = polygon.length > 2 ? [] : this.data;
+
+		const points = selection.selectAll(".pts")
+
 		// note: d3.polygonContains uses the even-odd rule
 		// which is reflected in the CSS for the lasso shape
-		// points.classed(
-		//   "selected",
-		//   polygon.length > 2
-		//     ? d => polygonContains(polygon, d) && selected.push(d)
-		//     : false
-		// );
-	
+		points.classed(
+		  "selected",
+		  polygon.length > 2
+			? d => polygonContains(polygon, [d.X, d.Y])
+			: false
+		);
 		//svg.value = { polygon, selected };
 		svg.dispatchEvent(new CustomEvent('input'));
 	  }
 	
-	  selection.call(lasso().on("start lasso end", draw));
-	  //draw(defaultLasso);
+	  //selection.call(lasso().on("start lasso end", draw));
+	  draw(defaultLasso);
+
+	  let lass = lasso()
 	
-	  //return svg;
+	  return {
+		  penOn: () => selection.call(lass.on("start lasso end", draw)),
+		  penOff: () => lass.off("start lasso end")
+	  }
   }
 
   createCoords() {
     const selection = select(this.coordRef.current)
-    let data1, data2;
-    if (this.data.length > 3000) {
-      data1 = this.data.slice(0, 3000);
-      data2 = this.data.slice(3000);
-    } else {
-      data1 = this.data;
-    }
 
     const getColGroup = (i) => {
       const g = this.props.dataGroups.filter((d) => d.includes(i));
@@ -161,8 +187,8 @@ class Coords extends Component {
       selection.selectAll('.pts')
 	  .data(this.props.data.map((d,i) => ({...d, i: i})))
 	  .join('circle')
-	  .attr('cx', d => d.X * beamparams[0] + beamparams[1])
-	  .attr('cy', d => d.Y * beamparams[2] + beamparams[3])
+	  .attr('cx', d => d.X)
+	  .attr('cy', d => d.Y)
 	  .attr('r', 1)
 	  .attr('fill', d => this.props.colorScale(getColGroup(d.i)))
 	  .attr('opacity', d => getColGroup(d.i) >= this.props.dataGroups.length
@@ -178,7 +204,6 @@ class Coords extends Component {
 	  .on('mouseleave', function(e,d) {
 	      this.props.changeHoverPoint(null)
 	  }.bind(this));
-	//select(this.coordRef.current).append(pts1);
   }
 
   render() {
@@ -194,40 +219,6 @@ class Coords extends Component {
   }
 }
 
-class MenuToolButtons extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedTool: "zoom",
-    };
-    this.mapping = this.props.mapping;
-    this.sst = this.props.setSelectedTool;
-  }
-
-  render() {
-    return (
-      <Row>
-        {this.mapping.map((item) => (
-          <Inline
-            marginLeft="8px"
-            key={item}
-            hoverCursor="pointer"
-            textDecoration={this.state.selectedTool == item ? "underline" : ""}
-            props={{
-              onClick: () => {
-                this.sst(item);
-                this.setState({ selectedTool: item });
-              },
-            }}
-          >
-            {item}
-          </Inline>
-        ))}
-      </Row>
-    );
-  }
-}
-
 class ContextImage extends Component {
   constructor(props) {
     super(props);
@@ -236,22 +227,36 @@ class ContextImage extends Component {
       imgSize: [0, 0],
       scale: 0.1,
       offset: [0, 0],
-      selectedTool: "zoom",
+      selectedTool: "",
     };
-    this.onImageLoad = this.onImageLoad.bind(this);
+	this.onImageLoad = this.onImageLoad.bind(this);
+	this.registerTool = this.registerTool.bind(this);
     this.setSelectedTool = this.setSelectedTool.bind(this);
+	this.tools = {}
+  }
 
-    const menuToolButtons = ["pen", "zoom"];
+  componentDidMount(){
+	  console.log("mount")
+	  this.registerTool("zoom", {on: ()=>{}, off: ()=>{}})
+	  this.setSelectedTool("zoom")
+  }
 
-    props.setMenuTools(
-      <MenuToolButtons
-        mapping={menuToolButtons}
-        setSelectedTool={this.setSelectedTool}
-      />
-    );
+  registerTool(toolName, toolFuncs){
+	this.tools[toolName] = toolFuncs;
+	const toolCallbacks = Object.keys(this.tools).map(t => [t, ()=>this.setSelectedTool(t)])
+	this.props.setMenuTools(toolCallbacks);
   }
 
   setSelectedTool(tool) {
+	Object.keys(this.tools).forEach(
+		(t) => {
+			if(t === tool){
+				this.tools[t].on()
+			} else {
+				this.tools[t].off()
+			}
+		} 
+	)
     this.setState({ selectedTool: tool });
   }
 
@@ -283,7 +288,8 @@ class ContextImage extends Component {
                   size={this.state.imgSize}
                   colorScale={this.props.colorScale}
                   dataGroups={this.props.dataGroups}
-                  changeHoverPoint={this.props.changeHoverPoint}
+				  changeHoverPoint={this.props.changeHoverPoint}
+				  registerTool={this.registerTool}
                 />
               ) : (
                 "Loading image..."
