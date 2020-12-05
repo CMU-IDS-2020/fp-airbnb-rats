@@ -134,7 +134,7 @@ class Coords extends Component {
   }
 
   createCoords() {
-    const node = this.node;
+    const selection = select(this.coordRef.current)
     let data1, data2;
     if (this.data.length > 3000) {
       data1 = this.data.slice(0, 3000);
