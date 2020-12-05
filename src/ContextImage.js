@@ -8,30 +8,9 @@ import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
 import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
-import { chartColors } from "./colors";
 
 const beamparams = [45, 100, -45, 400];
 const imgparams = [628, 520];
-const defaultLasso = [
-  [366, 143],
-  [351, 135],
-  [337, 132],
-  [318, 130],
-  [294, 129],
-  [268, 132],
-  [247, 141],
-  [227, 159],
-  [209, 184],
-  [197, 214],
-  [192, 248],
-  [192, 281],
-  [201, 310],
-  [219, 331],
-  [263, 343],
-  [315, 339],
-  [370, 321],
-  [393, 298],
-];
 
 function lasso() {
   const lDispatch = dispatch("start", "lasso", "end");
@@ -101,16 +80,9 @@ class Coords extends Component {
     let penFuncs = this.createPenTool();
     this.penOff = penFuncs.penOff;
     this.penOn = penFuncs.penOn;
-
     this.penOff();
-
 	this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
 	this.dataGroupLength = this.props.dataGroups.length;
-    //this.penOff()
-    // console.log("did mount", this)
-    // if(this.coordRef.current){
-    // 	this.setState({refLoaded: true});
-    // }
   }
 
   componentDidUpdate() {
@@ -118,10 +90,6 @@ class Coords extends Component {
 		this.createCoords();
 		this.dataGroupLength = this.props.dataGroups.length
 	  }
-    
-    // if(this.coordRef.current && !this.state.refLoaded){
-    // 	this.setState({refLoaded: true});
-    // }
   }
 
   createPenTool() {
@@ -159,10 +127,8 @@ class Coords extends Component {
 
       dataGroups.push(selPoints);
       sdg(dataGroups);
-    }
-
-    //draw(defaultLasso);
-
+	}
+	
     let lass = lasso();
 
     return {
