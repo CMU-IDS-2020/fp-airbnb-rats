@@ -14,6 +14,26 @@ import { chartColors } from "./colors";
 
 const beamparams = [45, 100, -45, 400];
 const imgparams = [628, 520];
+const defaultLasso = [
+	[366, 143],
+	[351, 135],
+	[337, 132],
+	[318, 130],
+	[294, 129],
+	[268, 132],
+	[247, 141],
+	[227, 159],
+	[209, 184],
+	[197, 214],
+	[192, 248],
+	[192, 281],
+	[201, 310],
+	[219, 331],
+	[263, 343],
+	[315, 339],
+	[370, 321],
+	[393, 298]
+]
 
 function lasso() {
   const lDispatch = dispatch("start", "lasso", "end");
@@ -43,6 +63,10 @@ function lasso() {
     return _ ? (lDispatch.on(...arguments), lasso) : lDispatch.on(...arguments);
   };
 
+  lasso.off = function (args) {
+    lDispatch.on(args, null);
+  };
+
   return lasso;
 }
 
@@ -50,9 +74,10 @@ class Coords extends Component {
   constructor(props) {
     super(props);
     this.createCoords = this.createCoords.bind(this);
-    this.data = this.props.data;
-    this.dataX = this.data.map((d) => d.X * beamparams[0] + beamparams[1]);
-    this.dataY = this.data.map((d) => d.Y * beamparams[2] + beamparams[3]);
+	this.data = this.props.data.slice()
+	this.data.forEach((d) => {d.X = d.X * beamparams[0] + beamparams[1]; d.Y = d.Y * beamparams[2] + beamparams[3]})
+    this.dataX = this.data.map((d) => d.X);
+	this.dataY = this.data.map((d) => d.Y);
 
     this.minimumX = Math.min(...this.dataX);
     this.minimumY = Math.min(...this.dataY);
@@ -199,40 +224,6 @@ class Coords extends Component {
   }
 }
 
-class MenuToolButtons extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedTool: "zoom",
-    };
-    this.mapping = this.props.mapping;
-    this.sst = this.props.setSelectedTool;
-  }
-
-  render() {
-    return (
-      <Row>
-        {this.mapping.map((item) => (
-          <Inline
-            marginLeft="8px"
-            key={item}
-            hoverCursor="pointer"
-            textDecoration={this.state.selectedTool == item ? "underline" : ""}
-            props={{
-              onClick: () => {
-                this.sst(item);
-                this.setState({ selectedTool: item });
-              },
-            }}
-          >
-            {item}
-          </Inline>
-        ))}
-      </Row>
-    );
-  }
-}
-
 class ContextImage extends Component {
   constructor(props) {
     super(props);
@@ -241,22 +232,36 @@ class ContextImage extends Component {
       imgSize: [0, 0],
       scale: 0.1,
       offset: [0, 0],
-      selectedTool: "zoom",
+      selectedTool: "",
     };
-    this.onImageLoad = this.onImageLoad.bind(this);
+	this.onImageLoad = this.onImageLoad.bind(this);
+	this.registerTool = this.registerTool.bind(this);
     this.setSelectedTool = this.setSelectedTool.bind(this);
+	this.tools = {}
+  }
 
-    const menuToolButtons = ["pen", "zoom"];
+  componentDidMount(){
+	  console.log("mount")
+	  this.registerTool("zoom", {on: ()=>{}, off: ()=>{}})
+	  this.setSelectedTool("zoom")
+  }
 
-    props.setMenuTools(
-      <MenuToolButtons
-        mapping={menuToolButtons}
-        setSelectedTool={this.setSelectedTool}
-      />
-    );
+  registerTool(toolName, toolFuncs){
+	this.tools[toolName] = toolFuncs;
+	const toolCallbacks = Object.keys(this.tools).map(t => [t, ()=>this.setSelectedTool(t)])
+	this.props.setMenuTools(toolCallbacks);
   }
 
   setSelectedTool(tool) {
+	Object.keys(this.tools).forEach(
+		(t) => {
+			if(t === tool){
+				this.tools[t].on()
+			} else {
+				this.tools[t].off()
+			}
+		} 
+	)
     this.setState({ selectedTool: tool });
   }
 
@@ -288,7 +293,8 @@ class ContextImage extends Component {
                   size={this.state.imgSize}
                   colorScale={this.props.colorScale}
                   dataGroups={this.props.dataGroups}
-                  changeHoverPoint={this.props.changeHoverPoint}
+				  changeHoverPoint={this.props.changeHoverPoint}
+				  registerTool={this.registerTool}
                 />
               ) : (
                 "Loading image..."

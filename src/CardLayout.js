@@ -1,14 +1,49 @@
 import React, { Component } from "react";
-import { Col, Box, Row } from "jsxstyle";
+import { Col, Box, Row, Inline } from "jsxstyle";
 import { UIColors } from "./colors";
 import { thresholdFreedmanDiaconis } from "d3-array";
+
+class MenuToolButtons extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        selectedTool: 0
+      };
+    }
+  
+    render() {
+      if(this.props.mapping.length < 1){
+          return ""
+      }
+      return (
+        <Row>
+          {this.props.mapping.map((item, idx) => (
+            <Inline
+              marginLeft="8px"
+              key={item}
+              hoverCursor="pointer"
+              textDecoration={this.state.selectedTool == idx ? "underline" : ""}
+              props={{
+                onClick: () => {
+                  item[1]();
+                  this.setState({ selectedTool: idx });
+                },
+              }}
+            >
+              {item[0]}
+            </Inline>
+          ))}
+        </Row>
+      );
+    }
+  }
 
 export default class CardLayout extends Component {
   constructor(props) {
     super(props);
     this.children = props.children;
     this.state = {
-      tools: "",
+      tools: [],
     };
     this.setMenuTools = this.setMenuTools.bind(this);
   }
@@ -18,6 +53,7 @@ export default class CardLayout extends Component {
   }
 
   render() {
+      console.log("rerendering card: " + this.props.title)
     let newprops = { ...this.props };
     const wid = this.props.size[0];
     const hei = this.props.size[0];
@@ -44,7 +80,7 @@ export default class CardLayout extends Component {
           zIndex="2"
         >
           <Box>{this.props.title}</Box>
-          <Box>{this.state.tools}</Box>
+          <Box><MenuToolButtons mapping={this.state.tools}/></Box>
         </Row>
         <Row
           width={wid}
