@@ -6,22 +6,21 @@ import { range, extent } from "d3-array";
 class BarChart extends Component {
   constructor(props) {
     super(props);
-    this.createBarChart = this.createBarChart.bind(this);
+	this.createBarChart = this.createBarChart.bind(this);
+	this.chartRef = React.createRef();
   }
 
   componentDidMount() {
-    this.createBarChart();
+    //this.createBarChart();
   }
 
   componentDidUpdate() {
-    this.createBarChart();
+    //this.createBarChart();
   }
 
   createBarChart() {
-    const node = this.node;
-  }
+    const selection = select(this.chartRef.current)
 
-  render() {
     const keys = Object.keys(this.props.data[0]).slice(3);
 
     const selected = this.props.dataGroups
@@ -149,16 +148,18 @@ class BarChart extends Component {
           {res}
         </g>
       );
-    });
+	});
+	
+}
+
+render() {
 
     return (
       <svg
-        ref={(node) => (this.node = node)}
+        ref={(node) => (this.chartRef)}
         width={this.props.size[0]}
         height={this.props.size[1]}
       >
-        {labels}
-        {boxes}
       </svg>
     );
   }
