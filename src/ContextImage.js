@@ -126,7 +126,10 @@ class Coords extends Component {
 		l = selection.append("path").attr("class", "lasso")
 	
 	  selection.append("defs").append("style").text(`
-		  .selected {r: 2.5; fill: red}
+		  .selected-1 {r: 2.5; fill: red}
+		  .selected-2 {r: 2.5; fill: blue}
+		  .selected-3 {r: 2.5; fill: green}
+		  .selected-4 {r: 2.5; fill: yellow}
 		  .lasso { fill-rule: evenodd; fill-opacity: 0.1; stroke-width: 1.5; stroke: #000; }
 		`);
 	
@@ -140,17 +143,19 @@ class Coords extends Component {
 		//const selected = [];
 
 		//const selected = polygon.length > 2 ? [] : this.data;
-
+		if(polygon.length < 2){
+			svg.dispatchEvent(new CustomEvent('input'));
+			return;
+		}
 		const points = selection.selectAll(".pts")
 
 		// note: d3.polygonContains uses the even-odd rule
 		// which is reflected in the CSS for the lasso shape
-		points.classed(
-		  "selected",
-		  polygon.length > 2
-			? d => polygonContains(polygon, [d.X, d.Y])
-			: false
-		);
+
+		const c = Math.floor(Math.random() * Math.floor(5));
+
+		const selPoints = points.filter((d) => polygonContains(polygon, [d.X, d.Y]))
+		selPoints.attr('class', 'selected-1')
 		//svg.value = { polygon, selected };
 		svg.dispatchEvent(new CustomEvent('input'));
 	  }
