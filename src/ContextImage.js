@@ -158,40 +158,27 @@ class Coords extends Component {
       }
     };
 
-    const pts1 = data1.map((d, i) => (
-      <circle
-        cx={d.X * beamparams[0] + beamparams[1]}
-        cy={d.Y * beamparams[2] + beamparams[3]}
-        r={1}
-        fill={this.props.colorScale(getColGroup(i))}
-        opacity={getColGroup(i) >= this.props.dataGroups.length ? 0.35 : 1}
-        onMouseEnter={(k) =>
-          getColGroup(i) >= this.props.dataGroups.length
-            ? this.props.changeHoverPoint(null)
-            : this.props.changeHoverPoint(i)
-        }
-        onMouseLeave={(k) => this.props.changeHoverPoint(null)}
-        key={`circle-${i}`}
-      />
-    ));
-
-    const pts2 = data2.map((d, i) => (
-      <circle
-        cx={d.X * beamparams[0] + beamparams[1]}
-        cy={d.Y * beamparams[2] + beamparams[3]}
-        r={1}
-        fill={this.props.colorScale(getColGroup(i))}
-        opacity={getColGroup(i) >= this.props.dataGroups.length ? 0.35 : 1}
-        onMouseEnter={(k) =>
-          getColGroup(i) >= this.props.dataGroups.length
-            ? this.props.changeHoverPoint(null)
-            : this.props.changeHoverPoint(i)
-        }
-        onMouseLeave={(k) => this.props.changeHoverPoint(null)}
-        key={`circle-${i}`}
-      />
-    ));
-    select(this.coordRef.current).append(pts1);
+      selection.selectAll('.pts')
+	  .data(this.props.data.map((d,i) => ({...d, i: i})))
+	  .join('circle')
+	  .attr('cx', d => d.X * beamparams[0] + beamparams[1])
+	  .attr('cy', d => d.Y * beamparams[2] + beamparams[3])
+	  .attr('r', 1)
+	  .attr('fill', d => this.props.colorScale(getColGroup(d.i)))
+	  .attr('opacity', d => getColGroup(d.i) >= this.props.dataGroups.length
+		? 0.35 : 1)
+	  .attr('class', 'pts')
+	  .attr('key', d => `circle-${d.i}`)
+	  .on('mouseenter', function(e,d) {
+	      const g = getColGroup(d.i);
+	      const newPoint = g >=this.props.dataGroups.length
+		    ? null : d.i;
+	      this.props.changeHoverPoint(newPoint);
+	  }.bind(this))
+	  .on('mouseleave', function(e,d) {
+	      this.props.changeHoverPoint(null)
+	  }.bind(this));
+	//select(this.coordRef.current).append(pts1);
   }
 
   render() {
