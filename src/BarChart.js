@@ -156,7 +156,7 @@ render() {
 
     return (
       <svg
-        ref={(node) => (this.chartRef)}
+        ref={(this.chartRef)}
         width={this.props.size[0]}
         height={this.props.size[1]}
       >
