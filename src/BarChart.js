@@ -2,16 +2,17 @@ import React, { Component } from "react";
 import "./App.css";
 import { scaleBand, scaleLinear } from "d3-scale";
 import { range, extent } from "d3-array";
+import { select } from "d3-selection";
 
 class BarChart extends Component {
   constructor(props) {
     super(props);
-	this.createBarChart = this.createBarChart.bind(this);
-	this.chartRef = React.createRef();
+    this.createBarChart = this.createBarChart.bind(this);
+    this.chartRef = React.createRef();
   }
 
   componentDidMount() {
-    //this.createBarChart();
+    this.createBarChart();
   }
 
   componentDidUpdate() {
@@ -19,7 +20,7 @@ class BarChart extends Component {
   }
 
   createBarChart() {
-    const selection = select(this.chartRef.current)
+    const selection = select(this.chartRef.current);
 
     const keys = Object.keys(this.props.data[0]).slice(3);
 
@@ -46,9 +47,11 @@ class BarChart extends Component {
       .padding(0.25);
 
     const mh = hy.bandwidth();
+
     const gpoints = this.props.dataGroups
       .map((d) => d.map((p) => this.props.data[p]))
       .flat();
+
     const ry = new Map(
       keys.map((k) => [
         k,
@@ -58,109 +61,58 @@ class BarChart extends Component {
       ])
     );
 
-    const labels = keys.map((k, i) => (
-      <text
-        x={hx(k) + hx.bandwidth() / 2}
-        y={10}
-        fill="white"
-        key={"histogram" + i}
-        style={{ textAnchor: "middle", fontSize: "8px" }}
-        fontFamily="sans-serif"
-      >
-        {k.split("_")[0]}
-      </text>
-    ));
+    let currentHoverGroup = -1;
 
-    let currentGroup = null;
-    if (this.props.hoverPoint != null) {
-      this.props.dataGroups.forEach((g, i) => {
-        if (g.includes(this.props.hoverPoint)) {
-          currentGroup = i;
-        }
-      });
-    }
-
-    const boxes = selected.map((d, i) => {
-      const hdata = Object.keys(d)
-        .slice(3)
-        .map((x) => {
+    selection
+      .selectAll("g")
+      .data(selected)
+      .join("g")
+      .attr("transform", (_, i) => `translate(0, ${hy(i)})`)
+      .attr("fill", (_, i) => this.props.colorScale(i))
+      .selectAll("rect")
+      .data((d) =>
+        keys.map((k) => {
           const o = {};
-          o.x = hx(x);
-          o.label = x;
-          o.value = d[x];
-          o.w = hx.bandwidth();
-          o.h = Math.max(ry.get(x)(d[x]), 0);
+          o.label = k;
+          o.value = d[k];
+          o.width = hx.bandwidth();
+          o.height = Math.max(ry.get(k)(d[k]), 0);
+          o.x = hx(k);
+          o.y = mh - o.height;
           return o;
-        });
+        })
+      )
+      .join("rect")
+      .attr("width", (d) => d.width)
+      .attr("height", (d) => d.height)
+      .attr("x", (d) => d.x)
+      .attr("y", (d) => d.y);
 
-      const bars = hdata.map((d, j) => (
-        <rect
-          x={d.x}
-          y={mh - d.h}
-          width={d.w}
-          height={d.h}
-          key={`histbox-${i}-${j}`}
-        />
-      ));
+    selection
+      .selectAll("text")
+      .data(keys)
+      .join("text")
+      .text((d) => d.split("_")[0])
+      .attr("fill", "white")
+      .attr("x", (d) => hx(d) + hx.bandwidth() / 2)
+      .attr("y", 10)
+      .style("text-anchor", "middle")
+      .style("font-size", "8px")
+      .attr("font-family", "sans-serif");
 
-      let lns;
-      if (this.props.hoverPoint !== null) {
-        const pt = this.props.data[this.props.hoverPoint];
-        lns = Object.keys(pt)
-          .slice(3)
-          .map((k) => {
-            const y = ry.get(k)(pt[k]);
-            return (
-              <line
-                x1={hx(k)}
-                x2={hx(k) + hx.bandwidth()}
-                y1={y}
-                y2={y}
-                stroke={"white"}
-                strokeWidth={0.5}
-              />
-            );
-          });
-      }
-      const res =
-        this.props.hoverPoint !== null && currentGroup === i ? (
-          <g>
-            {bars}
-            {lns}
-          </g>
-        ) : (
-          <g>{bars}</g>
-        );
+    if (this.props.hoverPoint === null) {
+      selection.selectAll(".hoverline").remove();
+    } else {
+    }
+  }
 
-      return (
-        <g
-          transform={`translate(0, ${hy(i)})`}
-          fill={this.props.colorScale(i)}
-          opacity={
-            this.props.hoverPoint != null
-              ? i === currentGroup
-                ? 1.0
-                : 0.25
-              : 1.0
-          }
-          key={`hist-${i}`}
-        >
-          {res}
-        </g>
-      );
-	});
-	
-}
-
-render() {
-
+  render() {
     return (
       <svg
-        ref={(this.chartRef)}
+        ref={this.chartRef}
         width={this.props.size[0]}
         height={this.props.size[1]}
-      >
-      </svg>
+      ></svg>
     );
   }
 }

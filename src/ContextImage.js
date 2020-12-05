@@ -8,7 +8,7 @@ import contextImg from "./data/kingscourt_ir/kingscourt_ir_context_image.jpg";
 import trackPointer from "./trackPointer";
 import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
-import {polygonContains} from 'd3-polygon';
+import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
 import { chartColors } from "./colors";
 
@@ -63,78 +63,78 @@ class Coords extends Component {
     this.rangeX = (this.maximumX - this.minimumX) * (1 + expansion);
     this.rangeY = (this.maximumY - this.minimumY) * (1 + expansion);
     this.offsetX = (this.maximumX - this.minimumX) * ((-1 * expansion) / 2);
-	this.offsetY = (this.maximumY - this.minimumY) * ((-1 * expansion) / 2);
-	this.state = {
-		refLoaded: false
-	}
-	this.coordRef = React.createRef();
+    this.offsetY = (this.maximumY - this.minimumY) * ((-1 * expansion) / 2);
+    this.state = {
+      refLoaded: false,
+    };
+    this.coordRef = React.createRef();
   }
 
   componentDidMount() {
-	this.createCoords();
-	this.createPenTool()
-	console.log("did mount", this)
-	if(this.coordRef.current){
-		this.setState({refLoaded: true});
-	}
+    this.createCoords();
+    this.createPenTool();
+    console.log("did mount", this);
+    if (this.coordRef.current) {
+      this.setState({ refLoaded: true });
+    }
   }
 
   componentDidUpdate() {
-	//this.createCoords();
-	if(this.coordRef.current && !this.state.refLoaded){
-		this.setState({refLoaded: true});
-	}
+    //this.createCoords();
+    if (this.coordRef.current && !this.state.refLoaded) {
+      this.setState({ refLoaded: true });
+    }
   }
 
-  createPenTool(){
-		const selection = select(this.coordRef.current)
-		//console.log(selection, select(selection))
-		const svg = this.coordRef.current
-		console.log(svg)
-		const path = geoPath(),
-		l = selection.append("path").attr("class", "lasso"),
-		g = selection.append("g")
-		// points = g
-		//   .selectAll("circle")
-		//   .data(data)
-		//   .join("circle")
-		//   .attr("r", 1.5)
-		//   .attr("transform", d => `translate(${d})`);
-	
-	  selection.append("defs").append("style").text(`
+  createPenTool() {
+    const selection = select(this.coordRef.current);
+    //console.log(selection, select(selection))
+    const svg = this.coordRef.current;
+    console.log(svg);
+    const path = geoPath(),
+      l = selection.append("path").attr("class", "lasso"),
+      g = selection.append("g");
+    // points = g
+    //   .selectAll("circle")
+    //   .data(data)
+    //   .join("circle")
+    //   .attr("r", 1.5)
+    //   .attr("transform", d => `translate(${d})`);
+
+    selection.append("defs").append("style").text(`
 		  .selected {r: 2.5; fill: red}
 		  .lasso { fill-rule: evenodd; fill-opacity: 0.1; stroke-width: 1.5; stroke: #000; }
 		`);
-	
-	  function draw(polygon) {
-		l.datum({
-		  type: "LineString",
-		  coordinates: polygon
-		}).attr("d", path);
-	
-		//const selected = polygon.length > 2 ? [] : data;
-	
-		// note: d3.polygonContains uses the even-odd rule
-		// which is reflected in the CSS for the lasso shape
-		// points.classed(
-		//   "selected",
-		//   polygon.length > 2
-		//     ? d => polygonContains(polygon, d) && selected.push(d)
-		//     : false
-		// );
-	
-		//svg.value = { polygon, selected };
-		svg.dispatchEvent(new CustomEvent('input'));
-	  }
-	
-	  selection.call(lasso().on("start lasso end", draw));
-	  //draw(defaultLasso);
-	
-	  //return svg;
+
+    function draw(polygon) {
+      l.datum({
+        type: "LineString",
+        coordinates: polygon,
+      }).attr("d", path);
+
+      //const selected = polygon.length > 2 ? [] : data;
+
+      // note: d3.polygonContains uses the even-odd rule
+      // which is reflected in the CSS for the lasso shape
+      // points.classed(
+      //   "selected",
+      //   polygon.length > 2
+      //     ? d => polygonContains(polygon, d) && selected.push(d)
+      //     : false
+      // );
+
+      //svg.value = { polygon, selected };
+      svg.dispatchEvent(new CustomEvent("input"));
+    }
+
+    selection.call(lasso().on("start lasso end", draw));
+    //draw(defaultLasso);
+
+    //return svg;
   }
 
   createCoords() {
-    const selection = select(this.coordRef.current)
+    const selection = select(this.coordRef.current);
     let data1, data2;
     if (this.data.length > 3000) {
       data1 = this.data.slice(0, 3000);
@@ -158,38 +158,43 @@ class Coords extends Component {
       }
     };
 
-      selection.selectAll('.pts')
-	  .data(this.props.data.map((d,i) => ({...d, i: i})))
-	  .join('circle')
-	  .attr('cx', d => d.X * beamparams[0] + beamparams[1])
-	  .attr('cy', d => d.Y * beamparams[2] + beamparams[3])
-	  .attr('r', 1)
-	  .attr('fill', d => this.props.colorScale(getColGroup(d.i)))
-	  .attr('opacity', d => getColGroup(d.i) >= this.props.dataGroups.length
-		? 0.35 : 1)
-	  .attr('class', 'pts')
-	  .attr('key', d => `circle-${d.i}`)
-	  .on('mouseenter', function(e,d) {
-	      const g = getColGroup(d.i);
-	      const newPoint = g >=this.props.dataGroups.length
-		    ? null : d.i;
-	      this.props.changeHoverPoint(newPoint);
-	  }.bind(this))
-	  .on('mouseleave', function(e,d) {
-	      this.props.changeHoverPoint(null)
-	  }.bind(this));
-	//select(this.coordRef.current).append(pts1);
+    selection
+      .selectAll(".pts")
+      .data(this.props.data.map((d, i) => ({ ...d, i: i })))
+      .join("circle")
+      .attr("cx", (d) => d.X * beamparams[0] + beamparams[1])
+      .attr("cy", (d) => d.Y * beamparams[2] + beamparams[3])
+      .attr("r", 1)
+      .attr("fill", (d) => this.props.colorScale(getColGroup(d.i)))
+      .attr("opacity", (d) =>
+        getColGroup(d.i) >= this.props.dataGroups.length ? 0.35 : 1
+      )
+      .attr("class", "pts")
+      .attr("key", (d) => `circle-${d.i}`)
+      .on(
+        "mouseenter",
+        function (e, d) {
+          const g = getColGroup(d.i);
+          const newPoint = g >= this.props.dataGroups.length ? null : d.i;
+          this.props.changeHoverPoint(newPoint);
+        }.bind(this)
+      )
+      .on(
+        "mouseleave",
+        function (e, d) {
+          this.props.changeHoverPoint(null);
+        }.bind(this)
+      );
+    //select(this.coordRef.current).append(pts1);
   }
 
   render() {
-	  
     return (
       <svg
         ref={this.coordRef}
         width={this.props.size[0]}
         height={this.props.size[1]}
-      >
-	  </svg>
+      ></svg>
     );
   }
 }
