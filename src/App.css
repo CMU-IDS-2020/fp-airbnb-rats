@@ -19,8 +19,12 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 rect.overlay {
@@ -28,28 +32,30 @@ rect.overlay {
 }
 
 rect.selection {
-  fill: #FE9922;
+  fill: #fe9922;
   opacity: 0.5;
 }
 
 rect.handle {
-  fill: #FE9922;
+  fill: #fe9922;
   opacity: 0.25;
 }
 
 path.countries {
   stroke-width: 1;
-  stroke: #75739F;
-  fill: #5EAFC6;
+  stroke: #75739f;
+  fill: #5eafc6;
 }
 
-body, html, #root {
+body,
+html,
+#root {
   width: 100%;
   min-height: 100vh;
   height: 100%;
   position: relative;
 }
 
-*{
+* {
   box-sizing: border-box;
 }

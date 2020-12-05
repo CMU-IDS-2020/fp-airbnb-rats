@@ -1,28 +1,28 @@
-import React, { Component } from 'react'
-import './App.css'
-import {Box} from 'jsxstyle'
+import React, { Component } from "react";
+import "./App.css";
+import { Box } from "jsxstyle";
 
 class Cluster extends Component {
-  constructor(props){
-    super(props)
-    this.createCluster = this.createCluster.bind(this)
+  constructor(props) {
+    super(props);
+    this.createCluster = this.createCluster.bind(this);
   }
 
   componentDidMount() {
-    this.createCluster()
+    this.createCluster();
   }
 
   componentDidUpdate() {
-    this.createCluster()
+    this.createCluster();
   }
 
   createCluster() {
-    const node = this.node
+    const node = this.node;
   }
 
   render() {
-    return (<Box color="white">I am the clustering frontend.</Box>);
+    return <Box color="white">I am the clustering frontend.</Box>;
   }
 }
 
-export default Cluster
+export default Cluster;
