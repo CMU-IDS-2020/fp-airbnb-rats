@@ -1,39 +1,37 @@
 import React, { Component } from "react";
-import { scaleLinear } from "d3-scale";
-import { extent } from "d3-array";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Box, Row, Inline } from "jsxstyle";
+import { Box } from "jsxstyle";
 import "./App.css";
 import contextImg from "./data/kingscourt_ir/kingscourt_ir_context_image.jpg";
 import trackPointer from "./trackPointer";
 import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
-import {polygonContains} from 'd3-polygon';
-import { select, selectAll } from "d3-selection";
+import { polygonContains } from "d3-polygon";
+import { select } from "d3-selection";
 import { chartColors } from "./colors";
 
 const beamparams = [45, 100, -45, 400];
 const imgparams = [628, 520];
 const defaultLasso = [
-	[366, 143],
-	[351, 135],
-	[337, 132],
-	[318, 130],
-	[294, 129],
-	[268, 132],
-	[247, 141],
-	[227, 159],
-	[209, 184],
-	[197, 214],
-	[192, 248],
-	[192, 281],
-	[201, 310],
-	[219, 331],
-	[263, 343],
-	[315, 339],
-	[370, 321],
-	[393, 298]
-]
+  [366, 143],
+  [351, 135],
+  [337, 132],
+  [318, 130],
+  [294, 129],
+  [268, 132],
+  [247, 141],
+  [227, 159],
+  [209, 184],
+  [197, 214],
+  [192, 248],
+  [192, 281],
+  [201, 310],
+  [219, 331],
+  [263, 343],
+  [315, 339],
+  [370, 321],
+  [393, 298],
+];
 
 function lasso() {
   const lDispatch = dispatch("start", "lasso", "end");
@@ -74,10 +72,13 @@ class Coords extends Component {
   constructor(props) {
     super(props);
     this.createCoords = this.createCoords.bind(this);
-	this.data = this.props.data.slice()
-	this.data.forEach((d) => {d.X = d.X * beamparams[0] + beamparams[1]; d.Y = d.Y * beamparams[2] + beamparams[3]})
+    this.data = this.props.data.slice();
+    this.data.forEach((d) => {
+      d.X = d.X * beamparams[0] + beamparams[1];
+      d.Y = d.Y * beamparams[2] + beamparams[3];
+    });
     this.dataX = this.data.map((d) => d.X);
-	this.dataY = this.data.map((d) => d.Y);
+    this.dataY = this.data.map((d) => d.Y);
 
     this.minimumX = Math.min(...this.dataX);
     this.minimumY = Math.min(...this.dataY);
@@ -88,93 +89,96 @@ class Coords extends Component {
     this.rangeX = (this.maximumX - this.minimumX) * (1 + expansion);
     this.rangeY = (this.maximumY - this.minimumY) * (1 + expansion);
     this.offsetX = (this.maximumX - this.minimumX) * ((-1 * expansion) / 2);
-	this.offsetY = (this.maximumY - this.minimumY) * ((-1 * expansion) / 2);
-	this.coordRef = React.createRef();
-	
-	this.penOff;
-	this.penOn;
+    this.offsetY = (this.maximumY - this.minimumY) * ((-1 * expansion) / 2);
+    this.coordRef = React.createRef();
+
+    this.penOff;
+    this.penOn;
   }
 
   componentDidMount() {
-	this.createCoords();
-	let penFuncs = this.createPenTool()
-	this.penOff = penFuncs.penOff;
-	this.penOn = penFuncs.penOn;
+    this.createCoords();
+    let penFuncs = this.createPenTool();
+    this.penOff = penFuncs.penOff;
+    this.penOn = penFuncs.penOn;
 
-	this.penOff()
+    this.penOff();
 
-	this.props.registerTool("pen", {on: this.penOn, off: this.penOff})
-	//this.penOff()
-	// console.log("did mount", this)
-	// if(this.coordRef.current){
-	// 	this.setState({refLoaded: true});
-	// }
+	this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
+	this.dataGroupLength = this.props.dataGroups.length;
+    //this.penOff()
+    // console.log("did mount", this)
+    // if(this.coordRef.current){
+    // 	this.setState({refLoaded: true});
+    // }
   }
 
   componentDidUpdate() {
-	//this.createCoords();
-	// if(this.coordRef.current && !this.state.refLoaded){
-	// 	this.setState({refLoaded: true});
-	// }
+	  if(this.props.dataGroups.length != this.dataGroupLength){
+		this.createCoords();
+		this.dataGroupLength = this.props.dataGroups.length
+	  }
+    
+    // if(this.coordRef.current && !this.state.refLoaded){
+    // 	this.setState({refLoaded: true});
+    // }
   }
 
-  createPenTool(){
-		const selection = select(this.coordRef.current)
-		const svg = this.coordRef.current
-		console.log(svg)
-		const path = geoPath(),
-		l = selection.append("path").attr("class", "lasso")
-	
-	  selection.append("defs").append("style").text(`
-		  .selected-1 {r: 2.5; fill: red}
-		  .selected-2 {r: 2.5; fill: blue}
-		  .selected-3 {r: 2.5; fill: green}
-		  .selected-4 {r: 2.5; fill: yellow}
+  createPenTool() {
+    const selection = select(this.coordRef.current);
+    const svg = this.coordRef.current;
+    console.log(svg);
+    const path = geoPath(),
+      l = selection.append("path").attr("class", "lasso");
+
+    selection.append("defs").append("style").text(`
 		  .lasso { fill-rule: evenodd; fill-opacity: 0.1; stroke-width: 1.5; stroke: #000; }
 		`);
-	
-	  function draw(polygon) {
 
-		l.datum({
-		  type: "LineString",
-		  coordinates: polygon
-		}).attr("d", path);
-	
-		//const selected = [];
+    const sdg = this.props.changeDataGroups;
+    let dataGroups = this.props.dataGroups;
+    function draw(polygon) {
+      l.datum({
+        type: "LineString",
+        coordinates: polygon,
+      }).attr("d", path);
 
-		//const selected = polygon.length > 2 ? [] : this.data;
-		if(polygon.length < 2){
-			svg.dispatchEvent(new CustomEvent('input'));
-			return;
-		}
-		const points = selection.selectAll(".pts")
+      svg.dispatchEvent(new CustomEvent("input"));
+    }
 
-		// note: d3.polygonContains uses the even-odd rule
-		// which is reflected in the CSS for the lasso shape
+    function drawEnd(polygon) {
+      if (polygon.length < 2) {
+        svg.dispatchEvent(new CustomEvent("input"));
+        return;
+      }
+      const points = selection.selectAll(".pts");
+      let selPoints = points
+        .filter((d) => polygonContains(polygon, [d.X, d.Y]))
+        .data();
+      selPoints = selPoints.map((d) => d.i);
 
-		const c = Math.floor(Math.random() * Math.floor(5));
+      dataGroups.push(selPoints);
+      sdg(dataGroups);
+    }
 
-		const selPoints = points.filter((d) => polygonContains(polygon, [d.X, d.Y]))
-		selPoints.attr('class', 'selected-1')
-		//svg.value = { polygon, selected };
-		svg.dispatchEvent(new CustomEvent('input'));
-	  }
-	
-	  //selection.call(lasso().on("start lasso end", draw));
-	  draw(defaultLasso);
+    //draw(defaultLasso);
 
-	  let lass = lasso()
-	
-	  return {
-		  penOn: () => selection.call(lass.on("start lasso end", draw)),
-		  penOff: () => lass.off("start lasso end")
-	  }
+    let lass = lasso();
+
+    return {
+      penOn: () => {
+        selection.call(lass.on("lasso start", draw));
+        selection.call(lass.on("end", drawEnd));
+      },
+      penOff: () => lass.off("start lasso end"),
+    };
   }
 
   createCoords() {
-    const selection = select(this.coordRef.current)
+    const selection = select(this.coordRef.current);
+	const cs = this.props.colorScale
 
-    const getColGroup = (i) => {
+    const getGroup = (i) => {
       const g = this.props.dataGroups.filter((d) => d.includes(i));
       if (g.length > 0) {
         let gID = -1;
@@ -185,41 +189,55 @@ class Coords extends Component {
         });
         return gID;
       } else {
-        return this.props.dataGroups.length;
+        return -1;
       }
-    };
+	};
+	
+	const getColor = (i) => {
+		const cg = getGroup(i);
+		if(cg < 0){
+			return "#FFFFFF"
+		} else {
+			return cs(cg)
+		}
+	}
 
-      selection.selectAll('.pts')
-	  .data(this.props.data.map((d,i) => ({...d, i: i})))
-	  .join('circle')
-	  .attr('cx', d => d.X)
-	  .attr('cy', d => d.Y)
-	  .attr('r', 1)
-	  .attr('fill', d => this.props.colorScale(getColGroup(d.i)))
-	  .attr('opacity', d => getColGroup(d.i) >= this.props.dataGroups.length
-		? 0.35 : 1)
-	  .attr('class', 'pts')
-	  .attr('key', d => `circle-${d.i}`)
-	  .on('mouseenter', function(e,d) {
-	      const g = getColGroup(d.i);
-	      const newPoint = g >=this.props.dataGroups.length
-		    ? null : d.i;
-	      this.props.changeHoverPoint(newPoint);
-	  }.bind(this))
-	  .on('mouseleave', function(e,d) {
-	      this.props.changeHoverPoint(null)
-	  }.bind(this));
+    selection
+      .selectAll(".pts")
+      .data(this.props.data.map((d, i) => ({ ...d, i: i })))
+      .join("circle")
+      .attr("cx", (d) => d.X)
+      .attr("cy", (d) => d.Y)
+      .attr("r", 1)
+      .attr("fill", (d) => getColor(d.i))
+      .attr("opacity", (d) =>
+        getGroup(d.i) < 0 ? 0.35 : 1
+      )
+      .attr("class", "pts")
+      .attr("key", (d) => `circle-${d.i}`)
+      .on(
+        "mouseenter",
+        function (e, d) {
+          const g = getGroup(d.i);
+          const newPoint = g >= this.props.dataGroups.length ? null : d.i;
+          this.props.changeHoverPoint(newPoint);
+        }.bind(this)
+      )
+      .on(
+        "mouseleave",
+        function (e, d) {
+          this.props.changeHoverPoint(null);
+        }.bind(this)
+      );
   }
 
   render() {
-	  
     return (
       <svg
         ref={this.coordRef}
         width={this.props.size[0]}
         height={this.props.size[1]}
-      >
-	  </svg>
+      ></svg>
     );
   }
 }
@@ -234,34 +252,35 @@ class ContextImage extends Component {
       offset: [0, 0],
       selectedTool: "",
     };
-	this.onImageLoad = this.onImageLoad.bind(this);
-	this.registerTool = this.registerTool.bind(this);
+    this.onImageLoad = this.onImageLoad.bind(this);
+    this.registerTool = this.registerTool.bind(this);
     this.setSelectedTool = this.setSelectedTool.bind(this);
-	this.tools = {}
+    this.tools = {};
   }
 
-  componentDidMount(){
-	  console.log("mount")
-	  this.registerTool("zoom", {on: ()=>{}, off: ()=>{}})
-	  this.setSelectedTool("zoom")
+  componentDidMount() {
+    console.log("mount");
+    this.registerTool("zoom", { on: () => {}, off: () => {} });
+    this.setSelectedTool("zoom");
   }
 
-  registerTool(toolName, toolFuncs){
-	this.tools[toolName] = toolFuncs;
-	const toolCallbacks = Object.keys(this.tools).map(t => [t, ()=>this.setSelectedTool(t)])
-	this.props.setMenuTools(toolCallbacks);
+  registerTool(toolName, toolFuncs) {
+    this.tools[toolName] = toolFuncs;
+    const toolCallbacks = Object.keys(this.tools).map((t) => [
+      t,
+      () => this.setSelectedTool(t),
+    ]);
+    this.props.setMenuTools(toolCallbacks);
   }
 
   setSelectedTool(tool) {
-	Object.keys(this.tools).forEach(
-		(t) => {
-			if(t === tool){
-				this.tools[t].on()
-			} else {
-				this.tools[t].off()
-			}
-		} 
-	)
+    Object.keys(this.tools).forEach((t) => {
+      if (t === tool) {
+        this.tools[t].on();
+      } else {
+        this.tools[t].off();
+      }
+    });
     this.setState({ selectedTool: tool });
   }
 
@@ -293,8 +312,9 @@ class ContextImage extends Component {
                   size={this.state.imgSize}
                   colorScale={this.props.colorScale}
                   dataGroups={this.props.dataGroups}
-				  changeHoverPoint={this.props.changeHoverPoint}
-				  registerTool={this.registerTool}
+                  changeDataGroups={this.props.changeDataGroups}
+                  changeHoverPoint={this.props.changeHoverPoint}
+                  registerTool={this.registerTool}
                 />
               ) : (
                 "Loading image..."

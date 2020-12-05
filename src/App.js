@@ -21,14 +21,7 @@ appdata.forEach((d, i) => {
   d.data = range(30).map((p, q) => (q < i ? 0 : Math.random() * 2 + offset));
 });
 
-const datagroups = [
-  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-  [32, 33, 34, 35, 36, 37, 38, 39, 40],
-  [120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133],
-  [200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213],
-  [300, 301, 302, 303, 304, 305, 306, 307],
-  [1000, 1001, 1002, 1003, 1004],
-];
+const datagroups = [];
 
 const colorScale = scaleOrdinal(schemeTableau10).domain(
   range(datagroups.length + 1)
@@ -59,6 +52,7 @@ class App extends Component {
   }
 
   changeDataGroups(data) {
+    console.log("changing data groups to ", data);
     this.setState({ dataGroups: data });
   }
 
@@ -114,6 +108,7 @@ class App extends Component {
               colorScale={colorScale}
               data={data}
               dataGroups={this.state.dataGroups}
+              changeDataGroups={this.changeDataGroups}
               hoverPoint={this.state.hoverPoint}
               changeHoverPoint={this.changeHoverPoint}
               size={[
