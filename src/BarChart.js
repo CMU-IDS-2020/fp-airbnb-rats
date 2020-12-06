@@ -9,8 +9,8 @@ class BarChart extends Component {
   constructor(props) {
     super(props);
     this.createBarChart = this.createBarChart.bind(this);
-	this.chartRef = React.createRef();
-	this.dataGroupLength = this.props.dataGroups.length;
+    this.chartRef = React.createRef();
+    this.dataGroupLength = this.props.dataGroups.length;
   }
 
   componentDidMount() {
@@ -108,11 +108,12 @@ class BarChart extends Component {
     //     .attr("x2", (d) => hx(d.label) + hx.bandwidth())
     //     .attr("y1", (d) => ry.get(d.label)(d.value))
     //     .attr("y2", (d) => ry.get(d.label)(d.value));
-	// }
-	if(this.props.dataGroups.length != this.dataGroupLength){
-		this.createBarChart();
-		this.dataGroupLength = this.props.dataGroups.length
-	}
+    // }
+
+    if (this.props.dataGroups.length != this.dataGroupLength) {
+      this.createBarChart();
+      this.dataGroupLength = this.props.dataGroups.length;
+    }
   }
 
   createBarChart() {
