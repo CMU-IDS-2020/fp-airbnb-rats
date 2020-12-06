@@ -8,9 +8,9 @@ import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
 import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
-import GroupDropdown from './GroupDropdown'
+import GroupDropdown from "./GroupDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
-import Coords from './Coords'
+import Coords from "./Coords";
 
 const imgparams = [628, 520];
 
@@ -22,23 +22,28 @@ class ContextImage extends Component {
       imgSize: [0, 0],
       scale: 0.1,
       offset: [0, 0],
-	  selectedTool: "",
-	  selectedGroup: 0
+      selectedTool: "",
+      selectedGroup: 0,
     };
     this.onImageLoad = this.onImageLoad.bind(this);
     this.registerTool = this.registerTool.bind(this);
     this.setSelectedTool = this.setSelectedTool.bind(this);
-	this.tools = {};
-	this.setSelectedGroup = this.setSelectedGroup.bind(this);
-	this.getSelectedGroup = this.getSelectedGroup.bind(this);
+    this.getTool = this.getTool.bind(this);
+    this.tools = {};
+    this.setSelectedGroup = this.setSelectedGroup.bind(this);
+    this.getSelectedGroup = this.getSelectedGroup.bind(this);
   }
 
-  setSelectedGroup(idx){
-    this.setState({selectedGroup: idx})
+  setSelectedGroup(idx) {
+    this.setState({ selectedGroup: idx });
   }
 
-  getSelectedGroup(){
-	  return this.state.selectedGroup
+  getSelectedGroup() {
+    return this.state.selectedGroup;
+  }
+
+  getTool() {
+    return this.state.selectedTool;
   }
 
   componentDidMount() {
@@ -74,55 +79,56 @@ class ContextImage extends Component {
   }
 
   render() {
-    return (<>
-	<GroupDropdown 
-		setSelected={this.setSelectedGroup}
-		selectedGroup={this.state.selectedGroup}
-	/>
-      <TransformWrapper
-        options={{ disabled: !(this.state.selectedTool == "zoom") }}
-      >
-        <TransformComponent>
-          <Box position="relative">
-            <Box
-              zIndex={1}
-              width={this.props.size[0]}
-              height={this.props.size[1]}
-              position="absolute"
-              top="0px"
-              left="0px"
-            >
-              {this.state.imgLoaded ? (
-                <Coords
-                  data={this.props.data}
-                  size={this.state.imgSize}
-                  colorScale={this.props.colorScale}
-                  dataGroups={this.props.dataGroups}
-                  changeDataGroups={this.props.changeDataGroups}
-                  changeHoverPoint={this.props.changeHoverPoint}
-				  registerTool={this.registerTool}
-				  pen={this.state.selectedTool}
-				  getSelectedGroup={this.getSelectedGroup}
-                />
-              ) : (
-                "Loading image..."
-              )}
+    return (
+      <>
+        <GroupDropdown
+          setSelected={this.setSelectedGroup}
+          selectedGroup={this.state.selectedGroup}
+        />
+        <TransformWrapper
+          options={{ disabled: !(this.state.selectedTool == "zoom") }}
+        >
+          <TransformComponent>
+            <Box position="relative">
+              <Box
+                zIndex={1}
+                width={this.props.size[0]}
+                height={this.props.size[1]}
+                position="absolute"
+                top="0px"
+                left="0px"
+              >
+                {this.state.imgLoaded ? (
+                  <Coords
+                    data={this.props.data}
+                    size={this.state.imgSize}
+                    colorScale={this.props.colorScale}
+                    dataGroups={this.props.dataGroups}
+                    changeDataGroups={this.props.changeDataGroups}
+                    changeHoverPoint={this.props.changeHoverPoint}
+                    registerTool={this.registerTool}
+                    pen={this.getTool}
+                    getSelectedGroup={this.getSelectedGroup}
+                  />
+                ) : (
+                  "Loading image..."
+                )}
+              </Box>
+              <Box
+                zIndex={0}
+                component="img"
+                width={imgparams[0]}
+                height={imgparams[1]}
+                filter="grayscale(80%) brightness(60%)"
+                props={{
+                  src: contextImg,
+                  onLoad: this.onImageLoad,
+                }}
+              />
             </Box>
-            <Box
-              zIndex={0}
-              component="img"
-              width={imgparams[0]}
-              height={imgparams[1]}
-              filter="grayscale(80%) brightness(60%)"
-              props={{
-                src: contextImg,
-                onLoad: this.onImageLoad,
-              }}
-            />
-          </Box>
-        </TransformComponent>
-      </TransformWrapper>
-	  </>
+          </TransformComponent>
+        </TransformWrapper>
+      </>
     );
   }
 }

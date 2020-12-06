@@ -46,12 +46,9 @@ class BarChart extends Component {
     const selection = select(this.chartRef.current);
     const currentHoverGroup = this.getCurrentHoverGroup();
     const selected = this.calculateGroupAverages();
-    console.log(this.props.dataGroups);
     if (this.props.dataGroups.length != this.dataGroupLength) {
       this.dataGroupLength = this.props.dataGroups.length;
     }
-
-    console.log(selected);
 
     const hy = scaleBand()
       .domain(range(selected.length))

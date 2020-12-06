@@ -8,7 +8,7 @@ import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
 import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
-import GroupDropdown from './GroupDropdown'
+import GroupDropdown from "./GroupDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
 
 const beamparams = [45, 100, -45, 400];
@@ -52,6 +52,8 @@ class Coords extends Component {
   constructor(props) {
     super(props);
     this.createCoords = this.createCoords.bind(this);
+    this.getColor = this.getColor.bind(this);
+    this.getGroup = this.getGroup.bind(this);
     this.data = this.props.data.slice();
     this.data.forEach((d) => {
       d.X = d.X * beamparams[0] + beamparams[1];
@@ -82,29 +84,32 @@ class Coords extends Component {
     this.penOff = penFuncs.penOff;
     this.penOn = penFuncs.penOn;
     this.penOff();
-	this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
-	this.dataGroupLengths = this.props.dataGroups.length;
-	this.lastUpdatedIdx = 0
-	this.dataGroupLengths = []
+    this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
+    this.dataGroupLengths = this.props.dataGroups.length;
+    this.lastUpdatedIdx = 0;
+    this.dataGroupLengths = [];
   }
 
   componentDidUpdate() {
-	  if(this.props.dataGroups.length != this.dataGroupLength){
-		this.createCoords();
-		this.dataGroupLength = this.props.dataGroups.length
-		this.dataGroupLengths = this.props.dataGroups.map(dg => dg.length)
-	  } else if (this.dataGroupLengths.length > 0 
-		&& this.dataGroupLengths[this.lastUpdatedIdx] != 
-			this.props.dataGroups[this.lastUpdatedIdx].length){
-			this.createCoords();
-			this.dataGroupLengths[this.lastUpdatedIdx] = this.props.dataGroups[this.lastUpdatedIdx].length
-	  }
+    if (this.props.dataGroups.length != this.dataGroupLength) {
+      this.createCoords();
+      this.dataGroupLength = this.props.dataGroups.length;
+      this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
+    } else if (
+      this.dataGroupLengths.length > 0 &&
+      this.dataGroupLengths[this.lastUpdatedIdx] !=
+        this.props.dataGroups[this.lastUpdatedIdx].length
+    ) {
+      this.createCoords();
+      this.dataGroupLengths[this.lastUpdatedIdx] = this.props.dataGroups[
+        this.lastUpdatedIdx
+      ].length;
+    }
   }
 
   createPenTool() {
     const selection = select(this.coordRef.current);
     const svg = this.coordRef.current;
-    console.log(svg);
     const path = geoPath(),
       l = selection.append("path").attr("class", "lasso");
 
@@ -121,10 +126,12 @@ class Coords extends Component {
       }).attr("d", path);
 
       svg.dispatchEvent(new CustomEvent("input"));
-	}
-	
-	const getSelG = this.props.getSelectedGroup
-	const changeLastUpdatedIdx = (i) => {this.lastUpdatedIdx = i}
+    }
+
+    const getSelG = this.props.getSelectedGroup;
+    const changeLastUpdatedIdx = (i) => {
+      this.lastUpdatedIdx = i;
+    };
 
     function drawEnd(polygon) {
       if (polygon.length < 2) {
@@ -135,20 +142,20 @@ class Coords extends Component {
       let selPoints = points
         .filter((d) => polygonContains(polygon, [d.X, d.Y]))
         .data();
-	  selPoints = selPoints.map((d) => d.i);
-	  const selectedGroup = getSelG()
-	  if(dataGroups[selectedGroup]){
-		const arr1 = dataGroups[selectedGroup]
-		dataGroups[selectedGroup] = arr1.concat(selPoints)
-	  } else {
-		dataGroups[selectedGroup] = selPoints;
-	  }
+      selPoints = selPoints.map((d) => d.i);
+      const selectedGroup = getSelG();
+      if (dataGroups[selectedGroup]) {
+        const arr1 = dataGroups[selectedGroup];
+        dataGroups[selectedGroup] = arr1.concat(selPoints);
+      } else {
+        dataGroups[selectedGroup] = selPoints;
+      }
 
-	  changeLastUpdatedIdx(selectedGroup)
+      changeLastUpdatedIdx(selectedGroup);
       //dataGroups.push(selPoints);
       sdg(dataGroups);
-	}
-	
+    }
+
     let lass = lasso();
 
     return {
@@ -160,36 +167,34 @@ class Coords extends Component {
     };
   }
 
+  getGroup(i){
+    const g = this.props.dataGroups.filter((d) => d.includes(i));
+    if (g.length > 0) {
+      let gID = -1;
+      this.props.dataGroups.forEach((d, j) => {
+        if (d.includes(i)) {
+          gID = j;
+        }
+      });
+
+      return gID;
+    } else {
+      return -1;
+    }
+  };
+
+  getColor(i){
+    const cg = this.getGroup(i);
+    if (cg < 0) {
+      return "#FFFFFF";
+    } else {
+      return schemeTableau10[cg];
+    }
+  };
+
   createCoords() {
     const selection = select(this.coordRef.current);
-	const cs = this.props.colorScale
-
-    const getGroup = (i) => {
-      const g = this.props.dataGroups.filter((d) => d.includes(i));
-      if (g.length > 0) {
-        let gID = -1;
-        this.props.dataGroups.forEach((d, j) => {
-          if (d.includes(i)) {
-            gID = j;
-          }
-		});
-		
-        return gID;
-      } else {
-        return -1;
-      }
-	};
-	
-	const getColor = (i) => {
-		const cg = getGroup(i);
-		//console.log("bla", cg)
-		if(cg < 0){
-			return "#FFFFFF"
-		} else {
-			return schemeTableau10[cg]
-		}
-	}
-
+    const tool = this.props.pen;
     selection
       .selectAll(".pts")
       .data(this.props.data.map((d, i) => ({ ...d, i: i })))
@@ -197,22 +202,21 @@ class Coords extends Component {
       .attr("cx", (d) => d.X)
       .attr("cy", (d) => d.Y)
       .attr("r", 1)
-      .attr("fill", (d) => getColor(d.i))
-      .attr("opacity", (d) =>
-        getGroup(d.i) < 0 ? 0.35 : 1
-      )
+      .attr("fill", (d) => this.getColor(d.i))
+      .attr("opacity", (d) => (this.getGroup(d.i) < 0 ? 0.35 : 1))
       .attr("class", "pts")
       .attr("key", (d) => `circle-${d.i}`)
       .on(
         "mouseenter",
         function (e, d) {
-          const g = getGroup(d.i);
+          const g = this.getGroup(d.i);
           const newPoint = g >= this.props.dataGroups.length ? null : d.i;
-          if(this.props.pen !== "zoom"){
-			this.props.changeHoverPoint(newPoint);
-		  } else {
-			this.props.changeHoverPoint(null);  
-		  }
+          const t = tool()
+          if (tool() === "zoom") {
+            this.props.changeHoverPoint(newPoint);
+          } else {
+            this.props.changeHoverPoint(null);
+          }
         }.bind(this)
       )
       .on(
@@ -234,4 +238,4 @@ class Coords extends Component {
   }
 }
 
-export default Coords
+export default Coords;

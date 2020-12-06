@@ -29,7 +29,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.onResize = this.onResize.bind(this);
-    this.onHover = this.onHover.bind(this);
     this.onBrush = this.onBrush.bind(this);
     this.changeDataGroups = this.changeDataGroups.bind(this);
     this.changeHoverPoint = this.changeHoverPoint.bind(this);
@@ -49,7 +48,9 @@ class App extends Component {
   }
 
   changeHoverPoint(pt) {
-    this.setState({ hoverPoint: pt });
+    if(pt != this.state.hoverPoint){
+      this.setState({ hoverPoint: pt });
+    }
   }
 
   onResize() {
@@ -68,10 +69,6 @@ class App extends Component {
   //when component unmounts, stop listening
   componentWillUnmount() {
     window.removeEventListener("resize", () => resize(this.onResize));
-  }
-
-  onHover(d) {
-    this.setState({ hover: d.id });
   }
 
   onBrush(d) {
