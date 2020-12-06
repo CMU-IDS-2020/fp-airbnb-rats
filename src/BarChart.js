@@ -18,98 +18,6 @@ class BarChart extends Component {
   }
 
   componentDidUpdate() {
-    // const keys = Object.keys(this.props.data[0]).slice(3);
-    // const selection = select(this.chartRef.current);
-    // let currentHoverGroup = -1;
-    // if (this.props.hoverPoint !== null) {
-    //   this.props.dataGroups.forEach((g, i) => {
-    //     if (g.includes(this.props.hoverPoint)) {
-    //       currentHoverGroup = i;
-    //     }
-    //   });
-    // }
-
-    // selection
-    //   .selectAll("g")
-    //   .attr("opacity", (_, i) =>
-    //     this.props.hoverPoint === null
-    //       ? 1.0
-    //       : currentHoverGroup === i
-    //       ? 1.0
-    //       : 0.25
-    //   );
-
-    // const selected = this.props.dataGroups
-    //   .map((d) => d.map((p) => this.props.data[p]))
-    //   .map((d) =>
-    //     d.reduce((a, b) => {
-    //       const o = {};
-    //       keys.forEach((k) => {
-    //         o[k] = a[k] + b[k];
-    //       });
-    //       return o;
-    //     })
-    //   );
-
-    // const hx = scaleBand()
-    //   .domain(keys)
-    //   .range([0, this.props.size[0]])
-    //   .padding(0.1);
-
-    // const hy = scaleBand()
-    //   .domain(range(selected.length))
-    //   .range([this.props.size[1], 0])
-    //   .padding(0.25);
-    // const mh = hy.bandwidth();
-
-    // const gpoints = this.props.dataGroups
-    //   .map((d) => d.map((p) => this.props.data[p]))
-    //   .flat();
-
-    // const ry = new Map(
-    //   keys.map((k) => [
-    //     k,
-    //     scaleLinear()
-    //       .domain(extent(gpoints, (d) => d[k]))
-    //       .range([mh, 0]),
-    //   ])
-    // );
-
-    // if (this.props.hoverPoint === null) {
-    //   selection
-    //     .selectAll(".hlgroup")
-    //     .selectAll("line")
-    //     .attr("opacity", 1)
-    //     .transition()
-    //     .duration(500)
-    //     .attr("y1", hy.bandwidth())
-    //     .attr("y2", hy.bandwidth())
-    //     .attr("opacity", 0)
-    //     .transition()
-    //     .remove();
-    // } else {
-    //   const pt = this.props.data[this.props.hoverPoint];
-    //   selection
-    //     .append("g")
-    //     .attr("class", "hlgroup")
-    //     .attr("transform", `translate(0, ${hy(currentHoverGroup)})`)
-    //     .selectAll("line")
-    //     .data(
-    //       keys.map((k) => {
-    //         const o = {};
-    //         o.value = pt[k];
-    //         o.label = k;
-    //         return o;
-    //       })
-    //     )
-    //     .join("line")
-    //     .attr("stroke", "white")
-    //     .attr("x1", (d) => hx(d.label))
-    //     .attr("x2", (d) => hx(d.label) + hx.bandwidth())
-    //     .attr("y1", (d) => ry.get(d.label)(d.value))
-    //     .attr("y2", (d) => ry.get(d.label)(d.value));
-    // }
-
     if (this.props.dataGroups.length != this.dataGroupLength) {
       this.createBarChart();
       this.dataGroupLength = this.props.dataGroups.length;
@@ -157,7 +65,7 @@ class BarChart extends Component {
         k,
         scaleLinear()
           .domain(extent(gpoints, (d) => d[k]))
-          .range([mh, 0]),
+          .range([mh - 20, 0]),
       ])
     );
 
