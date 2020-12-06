@@ -8,6 +8,7 @@ import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
 import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
+import GroupDropdown from './GroupDropdown'
 
 const beamparams = [45, 100, -45, 400];
 const imgparams = [628, 520];
@@ -186,7 +187,11 @@ class Coords extends Component {
         function (e, d) {
           const g = getGroup(d.i);
           const newPoint = g >= this.props.dataGroups.length ? null : d.i;
-          this.props.changeHoverPoint(newPoint);
+          if(this.props.pen !== "zoom"){
+			this.props.changeHoverPoint(newPoint);
+		  } else {
+			this.props.changeHoverPoint(null);  
+		  }
         }.bind(this)
       )
       .on(
@@ -225,7 +230,6 @@ class ContextImage extends Component {
   }
 
   componentDidMount() {
-    console.log("mount");
     this.registerTool("zoom", { on: () => {}, off: () => {} });
     this.setSelectedTool("zoom");
   }
@@ -258,7 +262,8 @@ class ContextImage extends Component {
   }
 
   render() {
-    return (
+    return (<>
+	<GroupDropdown/>
       <TransformWrapper
         options={{ disabled: !(this.state.selectedTool == "zoom") }}
       >
@@ -280,7 +285,8 @@ class ContextImage extends Component {
                   dataGroups={this.props.dataGroups}
                   changeDataGroups={this.props.changeDataGroups}
                   changeHoverPoint={this.props.changeHoverPoint}
-                  registerTool={this.registerTool}
+				  registerTool={this.registerTool}
+				  pen={this.state.selectedTool}
                 />
               ) : (
                 "Loading image..."
@@ -300,6 +306,7 @@ class ContextImage extends Component {
           </Box>
         </TransformComponent>
       </TransformWrapper>
+	  </>
     );
   }
 }
