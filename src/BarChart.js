@@ -31,12 +31,11 @@ class BarChart extends Component {
   }
 
   calculateGroupAverages() {
-	  console.log(this.props.dataGroups, this.keys)
-    return this.props.dataGroups.map((g) =>
-      this.keys.map((k) => [k, g.map((d) => d[k])])
-    );
-    //.map((s) => s.map((k) => [k[0], mean(k[1])]));
-    //.map((s) => Object.fromEntries(s));
+    return this.props.dataGroups
+      .map((g) => g.map((d) => this.props.data[d]))
+      .map((g) => this.keys.map((k) => [k, g.map((d) => d[k])]))
+      .map((s) => s.map((k) => [k[0], mean(k[1])]))
+      .map((s) => Object.fromEntries(s));
   }
 
   componentDidMount() {
@@ -47,7 +46,7 @@ class BarChart extends Component {
     const selection = select(this.chartRef.current);
     const currentHoverGroup = this.getCurrentHoverGroup();
     const selected = this.calculateGroupAverages();
-	console.log(this.props.dataGroups)
+    console.log(this.props.dataGroups);
     if (this.props.dataGroups.length != this.dataGroupLength) {
       this.dataGroupLength = this.props.dataGroups.length;
     }
@@ -72,7 +71,6 @@ class BarChart extends Component {
       ])
     );
 
-    /*
     selection
       .selectAll("g")
       .data(selected)
@@ -104,7 +102,6 @@ class BarChart extends Component {
       .attr("height", (d) => d.height)
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y);
-      */
   }
 
   createBarChart() {
