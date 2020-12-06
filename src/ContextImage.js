@@ -9,6 +9,7 @@ import { geoPath } from "d3-geo";
 import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
 import GroupDropdown from './GroupDropdown'
+import { schemeTableau10 } from "d3-scale-chromatic";
 
 const beamparams = [45, 100, -45, 400];
 const imgparams = [628, 520];
@@ -83,13 +84,21 @@ class Coords extends Component {
     this.penOn = penFuncs.penOn;
     this.penOff();
 	this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
-	this.dataGroupLength = this.props.dataGroups.length;
+	this.dataGroupLengths = this.props.dataGroups.length;
+	this.lastUpdatedIdx = 0
+	this.dataGroupLengths = []
   }
 
   componentDidUpdate() {
 	  if(this.props.dataGroups.length != this.dataGroupLength){
 		this.createCoords();
 		this.dataGroupLength = this.props.dataGroups.length
+		this.dataGroupLengths = this.props.dataGroups.map(dg => dg.length)
+	  } else if (this.dataGroupLengths.length > 0 
+		&& this.dataGroupLengths[this.lastUpdatedIdx] != 
+			this.props.dataGroups[this.lastUpdatedIdx].length){
+			this.createCoords();
+			this.dataGroupLengths[this.lastUpdatedIdx] = this.props.dataGroups[this.lastUpdatedIdx].length
 	  }
   }
 
@@ -113,7 +122,10 @@ class Coords extends Component {
       }).attr("d", path);
 
       svg.dispatchEvent(new CustomEvent("input"));
-    }
+	}
+	
+	const getSelG = this.props.getSelectedGroup
+	const changeLastUpdatedIdx = (i) => {this.lastUpdatedIdx = i}
 
     function drawEnd(polygon) {
       if (polygon.length < 2) {
@@ -124,9 +136,17 @@ class Coords extends Component {
       let selPoints = points
         .filter((d) => polygonContains(polygon, [d.X, d.Y]))
         .data();
-      selPoints = selPoints.map((d) => d.i);
+	  selPoints = selPoints.map((d) => d.i);
+	  const selectedGroup = getSelG()
+	  if(dataGroups[selectedGroup]){
+		const arr1 = dataGroups[selectedGroup]
+		dataGroups[selectedGroup] = arr1.concat(selPoints)
+	  } else {
+		dataGroups[selectedGroup] = selPoints;
+	  }
 
-      dataGroups.push(selPoints);
+	  changeLastUpdatedIdx(selectedGroup)
+      //dataGroups.push(selPoints);
       sdg(dataGroups);
 	}
 	
@@ -153,7 +173,8 @@ class Coords extends Component {
           if (d.includes(i)) {
             gID = j;
           }
-        });
+		});
+		
         return gID;
       } else {
         return -1;
@@ -162,10 +183,11 @@ class Coords extends Component {
 	
 	const getColor = (i) => {
 		const cg = getGroup(i);
+		//console.log("bla", cg)
 		if(cg < 0){
 			return "#FFFFFF"
 		} else {
-			return cs(cg)
+			return schemeTableau10[cg]
 		}
 	}
 
@@ -221,12 +243,23 @@ class ContextImage extends Component {
       imgSize: [0, 0],
       scale: 0.1,
       offset: [0, 0],
-      selectedTool: "",
+	  selectedTool: "",
+	  selectedGroup: 0
     };
     this.onImageLoad = this.onImageLoad.bind(this);
     this.registerTool = this.registerTool.bind(this);
     this.setSelectedTool = this.setSelectedTool.bind(this);
-    this.tools = {};
+	this.tools = {};
+	this.setSelectedGroup = this.setSelectedGroup.bind(this);
+	this.getSelectedGroup = this.getSelectedGroup.bind(this);
+  }
+
+  setSelectedGroup(idx){
+    this.setState({selectedGroup: idx})
+  }
+
+  getSelectedGroup(){
+	  return this.state.selectedGroup
   }
 
   componentDidMount() {
@@ -263,7 +296,10 @@ class ContextImage extends Component {
 
   render() {
     return (<>
-	<GroupDropdown/>
+	<GroupDropdown 
+		setSelected={this.setSelectedGroup}
+		selectedGroup={this.state.selectedGroup}
+	/>
       <TransformWrapper
         options={{ disabled: !(this.state.selectedTool == "zoom") }}
       >
@@ -287,6 +323,7 @@ class ContextImage extends Component {
                   changeHoverPoint={this.props.changeHoverPoint}
 				  registerTool={this.registerTool}
 				  pen={this.state.selectedTool}
+				  getSelectedGroup={this.getSelectedGroup}
                 />
               ) : (
                 "Loading image..."

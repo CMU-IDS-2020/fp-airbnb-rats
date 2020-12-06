@@ -13,14 +13,6 @@ import { Row, Col, Box } from "jsxstyle";
 import data from "./kingscourt_irregular";
 import { UIColors } from "./colors";
 
-const appdata = worlddata.features.filter((d) => geoCentroid(d)[0] < -20);
-
-appdata.forEach((d, i) => {
-  const offset = Math.random();
-  d.launchday = i;
-  d.data = range(30).map((p, q) => (q < i ? 0 : Math.random() * 2 + offset));
-});
-
 const datagroups = [];
 
 const colorScale = scaleOrdinal(schemeTableau10).domain(
@@ -87,11 +79,6 @@ class App extends Component {
   }
 
   render() {
-    const filteredAppdata = appdata.filter(
-      (d, i) =>
-        d.launchday >= this.state.brushExtent[0] &&
-        d.launchday <= this.state.brushExtent[1]
-    );
     return (
       <Col className="App" width="100%" height="100%" position="relative">
         <Col
@@ -118,7 +105,7 @@ class App extends Component {
             >
               <ContextImage />
             </CardLayout>
-            <CardLayout
+            {/* <CardLayout
               title="Comparison Sandbox"
               hoverElement={this.state.hover}
               onHover={this.onHover}
@@ -133,7 +120,7 @@ class App extends Component {
               ]}
             >
               <BarChart />
-            </CardLayout>
+            </CardLayout> */}
           </Row>
           <Row justifyContent="space-evenly">
             <CardLayout
