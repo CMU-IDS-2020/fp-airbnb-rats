@@ -105,7 +105,7 @@ class App extends Component {
             >
               <ContextImage />
             </CardLayout>
-            {/* <CardLayout
+            <CardLayout
               title="Comparison Sandbox"
               hoverElement={this.state.hover}
               onHover={this.onHover}
@@ -120,7 +120,7 @@ class App extends Component {
               ]}
             >
               <BarChart />
-            </CardLayout> */}
+            </CardLayout>
           </Row>
           <Row justifyContent="space-evenly">
             <CardLayout
