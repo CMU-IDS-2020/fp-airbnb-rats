@@ -3,7 +3,6 @@ import "./App.css";
 import ContextImage from "./ContextImage";
 import BarChart from "./BarChart";
 import Cluster from "./Cluster";
-import worlddata from "./world";
 import { range } from "d3-array";
 import { scaleOrdinal } from "d3-scale";
 import { schemeTableau10 } from "d3-scale-chromatic";
@@ -76,6 +75,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("app rerender", this.state.screenWidth)
     return (
       <Col className="App" width="100%" height="100%" position="relative">
         <Col

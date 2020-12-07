@@ -55,10 +55,9 @@ export default class CardLayout extends Component {
   render() {
     let newprops = { ...this.props };
     const wid = this.props.size[0];
-    const hei = this.props.size[0];
-    newprops.size[0] = this.props.size[0] - 30;
-    newprops.size[1] = this.props.size[1] - 40;
+    newprops.size = [wid, this.props.size[1] - 40];
     newprops["setMenuTools"] = this.setMenuTools;
+
     return (
       <Col
         borderRadius="12px"
@@ -85,7 +84,7 @@ export default class CardLayout extends Component {
         </Row>
         <Row
           width={wid}
-          height={this.props.size[1]}
+          height={this.props.size[1] - 40}
           justifyContent="center"
           alignItems="center"
           position="relative"

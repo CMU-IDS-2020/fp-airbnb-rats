@@ -79,6 +79,7 @@ class ContextImage extends Component {
   }
 
   render() {
+    //console.log("rerender", this.props.size)
     return (
       <>
         <GroupDropdown

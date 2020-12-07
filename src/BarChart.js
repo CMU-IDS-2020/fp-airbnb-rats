@@ -3,7 +3,9 @@ import "./App.css";
 import { scaleBand, scaleLinear } from "d3-scale";
 import { range, extent, mean } from "d3-array";
 import { select } from "d3-selection";
+import HistogramElement from './HistogramElement';
 import { transition } from "d3-transition";
+import {Box, Row} from 'jsxstyle'
 
 class BarChart extends Component {
   constructor(props) {
@@ -12,13 +14,14 @@ class BarChart extends Component {
     this.chartRef = React.createRef();
     this.dataGroupLength = this.props.dataGroups.length;
     this.keys = Object.keys(this.props.data[0]).slice(3);
-    // this.hx = scaleBand()
-    //   .domain(this.keys)
-    //   .range([0, this.props.size[0]])
-    //   .padding(0.1);
     this.currentHoverGroup = -1
     this.dataGroupLengths = this.props.dataGroups.length;
     this.dataGroupLengths = [];
+    this.hx = scaleBand()
+    .domain(this.keys)
+    .range([0, this.props.size[0]])
+    .padding(0.1);
+
   }
 
   getCurrentHoverGroup() {
@@ -72,7 +75,6 @@ class BarChart extends Component {
 
   createBarChart() {
     const selection = select(this.chartRef.current);
-    
     const selected = this.calculateGroupAverages();
  
     this.hx = scaleBand()
@@ -130,26 +132,44 @@ class BarChart extends Component {
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y);
 
-    selection
-      .selectAll("text")
-      .data(this.keys)
-      .join("text")
-      .text((d) => d.split("_")[0])
-      .attr("fill", "white")
-      .attr("x", (d) => this.hx(d) + this.hx.bandwidth() / 2)
-      .attr("y", 10)
-      .style("text-anchor", "middle")
-      .style("font-size", "8px")
-      .attr("font-family", "sans-serif");
+  //   selection
+  //     .selectAll("text")
+  //     .data(this.keys)
+  //     .join("text")
+  //     .text((d) => d.split("_")[0])
+  //     .attr("fill", "white")
+  //     .attr("x", (d) => this.hx(d) + this.hx.bandwidth() / 2)
+  //     .attr("y", 10)
+  //     .style("text-anchor", "middle")
+  //     .style("font-size", "8px")
+  //     .attr("font-family", "sans-serif");
+  // }
   }
 
   render() {
+
+    this.hx = scaleBand()
+    .domain(this.keys)
+    .range([0, this.props.size[0]])
+    .padding(0.1);
+    
     return (
+      <Box
+        position="relative"
+      >
+      <Box color="white"
+        position="absolute"
+        width="100%"
+        paddingTop="12px"
+      >
+        {this.keys.map(k => <HistogramElement key={k} name={k.split("_")[0]} left={this.hx(k) + this.hx.bandwidth() / 2}/>)}
+      </Box>
       <svg
         ref={this.chartRef}
         width={this.props.size[0]}
         height={this.props.size[1]}
       ></svg>
+      </Box>
     );
   }
 }
