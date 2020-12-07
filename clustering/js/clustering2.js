@@ -26,6 +26,7 @@ function submit_km() {
 	var k = $('input[name="k"]').val();
 	var pca = $('input[name="pca"]:checked').val();
 	var variance = $('input[name="variance"]').val();
+	var perplexity = $('input[name="perplexity"]').val();
 
 	params = [];
 
@@ -44,9 +45,15 @@ function submit_km() {
 		$('input[name="variance"]').val(0.95);
 	}
 
+	if (perplexity == "") {
+		perplexity = 30
+		$('input[name="perplexity"]').val(30);
+	}
+
 	params.push(k);
 	params.push(pca);
 	params.push(variance);
+	params.push(perplexity);
 
 	element = document.getElementById("km");
 	getData(element, params);
@@ -131,7 +138,8 @@ function getData(elmnt, params) {
 		K= params[0];
 		var pca = params[1];
 		var variance = params[2];
-		var params_url = "kmeans?K="+K+"&pca="+pca+"&variance="+variance;
+		var perplexity = params[3];
+		var params_url = "kmeans?K="+K+"&pca="+pca+"&variance="+variance+"&perplexity="+perplexity;
 		var url = flaskAppURL + params_url;
 	}
 
