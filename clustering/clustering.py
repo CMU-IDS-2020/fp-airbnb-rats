@@ -5,6 +5,7 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.manifold import TSNE
 import plotly.figure_factory as ff
 
 
@@ -39,12 +40,21 @@ if __name__ == "__main__":
         features = normalize(features)
 
         K = st.sidebar.number_input("Please enter the number of clusters (K):", value=5)
-        pca = st.sidebar.radio(label = "Use dimensionality reduction while clustering?",options=('No PCA', 'PCA'))
+        dr = st.sidebar.radio(label = "Use dimensionality reduction while clustering?",options=('No', 'PCA', 't-SNE'))
 
-        if pca == "PCA":
+        if dr == "PCA":
             variance_percent = st.sidebar.number_input("Percentage of variance to be retained:", value=0.95)
             pca = PCA(variance_percent)
             reduced_data = pca.fit_transform(features)
+
+            clusters_data = reduced_data
+
+        elif dr == 't-SNE':
+            n_components = st.sidebar.number_input("Please enter the number of dimensions: ", value=2)
+            perplexity = st.sidebar.number_input("Please enter the perplexity: ", value=30)
+
+            tsne = TSNE(n_components=n_components, perplexity=perplexity, n_iter=250)
+            reduced_data = tsne.fit_transform(features)
 
             clusters_data = reduced_data
 
