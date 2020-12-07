@@ -5,12 +5,14 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.manifold import TSNE
 import plotly.figure_factory as ff
 
 
 @st.cache(allow_output_mutation=True)
 def load_data():
     input_data = pd.read_csv('datasets_Kingscourt_Kingscourt_Piquant_wt-percent.csv')
+    input_data['index'] = input_data.index
     return input_data
 
 
@@ -39,12 +41,21 @@ if __name__ == "__main__":
         features = normalize(features)
 
         K = st.sidebar.number_input("Please enter the number of clusters (K):", value=5)
-        pca = st.sidebar.radio(label = "Use dimensionality reduction while clustering?",options=('No PCA', 'PCA'))
+        dr = st.sidebar.radio(label = "Use dimensionality reduction while clustering?",options=('No', 'PCA', 't-SNE'))
 
-        if pca == "PCA":
+        if dr == "PCA":
             variance_percent = st.sidebar.number_input("Percentage of variance to be retained:", value=0.95)
             pca = PCA(variance_percent)
             reduced_data = pca.fit_transform(features)
+
+            clusters_data = reduced_data
+
+        elif dr == 't-SNE':
+            n_components = st.sidebar.number_input("Please enter the number of dimensions: ", value=2)
+            perplexity = st.sidebar.number_input("Please enter the perplexity: ", value=30)
+
+            tsne = TSNE(n_components=n_components, perplexity=perplexity, n_iter=250)
+            reduced_data = tsne.fit_transform(features)
 
             clusters_data = reduced_data
 
@@ -95,3 +106,34 @@ if __name__ == "__main__":
             df['minValue'] = features.idxmin(axis=1)
             fig = px.scatter_3d(df, x=df['X'], y=df['Y'], z=df['Z'], color=df['minValue'], width=700, height=700)
             st.plotly_chart(fig)
+
+
+    dimensionality_reduction_options = ["None", "PCA", "t-SNE"]
+    st.sidebar.write("Visualize Dimensionality Reduction?")
+    dr_method = st.sidebar.selectbox("Method", dimensionality_reduction_options)
+
+    if dr_method == dimensionality_reduction_options[1]:
+        df['minValue'] = features.idxmin(axis=1)
+        df['maxValue'] = features.idxmax(axis=1)
+        pca_viz = PCA(n_components=2)
+        pca_result = pca_viz.fit_transform(features)
+
+        df['pca-one'] = pca_result[:, 0]
+        df['pca-two'] = pca_result[:, 1]
+
+        fig = px.scatter(df, x=df['pca-one'], y=df['pca-two'], color=df['maxValue'], width=700, height=700, hover_data=['index'])
+        st.plotly_chart(fig)
+
+
+    elif dr_method == dimensionality_reduction_options[2]:
+        df['minValue'] = features.idxmin(axis=1)
+        df['maxValue'] = features.idxmax(axis=1)
+        perplexity = st.sidebar.number_input("Please enter the perplexity: ", value=30)
+        tsne_viz = TSNE(n_components=2, perplexity=perplexity, n_iter=250)
+        tsne_results = tsne_viz.fit_transform(features)
+
+        df['tsne-2d-one'] = tsne_results[:, 0]
+        df['tsne-2d-two'] = tsne_results[:, 1]
+
+        fig = px.scatter(df, x=df['tsne-2d-one'], y=df['tsne-2d-two'], color=df['maxValue'], width=700, height=700, hover_data=['index'])
+        st.plotly_chart(fig)

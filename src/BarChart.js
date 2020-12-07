@@ -162,9 +162,9 @@ class BarChart extends Component {
                 .map((d) => Object.values(d))
                 .flat()
                 .filter((d) => d)
-            )
+            ).reverse()
           )
-          .range([hy.bandwidth() - 30, 0])
+          .range([0, hy.bandwidth() - 30])
           .nice(),
       ])
     );
@@ -193,9 +193,10 @@ class BarChart extends Component {
           o.label = k;
           o.value = d[k];
           o.width = this.hx.bandwidth();
-          o.height = Math.max(ry.get(k)(d[k]), 0);
+          o.height = hy.bandwidth() - Math.max(ry.get(k)(d[k]), 0);
           o.x = this.hx(k);
           o.y = hy.bandwidth() - o.height;
+          o.i = d.i;
           return o;
         })
       )
@@ -203,7 +204,10 @@ class BarChart extends Component {
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
       .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y - 30);
+      .attr("y", (d) => d.y - 30)
+      .on("mouseenter", function (e, d) {
+        console.log(d);
+      });
 
     hgroups
       .selectAll(".axis")
