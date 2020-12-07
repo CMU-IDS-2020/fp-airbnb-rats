@@ -34,10 +34,12 @@ class BarChart extends Component {
       .range([0, this.props.size[0]])
       .padding(0.1);
 
-    this.hiddenElementDropdown = (<HiddenElementDropdown
-      setBack={this.setBack}
-      listItems={this.state.removedKeys}
-    />)
+    this.hiddenElementDropdown = (
+      <HiddenElementDropdown
+        setBack={this.setBack}
+        listItems={this.state.removedKeys}
+      />
+    );
   }
 
   hideKey(key) {
@@ -49,7 +51,7 @@ class BarChart extends Component {
       keys: this.state.keys,
       removedKeys: this.state.removedKeys,
     });
-    this.updateMenuTool()
+    this.updateMenuTool();
   }
 
   setBack(key) {
@@ -61,7 +63,7 @@ class BarChart extends Component {
       keys: this.state.keys,
       removedKeys: this.state.removedKeys,
     });
-    this.updateMenuTool()
+    this.updateMenuTool();
   }
 
   getCurrentHoverGroup() {
@@ -95,7 +97,7 @@ class BarChart extends Component {
 
   componentDidMount() {
     this.createBarChart();
-    this,this.updateMenuTool();
+    this, this.updateMenuTool();
   }
 
   componentDidUpdate() {
@@ -131,8 +133,8 @@ class BarChart extends Component {
     }
   }
 
-  updateMenuTool(){
-    let mt = this.hiddenElementDropdown
+  updateMenuTool() {
+    let mt = this.hiddenElementDropdown;
     this.props.setMenuTools([mt]);
   }
 
@@ -160,7 +162,7 @@ class BarChart extends Component {
       this.state.keys.map((k) => [
         k,
         scaleLinear()
-          .domain(extent(gpoints, (d) => d[k]))
+          .domain(extent(this.props.data, (d) => d[k]))
           .range([hy.bandwidth() - 30, 0])
           .nice(),
       ])
