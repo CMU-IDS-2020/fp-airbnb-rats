@@ -143,12 +143,6 @@ class BarChart extends Component {
     const selected = this.calculateGroupAverages();
     const selectedLen = Object.keys(selected).length;
 
-    console.log(selected);
-    this.hx = scaleBand()
-      .domain(this.state.keys)
-      .range([0, this.props.size[0]])
-      .padding(0.1);
-
     const hy = scaleBand()
       .domain(range(0, selectedLen))
       .range([this.props.size[1], 0])
@@ -182,6 +176,7 @@ class BarChart extends Component {
           : 0.25
       )
       .attr("fill", (d, i) => d["color"]);
+
     const bars = hgroups
       .selectAll("rect")
       .data((d) =>
@@ -205,13 +200,11 @@ class BarChart extends Component {
 
     hgroups
       .selectAll(".axis")
-      .data(this.state.keys)
+      .data([this.state.keys[0]])
       .join("g")
       .attr("class", "axis")
-      .attr("transform", (d) => `translate(${this.hx(d)}, 0)`)
-      .each(function (d) {
-        select(this).call(axisLeft(ry.get(d)).ticks(4));
-      });
+      .attr("transform", (d) => `translate(${this.hx(this.state.keys[0])}, 0)`)
+      .call(axisLeft(ry.get(this.state.keys[0])).ticks(4));
 
     selection
       .selectAll(".axis")
@@ -229,7 +222,7 @@ class BarChart extends Component {
   render() {
     this.hx = scaleBand()
       .domain(this.state.keys)
-      .range([0, this.props.size[0]])
+      .range([100, this.props.size[0]])
       .padding(0.1);
 
     return (
