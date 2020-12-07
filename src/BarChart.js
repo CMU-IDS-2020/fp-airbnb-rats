@@ -3,6 +3,7 @@ import "./App.css";
 import { scaleBand, scaleLinear } from "d3-scale";
 import { range, extent, mean } from "d3-array";
 import { select } from "d3-selection";
+import { axisLeft } from "d3-axis";
 import { transition } from "d3-transition";
 
 class BarChart extends Component {
@@ -11,12 +12,8 @@ class BarChart extends Component {
     this.createBarChart = this.createBarChart.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = this.props.dataGroups.length;
-    this.keys = Object.keys(this.props.data[0]).slice(3);
-    // this.hx = scaleBand()
-    //   .domain(this.keys)
-    //   .range([0, this.props.size[0]])
-    //   .padding(0.1);
-    this.currentHoverGroup = -1
+    this.keys = Object.keys(this.props.data[0]).slice(3, 6);
+    this.currentHoverGroup = -1;
     this.dataGroupLengths = this.props.dataGroups.length;
     this.dataGroupLengths = [];
   }
@@ -45,11 +42,10 @@ class BarChart extends Component {
   }
 
   componentDidUpdate() {
-    
     const currentHoverGroup = this.getCurrentHoverGroup();
     let triggerUpdate = false;
 
-    if(currentHoverGroup != this.currentHoverGroup){
+    if (currentHoverGroup != this.currentHoverGroup) {
       this.currentHoverGroup = currentHoverGroup;
       triggerUpdate = true;
     }
@@ -59,26 +55,28 @@ class BarChart extends Component {
       this.dataGroupLength = this.props.dataGroups.length;
       this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
     } else if (
-      this.props.dataGroups.filter((dg,idx) => this.dataGroupLength[idx] != dg.length).length > 0) 
-      {
+      this.props.dataGroups.filter(
+        (dg, idx) => this.dataGroupLength[idx] != dg.length
+      ).length > 0
+    ) {
       triggerUpdate = true;
       this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
     }
 
-    if(triggerUpdate){
+    if (triggerUpdate) {
       this.createBarChart();
     }
   }
 
   createBarChart() {
     const selection = select(this.chartRef.current);
-    
+
     const selected = this.calculateGroupAverages();
- 
+
     this.hx = scaleBand()
-    .domain(this.keys)
-    .range([0, this.props.size[0]])
-    .padding(0.1);
+      .domain(this.keys)
+      .range([0, this.props.size[0]])
+      .padding(0.1);
 
     const hy = scaleBand()
       .domain(range(selected.length))
@@ -94,14 +92,16 @@ class BarChart extends Component {
         k,
         scaleLinear()
           .domain(extent(gpoints, (d) => d[k]))
-          .range([hy.bandwidth() - 30, 0]),
+          .range([hy.bandwidth() - 30, 0])
+          .nice(),
       ])
     );
 
-    selection
-      .selectAll("g")
+    const hgroups = selection
+      .selectAll(".histgroup")
       .data(selected)
       .join("g")
+      .attr("class", "histgroup")
       .attr("transform", (_, i) => `translate(0, ${hy(i)})`)
       .attr("opacity", (_, i) =>
         this.props.hoverPoint === null
@@ -110,7 +110,8 @@ class BarChart extends Component {
           ? 1.0
           : 0.25
       )
-      .attr("fill", (_, i) => this.props.colorScale(i))
+      .attr("fill", (_, i) => this.props.colorScale(i));
+    const bars = hgroups
       .selectAll("rect")
       .data((d) =>
         this.keys.map((k) => {
@@ -128,12 +129,31 @@ class BarChart extends Component {
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
       .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y);
+      .attr("y", (d) => d.y - 30);
+
+    hgroups
+      .selectAll(".axis")
+      .data(this.keys)
+      .join("g")
+      .attr("class", "axis")
+      .attr("transform", (d) => `translate(${this.hx(d)}, 0)`)
+      .each(function (d) {
+        select(this).call(axisLeft(ry.get(d)).ticks(4));
+      });
+
+    selection.selectAll(".axis").selectAll("text").attr("fill", "white");
+    selection.selectAll(".axis").selectAll(".domain").attr("stroke", "white");
+    selection
+      .selectAll(".axis")
+      .selectAll(".tick")
+      .selectAll("line")
+      .attr("stroke", "white");
 
     selection
-      .selectAll("text")
+      .selectAll(".label")
       .data(this.keys)
       .join("text")
+      .attr("class", "label")
       .text((d) => d.split("_")[0])
       .attr("fill", "white")
       .attr("x", (d) => this.hx(d) + this.hx.bandwidth() / 2)
