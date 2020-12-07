@@ -7,6 +7,9 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.manifold import TSNE
 import plotly.figure_factory as ff
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import seaborn as sns
 
 
 @st.cache(allow_output_mutation=True)
@@ -105,3 +108,22 @@ if __name__ == "__main__":
             df['minValue'] = features.idxmin(axis=1)
             fig = px.scatter_3d(df, x=df['X'], y=df['Y'], z=df['Z'], color=df['minValue'], width=700, height=700)
             st.plotly_chart(fig)
+
+
+    dimensionality_reduction_options = ["None", "PCA", "t-SNE"]
+    st.sidebar.write("Visualize Dimensionality Reduction?")
+    dr_method = st.sidebar.selectbox("Method", dimensionality_reduction_options)
+
+    if dr_method == dimensionality_reduction_options[1]:
+        l=1
+
+    elif dr_method == dimensionality_reduction_options[2]:
+        perplexity = st.sidebar.number_input("Please enter the perplexity: ", value=30)
+        tsne_viz = TSNE(n_components=2, perplexity=perplexity, n_iter=250)
+        tsne_results = tsne_viz.fit_transform(features)
+
+        df['tsne-2d-one'] = tsne_results[:, 0]
+        df['tsne-2d-two'] = tsne_results[:, 1]
+
+        fig = px.scatter(df, x=df['tsne-2d-one'], y=df['tsne-2d-two'], color=df['maxValue'], width=700, height=700)
+        st.plotly_chart(fig)
