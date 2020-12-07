@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import ContextImage from "./ContextImage";
 import BarChart from "./BarChart";
+import ParallelCoordinates from "./ParallelCoordinates";
 import Cluster from "./Cluster";
 import { range } from "d3-array";
 import { scaleOrdinal } from "d3-scale";
@@ -96,7 +97,7 @@ class App extends Component {
               changeHoverPoint={this.changeHoverPoint}
               size={[
                 (this.state.screenWidth * 1) / 3 - 10,
-                (this.state.screenHeight * 2) / 3 - 10,
+                (this.state.screenHeight * 3) / 5 - 10,
               ]}
             >
               <ContextImage />
@@ -112,7 +113,7 @@ class App extends Component {
               hoverPoint={this.state.hoverPoint}
               size={[
                 (this.state.screenWidth * 2) / 3 - 10,
-                (this.state.screenHeight * 2) / 3 - 10,
+                (this.state.screenHeight * 3) / 5 - 10,
               ]}
             >
               <BarChart />
@@ -123,7 +124,7 @@ class App extends Component {
               title="Clustering"
               size={[
                 (this.state.screenWidth * 1) / 3 - 10,
-                (this.state.screenHeight * 1) / 3 - 10,
+                (this.state.screenHeight * 2) / 5 - 10,
               ]}
             >
               <Cluster />
@@ -132,10 +133,10 @@ class App extends Component {
               title="Parallel coordinates"
               size={[
                 (this.state.screenWidth * 2) / 3 - 10,
-                (this.state.screenHeight * 1) / 3 - 10,
+                (this.state.screenHeight * 2) / 5 - 10,
               ]}
             >
-              <Cluster />
+              <ParallelCoordinates />
             </CardLayout>
           </Row>
         </Col>
