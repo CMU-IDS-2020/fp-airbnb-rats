@@ -16,23 +16,12 @@ class MenuToolButtons extends Component {
       return "";
     }
     return (
-      <Row>
-        {this.props.mapping.map((item, idx) => (
-          <Inline
-            marginLeft="8px"
-            key={item}
-            hoverCursor="pointer"
-            textDecoration={this.state.selectedTool == idx ? "underline" : ""}
-            props={{
-              onClick: () => {
-                item[1]();
-                this.setState({ selectedTool: idx });
-              },
-            }}
-          >
-            {item[0]}
-          </Inline>
-        ))}
+      <Row
+        alignItems="center"
+      >
+        {this.props.mapping.map((item, idx) => {
+          return React.cloneElement(item, { key: "i" + idx, selected: false });
+        })}
       </Row>
     );
   }

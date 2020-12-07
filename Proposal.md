@@ -6,13 +6,13 @@
 
 This project will be an **interactive application** in tandem with NASA JPL that aids scientists from the Mars 2020 Rover’s Planetary Instrument for X-Ray Lithochemistry (PIXL) team in analyzing astrobiological data. There exists a significant amount of data from the Mars 2020 project that is being used to explore the possibility of alien biosignatures. Researchers need an intuitive way to compare data including mineral concentrations, spatially located X-Ray samples, and ordinal channel comparisons.
 
-To summarize, **the proposed problem** that my team wishes to address is the lack of tooling available to efficiently analyze Mars Rover PIXL data in order to reach conclusions about the mineral composition of Mars. 
+To summarize, **the proposed problem** that my team wishes to address is the lack of tooling available to efficiently analyze Mars Rover PIXL data in order to reach conclusions about the mineral composition of Mars.
 
 Members of the NASA team have already expressed interest in having visualizations, so **our solution** would be to work closely with them to create a specialized interactive application that supports their data analysis needs in ways that wouldn’t be possible using their existing tools.
 
 ## ➝ The Data
 
-The PIXL instrument provides a magnitude of information, such as: 
+The PIXL instrument provides a magnitude of information, such as:
 A number of images captured as the instrument passes over the sampling area.
 Spatially localized x-ray spectra with 1024 ordinal channels, each with a count of x-rays sensed by the detector at that particular channel.
 The x-ray energy histograms will reflect the chemistry of the element in the sample, and from this we should be able distinguish the different elements that are present in a given histogram.
@@ -25,14 +25,16 @@ We understand that collaborating with others adds a communication overhead, so o
 
 ## ➝ Goals
 
-To create an interactive application that can visualize data sent by the Mars 2020 PIXL instrument in order to aid in bio-signature detection. To accomplish this, data from the Rover can be visualized to allow for easier and more efficient analysis. 
+To create an interactive application that can visualize data sent by the Mars 2020 PIXL instrument in order to aid in bio-signature detection. To accomplish this, data from the Rover can be visualized to allow for easier and more efficient analysis.
 
-One way in which we might do this is to use visualizations to show the different element weight percentages given x-ray data. Another feature could be to use those percentages to suggest which minerals those possibly imply and how they were formed. 
+One way in which we might do this is to use visualizations to show the different element weight percentages given x-ray data. Another feature could be to use those percentages to suggest which minerals those possibly imply and how they were formed.
 
 Some possible challenges will be to succinctly summarize the data while also displaying error and uncertainty, to create a hyper-specialized application made for experts, and to create an intuitive user experience and clear user interface while fully supporting user intent and control.
 
 ## ➝ Interactivity
+
 Some possible ways in which our application could support interactivity are:
+
 1. Allowing the user to select which data points to analyze or summarize.
 1. Allowing the users to clean the data.
 1. Different levels of granularity when performing analysis.
@@ -47,4 +49,5 @@ Some possible ways in which our application could support interactivity are:
 These are just suggestions, but after meeting with the stakeholders we will work with them to scope the project and make a prioritized list of features to address.
 
 ## ➝ Resources
+
 To learn more about the NASA project, see [PIXL for Scientists](https://mars.nasa.gov/mars2020/spacecraft/instruments/pixl/for-scientists/).

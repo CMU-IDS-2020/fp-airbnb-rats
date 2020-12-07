@@ -12,7 +12,7 @@ import { Row, Col, Box } from "jsxstyle";
 import data from "./kingscourt_irregular";
 import { UIColors } from "./colors";
 
-const datagroups = [];
+const datagroups = {};
 
 const colorScale = scaleOrdinal(schemeTableau10).domain(
   range(datagroups.length + 1)
@@ -75,7 +75,6 @@ class App extends Component {
   }
 
   render() {
-    console.log("app rerender", this.state.screenWidth);
     return (
       <Col className="App" width="100%" height="100%" position="relative">
         <Col

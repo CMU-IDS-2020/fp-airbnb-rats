@@ -14,38 +14,39 @@ class HiddenElementDropdown extends Component {
   render() {
     return (
       <Box
-        zIndex="10"
-        position="absolute"
-        top="0px"
-        left="0px"
+      position="relative"
         userSelect="none"
         props={{
           onMouseEnter: () => this.setState({ dropdownOpen: true }),
           onMouseLeave: () => this.setState({ dropdownOpen: false }),
         }}
       >
-        <Box color="white" fontSize="12px">
-          {this.props.listItems.length + " element hidden"}
+        <Box color={UIColors.text} fontSize="12px" backgroundColor={UIColors.cardBg}>
+          {this.state.dropdownOpen && this.props.listItems.length > 0
+            ? "Click to add back"
+            : this.props.listItems.length + " elements hidden"}
         </Box>
         {this.state.dropdownOpen && this.props.listItems.length > 0 ? (
           <Box
             position="absolute"
             top="100%"
             left="0px"
-            width="60px"
+            width="100%"
             background={UIColors.header}
             props={{ onClick: this.props.hideKey }}
             hoverCursor="pointer"
-            padding="4px"
-            border="1px solid white"
-            borderRadius="4px"
             color="white"
           >
             {this.props.listItems.map((li) => {
               return (
-                <div key={li} onClick={() => this.props.setBack(li)}>
+                <Box 
+                  key={li} 
+                  width="100%" 
+                  padding="4px"
+                  borderTop="1px solid white"
+                  props={{onClick:() => this.props.setBack(li)}}>
                   {li.split("_")[0]}
-                </div>
+                </Box>
               );
             })}
           </Box>

@@ -10,8 +10,10 @@ function DropdownItem(props) {
     <Row
       justifyContent="center"
       alignItems="center"
+      borderRadius={props.selected ? "12px 12px 0px 0px" : "0px"}
+      backgroundColor={props.selected ? "black" : UIColors.header}
       padding="4px"
-      borderBottom="1px solid rgba(255, 255, 255, 0.2)"
+      borderBottom={!props.selected ? "1px solid rgba(255, 255, 255, 0.2)" : ""}
       cursor={props.selected ? "default" : "pointer"}
       props={
         props.selected ? {} : { onClick: () => props.setSelected(props.idx) }
@@ -31,7 +33,7 @@ function DropdownItem(props) {
             marginLeft="8px"
             props={{ onClick: () => props.toggleIsOpen() }}
           >
-            {props.isOpen ? "v" : "<"}
+            {props.isOpen ? "▾" : "◂"}
           </Inline>
         ) : (
           ""
@@ -69,52 +71,58 @@ class GroupDropdown extends Component {
 
   render() {
     return (
-      <Col
-        color="white"
-        position="absolute"
-        top="0px"
-        left="0px"
-        zIndex="2"
-        className="dropdown"
-        backgroundColor={UIColors.background}
-        userSelect="none"
-      >
-        <DropdownItem
-          key="selected"
-          listItem={this.state.listItems[this.props.selectedGroup]}
-          idx={this.props.selectedGroup}
-          selected={true}
-          toggleIsOpen={this.toggleIsOpen}
-          isOpen={this.state.dropdownOpen}
-        />
-        {this.state.dropdownOpen
-          ? this.state.listItems.map((listItem, idx) => {
-              return !(idx == this.props.selectedGroup) ? (
-                <DropdownItem
-                  key={"component" + idx}
-                  listItem={listItem}
-                  idx={idx}
-                  selected={false}
-                  setSelected={this.props.setSelected}
-                />
-              ) : (
-                ""
-              );
-            })
-          : ""}
-        {this.state.dropdownOpen ? (
-          <Row
-            justifyContent="center"
-            alignItems="center"
-            padding="4px"
-            cursor="pointer"
-          >
-            <div onClick={this.addListItem}>Add item</div>
-          </Row>
-        ) : (
-          ""
-        )}
-      </Col>
+      <Row 
+        position="relative" 
+        width="160px" 
+        marginLeft="8px"
+        height="26px">
+        <Col
+          color={UIColors.text}
+          position="absolute"
+          top="0px"
+          left="0px"
+          zIndex="2"
+          className="dropdown"
+          userSelect="none"
+        >
+          <DropdownItem
+            key="selected"
+            listItem={this.state.listItems[this.props.selectedGroup]}
+            idx={this.props.selectedGroup}
+            selected={true}
+            toggleIsOpen={this.toggleIsOpen}
+            isOpen={this.state.dropdownOpen}
+          />
+          {this.state.dropdownOpen
+            ? this.state.listItems.map((listItem, idx) => {
+                return !(idx == this.props.selectedGroup) ? (
+                  <DropdownItem
+                    key={"component" + idx}
+                    listItem={listItem}
+                    idx={idx}
+                    selected={false}
+                    setSelected={this.props.setSelected}
+                  />
+                ) : (
+                  ""
+                );
+              })
+            : ""}
+          {this.state.dropdownOpen ? (
+            <Row
+              justifyContent="center"
+              alignItems="center"
+              padding="4px"
+              cursor="pointer"
+              backgroundColor={UIColors.header}
+            >
+              <div onClick={this.addListItem}>+ Add item</div>
+            </Row>
+          ) : (
+            ""
+          )}
+        </Col>
+      </Row>
     );
   }
 }

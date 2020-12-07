@@ -7,6 +7,7 @@ import HistogramElement from "./HistogramElement";
 import { axisLeft } from "d3-axis";
 import { Box, Row } from "jsxstyle";
 import HiddenElementDropdown from "./HiddenElementDropdown";
+import { schemeTableau10 } from "d3-scale-chromatic";
 
 class BarChart extends Component {
   constructor(props) {
@@ -14,15 +15,16 @@ class BarChart extends Component {
     this.createBarChart = this.createBarChart.bind(this);
     this.hideKey = this.hideKey.bind(this);
     this.setBack = this.setBack.bind(this);
+    this.updateMenuTool = this.updateMenuTool.bind(this);
     this.chartRef = React.createRef();
-    this.dataGroupLength = this.props.dataGroups.length;
+    this.dataGroupLength = Object.values(this.props.dataGroups).length;
     this.state = {
       keys: Object.keys(this.props.data[0]).slice(3),
       removedKeys: [],
     };
 
     this.currentHoverGroup = -1;
-    this.dataGroupLengths = this.props.dataGroups.length;
+    this.dataGroupLengths = 0;
     this.dataGroupLengths = [];
 
     this.keysLength = this.state.keys.length;
@@ -31,6 +33,11 @@ class BarChart extends Component {
       .domain(this.state.keys)
       .range([0, this.props.size[0]])
       .padding(0.1);
+
+    this.hiddenElementDropdown = (<HiddenElementDropdown
+      setBack={this.setBack}
+      listItems={this.state.removedKeys}
+    />)
   }
 
   hideKey(key) {
@@ -42,6 +49,7 @@ class BarChart extends Component {
       keys: this.state.keys,
       removedKeys: this.state.removedKeys,
     });
+    this.updateMenuTool()
   }
 
   setBack(key) {
@@ -53,12 +61,13 @@ class BarChart extends Component {
       keys: this.state.keys,
       removedKeys: this.state.removedKeys,
     });
+    this.updateMenuTool()
   }
 
   getCurrentHoverGroup() {
     let group = -1;
     if (this.props.hoverPoint !== null) {
-      this.props.dataGroups.forEach((g, i) => {
+      Object.values(this.props.dataGroups).forEach((g, i) => {
         if (g.includes(this.props.hoverPoint)) {
           group = i;
         }
@@ -68,14 +77,25 @@ class BarChart extends Component {
   }
 
   calculateGroupAverages() {
-    return this.props.dataGroups
-      .map((g) => g.map((d) => this.props.data[d]))
-      .map((g) => this.state.keys.map((k) => [k, mean(g.map((d) => d[k]))]))
-      .map((s) => Object.fromEntries(s));
+    const res = {};
+    Object.keys(this.props.dataGroups).forEach((idx) => {
+      const values = this.props.dataGroups[idx];
+      const trueData = values.map((d) => this.props.data[d]);
+      res[idx] = Object.fromEntries(
+        this.state.keys.map((k) => [k, mean(trueData.map((d) => d[k]))])
+      );
+      res[idx]["color"] = schemeTableau10[idx];
+    });
+    // return Object.values(this.props.dataGroups)
+    //   .map((g) => g.map((d) => this.props.data[d]))
+    //   .map((g) => this.state.keys.map((k) => [k, mean(g.map((d) => d[k]))]))
+    //   .map((s) => Object.fromEntries(s));
+    return Object.values(res);
   }
 
   componentDidMount() {
     this.createBarChart();
+    this,this.updateMenuTool();
   }
 
   componentDidUpdate() {
@@ -92,17 +112,18 @@ class BarChart extends Component {
       triggerUpdate = true;
     }
 
-    if (this.props.dataGroups.length != this.dataGroupLength) {
+    const dgKeys = Object.keys(this.props.dataGroups);
+    const dgValues = Object.values(this.props.dataGroups);
+    if (dgKeys.length != this.dataGroupLength) {
       triggerUpdate = true;
-      this.dataGroupLength = this.props.dataGroups.length;
-      this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
+      this.dataGroupLength = dgKeys.length;
+      this.dataGroupLengths = dgValues.map((dg) => dg.length);
     } else if (
-      this.props.dataGroups.filter(
-        (dg, idx) => this.dataGroupLength[idx] != dg.length
-      ).length > 0
+      dgValues.filter((dg, idx) => this.dataGroupLength[idx] != dg.length)
+        .length > 0
     ) {
       triggerUpdate = true;
-      this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
+      this.dataGroupLengths = dgValues.map((dg) => dg.length);
     }
 
     if (triggerUpdate) {
@@ -110,21 +131,28 @@ class BarChart extends Component {
     }
   }
 
+  updateMenuTool(){
+    let mt = this.hiddenElementDropdown
+    this.props.setMenuTools([mt]);
+  }
+
   createBarChart() {
     const selection = select(this.chartRef.current);
     const selected = this.calculateGroupAverages();
+    const selectedLen = Object.keys(selected).length;
 
+    console.log(selected);
     this.hx = scaleBand()
       .domain(this.state.keys)
       .range([0, this.props.size[0]])
       .padding(0.1);
 
     const hy = scaleBand()
-      .domain(range(selected.length))
+      .domain(range(0, selectedLen))
       .range([this.props.size[1], 0])
       .padding(0.25);
 
-    const gpoints = this.props.dataGroups
+    const gpoints = Object.values(this.props.dataGroups)
       .map((d) => d.map((p) => this.props.data[p]))
       .flat();
 
@@ -151,12 +179,13 @@ class BarChart extends Component {
           ? 1.0
           : 0.25
       )
-      .attr("fill", (_, i) => this.props.colorScale(i));
+      .attr("fill", (d, i) => d["color"]);
     const bars = hgroups
       .selectAll("rect")
       .data((d) =>
         this.state.keys.map((k) => {
           const o = {};
+          //console.log(k, d)
           o.label = k;
           o.value = d[k];
           o.width = this.hx.bandwidth();
@@ -209,10 +238,6 @@ class BarChart extends Component {
             />
           ))}
         </Box>
-        <HiddenElementDropdown
-          setBack={this.setBack}
-          listItems={this.state.removedKeys}
-        />
         <svg
           ref={this.chartRef}
           width={this.props.size[0]}

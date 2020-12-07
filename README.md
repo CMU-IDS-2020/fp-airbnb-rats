@@ -1,12 +1,12 @@
 # CMU Interactive Data Science Final Project
 
-* **Online URL**: [https://cmu-ids-2020.github.io/fp-airbnb-rats/](https://cmu-ids-2020.github.io/fp-airbnb-rats/)
-* **Team members**:
-  * nyildiri@andrew.cmu.edu
-  * constany@andrew.cmu.edu
-  * lhermann@andrew.cmu.edu
-  * shravyab@andrew.cmu.edu
-* **Track**: Interactive Visualization/Application
+- **Online URL**: [https://cmu-ids-2020.github.io/fp-airbnb-rats/](https://cmu-ids-2020.github.io/fp-airbnb-rats/)
+- **Team members**:
+  - nyildiri@andrew.cmu.edu
+  - constany@andrew.cmu.edu
+  - lhermann@andrew.cmu.edu
+  - shravyab@andrew.cmu.edu
+- **Track**: Interactive Visualization/Application
 
 ## Work distribution
 
@@ -38,4 +38,5 @@ Update towards the end of the project.
 No need to worry about the npm audit vulnerabilities - they're all related to react-scripts, which is just a dev dependency and shouldn't change the production build.
 
 # Special thanks
-@emeeks on github for his [repository](https://github.com/emeeks/d3_in_action_2) with starter code. 
+
+@emeeks on github for his [repository](https://github.com/emeeks/d3_in_action_2) with starter code.

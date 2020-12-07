@@ -76,6 +76,9 @@ class Coords extends Component {
 
     this.penOff;
     this.penOn;
+
+    this.tool = this.props.pen(); 
+    this.hoverPoint = null;
   }
 
   componentDidMount() {
@@ -85,25 +88,38 @@ class Coords extends Component {
     this.penOn = penFuncs.penOn;
     this.penOff();
     this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
-    this.dataGroupLengths = this.props.dataGroups.length;
-    this.lastUpdatedIdx = 0;
+    this.dataGroupLength = 0;
     this.dataGroupLengths = [];
   }
 
   componentDidUpdate() {
-    if (this.props.dataGroups.length != this.dataGroupLength) {
-      this.createCoords();
-      this.dataGroupLength = this.props.dataGroups.length;
-      this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
+    const dgKeys = Object.keys(this.props.dataGroups);
+    const dgValues = Object.values(this.props.dataGroups);
+    let needToUpdate = false;
+    if (dgKeys.length != this.dataGroupLength) {
+      needToUpdate = true;
+      this.dataGroupLength = dgKeys.length;
+      this.dataGroupLengths = dgValues.map((dg) => dg.length);
     } else if (
-      this.dataGroupLengths.length > 0 &&
-      this.dataGroupLengths[this.lastUpdatedIdx] !=
-        this.props.dataGroups[this.lastUpdatedIdx].length
+      dgValues.filter((dg, idx) => this.dataGroupLength[idx] != dg.length)
+        .length > 0
     ) {
+      needToUpdate = true;
+      this.dataGroupLengths = dgValues.map((dg) => dg.length);
+    }
+
+    if(this.hoverPoint != this.props.hoverPoint){
+      this.hoverPoint = this.props.hoverPoint;
+      needToUpdate = true;
+    }
+
+    if(this.tool != this.props.pen()){
+      this.tool = this.props.pen()
+      needToUpdate = true;
+    }
+
+    if(needToUpdate){
       this.createCoords();
-      this.dataGroupLengths[this.lastUpdatedIdx] = this.props.dataGroups[
-        this.lastUpdatedIdx
-      ].length;
     }
   }
 
@@ -114,7 +130,7 @@ class Coords extends Component {
       l = selection.append("path").attr("class", "lasso");
 
     selection.append("defs").append("style").text(`
-		  .lasso { fill-rule: evenodd; fill-opacity: 0.1; stroke-width: 1.5; stroke: #000; }
+		  .lasso { fill-rule: evenodd; fill-opacity: 0.2; stroke-width: 2; stroke: #AEF; fill: #AEF }
 		`);
 
     const sdg = this.props.changeDataGroups;
@@ -134,6 +150,12 @@ class Coords extends Component {
     };
 
     function drawEnd(polygon) {
+
+      l.datum({
+        type: "LineString",
+        coordinates: [],
+      }).attr("d", path);
+
       if (polygon.length < 2) {
         svg.dispatchEvent(new CustomEvent("input"));
         return;
@@ -151,17 +173,20 @@ class Coords extends Component {
         dataGroups[selectedGroup] = selPoints;
       }
 
+      console.log(selectedGroup, dataGroups);
+
       const excludeArray = dataGroups[selectedGroup];
 
-      dataGroups = dataGroups.map((dg, idx) => {
-        if (idx != selectedGroup) {
-          return dg.filter((dgElement) => !excludeArray.includes(dgElement));
+      Object.keys(dataGroups).forEach((dg) => {
+        const val = dataGroups[dg];
+        if (dg != selectedGroup) {
+          dataGroups[dg] = val.filter(
+            (dgElement) => !excludeArray.includes(dgElement)
+          );
         }
-        return dg;
       });
 
       changeLastUpdatedIdx(selectedGroup);
-      //dataGroups.push(selPoints);
       sdg(dataGroups);
     }
 
@@ -177,19 +202,13 @@ class Coords extends Component {
   }
 
   getGroup(i) {
-    const g = this.props.dataGroups.filter((d) => d.includes(i));
-    if (g.length > 0) {
-      let gID = -1;
-      this.props.dataGroups.forEach((d, j) => {
-        if (d.includes(i)) {
-          gID = j;
-        }
-      });
-
-      return gID;
-    } else {
-      return -1;
-    }
+    let gID = -1;
+    Object.keys(this.props.dataGroups).forEach((d, j) => {
+      if (this.props.dataGroups[d].includes(i)) {
+        gID = d;
+      }
+    });
+    return gID;
   }
 
   getColor(i) {
@@ -204,28 +223,26 @@ class Coords extends Component {
   createCoords() {
     const selection = select(this.coordRef.current);
     const tool = this.props.pen;
-    selection
+    console.log("create coords", tool())
+    if(tool() == "eye"){
+      selection
       .selectAll(".pts")
       .data(this.props.data.map((d, i) => ({ ...d, i: i })))
       .join("circle")
       .attr("cx", (d) => d.X)
       .attr("cy", (d) => d.Y)
-      .attr("r", 1)
-      .attr("fill", (d) => this.getColor(d.i))
-      .attr("opacity", (d) => (this.getGroup(d.i) < 0 ? 0.35 : 1))
+      .attr("r", (d) => (this.hoverPoint == d.i) ? 3 : 1.3)
+      .attr("fill", (d) => (this.hoverPoint == d.i) ?"#88AAFF": this.getColor(d.i))
+      .attr("opacity", (d) => (this.getGroup(d.i) >= 0 || (this.hoverPoint == d.i) ? 1 : 0.25))
       .attr("class", "pts")
       .attr("key", (d) => `circle-${d.i}`)
       .on(
         "mouseenter",
         function (e, d) {
+          console.log("mouse enter", tool())
           const g = this.getGroup(d.i);
           const newPoint = g >= this.props.dataGroups.length ? null : d.i;
-          const t = tool();
-          if (tool() === "zoom") {
-            this.props.changeHoverPoint(newPoint);
-          } else {
-            this.props.changeHoverPoint(null);
-          }
+          this.props.changeHoverPoint(newPoint);
         }.bind(this)
       )
       .on(
@@ -234,6 +251,22 @@ class Coords extends Component {
           this.props.changeHoverPoint(null);
         }.bind(this)
       );
+    } else {
+      selection
+      .selectAll(".pts")
+      .data(this.props.data.map((d, i) => ({ ...d, i: i })))
+      .join("circle")
+      .attr("cx", (d) => d.X)
+      .attr("cy", (d) => d.Y)
+      .attr("r", 1.3)
+      .attr("fill", (d) => this.getColor(d.i))
+      .attr("opacity", (d) => (this.getGroup(d.i) >= 0 ? 1 : 0.25))
+      .attr("class", "pts")
+      .attr("key", (d) => `circle-${d.i}`)
+      .on("mouseenter", null)
+      .on("mouseleave", null)
+    }
+    
   }
 
   render() {
