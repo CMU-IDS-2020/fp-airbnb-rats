@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { scaleBand, scaleLinear } from "d3-scale";
+import { scaleBand, scaleLinear, scaleLog } from "d3-scale";
 import { range, extent, mean } from "d3-array";
 import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
@@ -155,8 +155,15 @@ class BarChart extends Component {
     const ry = new Map(
       this.state.keys.map((k) => [
         k,
-        scaleLinear()
-          .domain([100, 0])
+        scaleLog()
+          .domain(
+            extent(
+              this.props.data
+                .map((d) => Object.values(d))
+                .flat()
+                .filter((d) => d)
+            )
+          )
           .range([hy.bandwidth() - 30, 0])
           .nice(),
       ])
@@ -204,13 +211,10 @@ class BarChart extends Component {
       .join("g")
       .attr("class", "axis")
       .attr("transform", (d) => `translate(${this.hx(this.state.keys[0])}, 0)`)
-      .call(axisLeft(ry.get(this.state.keys[0])).ticks(4));
+      .call(axisLeft(ry.get(this.state.keys[0])).ticks(4, ".1"));
 
-    selection
-      .selectAll(".axis")
-      .selectAll("text")
-      .attr("fill", "white")
-      .text((d) => 100 - +d);
+    selection.selectAll(".axis").selectAll("text").attr("fill", "white");
+    //.text((d) => 100 - +d);
     selection.selectAll(".axis").selectAll(".domain").attr("stroke", "white");
     selection
       .selectAll(".axis")
