@@ -129,18 +129,9 @@ class App extends Component {
               <Cluster />
             </CardLayout>
             <CardLayout
-              title="Placeholder 1"
+              title="Parallel coordinates"
               size={[
-                (this.state.screenWidth * 1) / 3 - 10,
-                (this.state.screenHeight * 1) / 3 - 10,
-              ]}
-            >
-              <Cluster />
-            </CardLayout>
-            <CardLayout
-              title="Placeholder 2"
-              size={[
-                (this.state.screenWidth * 1) / 3 - 10,
+                (this.state.screenWidth * 2) / 3 - 10,
                 (this.state.screenHeight * 1) / 3 - 10,
               ]}
             >
