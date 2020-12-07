@@ -21,9 +21,12 @@
 					<input id = "k_val" type="text" name="k"></input><br>
 					<label>Use dimensionality reduction while clustering? </label>
 					<input type="radio" id = "yes" value = "1" name="pca">PCA</input>
+					<input type="radio" id = "tsne" value = "2" name="pca">t-SNE</input>
 					<input type="radio" id = "no" value = "0" name="pca">Not PCA</input><br>
 					<label>If you've selected PCA, please enter the percentage of variance to be retained: </label>
 					<input type="text" name="variance"></input><br>
+					<label>If you've selected t-SNE, please enter the perplexity: </label>
+					<input type="text" name="perplexity"></input><br>
 					<input type = "submit" onclick="submit_km()"></input>
 				</div>
 			</div>
