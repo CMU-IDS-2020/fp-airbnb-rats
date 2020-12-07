@@ -122,6 +122,7 @@ class App extends Component {
           <Row justifyContent="space-evenly">
             <CardLayout
               title="Clustering"
+              changeDataGroups={this.changeDataGroups}
               size={[
                 (this.state.screenWidth * 1) / 3 - 10,
                 (this.state.screenHeight * 2) / 5 - 10,
