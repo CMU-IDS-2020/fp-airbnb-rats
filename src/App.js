@@ -47,7 +47,7 @@ class App extends Component {
   }
 
   changeHoverPoint(pt) {
-    if(pt != this.state.hoverPoint){
+    if (pt != this.state.hoverPoint) {
       this.setState({ hoverPoint: pt });
     }
   }
@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   render() {
-    console.log("app rerender", this.state.screenWidth)
+    console.log("app rerender", this.state.screenWidth);
     return (
       <Col className="App" width="100%" height="100%" position="relative">
         <Col

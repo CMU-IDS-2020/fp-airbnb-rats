@@ -3,24 +3,56 @@ import "./App.css";
 import { scaleBand, scaleLinear } from "d3-scale";
 import { range, extent, mean } from "d3-array";
 import { select } from "d3-selection";
-import HistogramElement from './HistogramElement';
+import HistogramElement from "./HistogramElement";
 import { axisLeft } from "d3-axis";
-import {Box, Row} from 'jsxstyle'
+import { Box, Row } from "jsxstyle";
+import HiddenElementDropdown from "./HiddenElementDropdown";
 
 class BarChart extends Component {
   constructor(props) {
     super(props);
     this.createBarChart = this.createBarChart.bind(this);
+    this.hideKey = this.hideKey.bind(this);
+    this.setBack = this.setBack.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = this.props.dataGroups.length;
-    this.keys = Object.keys(this.props.data[0]).slice(3);
+    this.state = {
+      keys: Object.keys(this.props.data[0]).slice(3),
+      removedKeys: [],
+    };
+
     this.currentHoverGroup = -1;
     this.dataGroupLengths = this.props.dataGroups.length;
     this.dataGroupLengths = [];
+
+    this.keysLength = this.state.keys.length;
+
     this.hx = scaleBand()
-    .domain(this.keys)
-    .range([0, this.props.size[0]])
-    .padding(0.1);
+      .domain(this.state.keys)
+      .range([0, this.props.size[0]])
+      .padding(0.1);
+  }
+
+  hideKey(key) {
+    const index = this.state.keys.indexOf(key);
+    if (index > -1) {
+      this.state.removedKeys.push(this.state.keys.splice(index, 1)[0]);
+    }
+    this.setState({
+      keys: this.state.keys,
+      removedKeys: this.state.removedKeys,
+    });
+  }
+
+  setBack(key) {
+    const index = this.state.removedKeys.indexOf(key);
+    if (index > -1) {
+      this.state.keys.push(this.state.removedKeys.splice(index, 1)[0]);
+    }
+    this.setState({
+      keys: this.state.keys,
+      removedKeys: this.state.removedKeys,
+    });
   }
 
   getCurrentHoverGroup() {
@@ -38,7 +70,7 @@ class BarChart extends Component {
   calculateGroupAverages() {
     return this.props.dataGroups
       .map((g) => g.map((d) => this.props.data[d]))
-      .map((g) => this.keys.map((k) => [k, mean(g.map((d) => d[k]))]))
+      .map((g) => this.state.keys.map((k) => [k, mean(g.map((d) => d[k]))]))
       .map((s) => Object.fromEntries(s));
   }
 
@@ -49,6 +81,11 @@ class BarChart extends Component {
   componentDidUpdate() {
     const currentHoverGroup = this.getCurrentHoverGroup();
     let triggerUpdate = false;
+
+    if (this.keysLength != this.state.keys.length) {
+      this.keysLength = this.state.keys.length;
+      triggerUpdate = true;
+    }
 
     if (currentHoverGroup != this.currentHoverGroup) {
       this.currentHoverGroup = currentHoverGroup;
@@ -78,7 +115,7 @@ class BarChart extends Component {
     const selected = this.calculateGroupAverages();
 
     this.hx = scaleBand()
-      .domain(this.keys)
+      .domain(this.state.keys)
       .range([0, this.props.size[0]])
       .padding(0.1);
 
@@ -92,7 +129,7 @@ class BarChart extends Component {
       .flat();
 
     const ry = new Map(
-      this.keys.map((k) => [
+      this.state.keys.map((k) => [
         k,
         scaleLinear()
           .domain(extent(gpoints, (d) => d[k]))
@@ -118,7 +155,7 @@ class BarChart extends Component {
     const bars = hgroups
       .selectAll("rect")
       .data((d) =>
-        this.keys.map((k) => {
+        this.state.keys.map((k) => {
           const o = {};
           o.label = k;
           o.value = d[k];
@@ -137,7 +174,7 @@ class BarChart extends Component {
 
     hgroups
       .selectAll(".axis")
-      .data(this.keys)
+      .data(this.state.keys)
       .join("g")
       .attr("class", "axis")
       .attr("transform", (d) => `translate(${this.hx(d)}, 0)`)
@@ -155,28 +192,32 @@ class BarChart extends Component {
   }
 
   render() {
-
     this.hx = scaleBand()
-    .domain(this.keys)
-    .range([0, this.props.size[0]])
-    .padding(0.1);
+      .domain(this.state.keys)
+      .range([0, this.props.size[0]])
+      .padding(0.1);
 
     return (
-      <Box
-        position="relative"
-      >
-      <Box color="white"
-        position="absolute"
-        width="100%"
-        paddingTop="12px"
-      >
-        {this.keys.map(k => <HistogramElement key={k} name={k.split("_")[0]} left={this.hx(k) + this.hx.bandwidth() / 2}/>)}
-      </Box>
-      <svg
-        ref={this.chartRef}
-        width={this.props.size[0]}
-        height={this.props.size[1]}
-      ></svg>
+      <Box position="relative">
+        <Box color="white" position="absolute" width="100%" paddingTop="12px">
+          {this.state.keys.map((k) => (
+            <HistogramElement
+              key={k}
+              hideKey={() => this.hideKey(k)}
+              name={k.split("_")[0]}
+              left={this.hx(k) + this.hx.bandwidth() / 2}
+            />
+          ))}
+        </Box>
+        <HiddenElementDropdown
+          setBack={this.setBack}
+          listItems={this.state.removedKeys}
+        />
+        <svg
+          ref={this.chartRef}
+          width={this.props.size[0]}
+          height={this.props.size[1]}
+        ></svg>
       </Box>
     );
   }

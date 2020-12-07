@@ -146,19 +146,19 @@ class Coords extends Component {
       const selectedGroup = getSelG();
       if (dataGroups[selectedGroup]) {
         const arr1 = dataGroups[selectedGroup];
-        dataGroups[selectedGroup] = [ ... new Set([...arr1, ...selPoints])];
+        dataGroups[selectedGroup] = [...new Set([...arr1, ...selPoints])];
       } else {
         dataGroups[selectedGroup] = selPoints;
       }
 
-      const excludeArray = dataGroups[selectedGroup]
+      const excludeArray = dataGroups[selectedGroup];
 
-      dataGroups = dataGroups.map( (dg, idx) => {
-        if(idx != selectedGroup){
-          return dg.filter((dgElement) => !excludeArray.includes(dgElement))
+      dataGroups = dataGroups.map((dg, idx) => {
+        if (idx != selectedGroup) {
+          return dg.filter((dgElement) => !excludeArray.includes(dgElement));
         }
         return dg;
-      })
+      });
 
       changeLastUpdatedIdx(selectedGroup);
       //dataGroups.push(selPoints);
@@ -176,7 +176,7 @@ class Coords extends Component {
     };
   }
 
-  getGroup(i){
+  getGroup(i) {
     const g = this.props.dataGroups.filter((d) => d.includes(i));
     if (g.length > 0) {
       let gID = -1;
@@ -190,16 +190,16 @@ class Coords extends Component {
     } else {
       return -1;
     }
-  };
+  }
 
-  getColor(i){
+  getColor(i) {
     const cg = this.getGroup(i);
     if (cg < 0) {
       return "#FFFFFF";
     } else {
       return schemeTableau10[cg];
     }
-  };
+  }
 
   createCoords() {
     const selection = select(this.coordRef.current);
@@ -220,7 +220,7 @@ class Coords extends Component {
         function (e, d) {
           const g = this.getGroup(d.i);
           const newPoint = g >= this.props.dataGroups.length ? null : d.i;
-          const t = tool()
+          const t = tool();
           if (tool() === "zoom") {
             this.props.changeHoverPoint(newPoint);
           } else {
