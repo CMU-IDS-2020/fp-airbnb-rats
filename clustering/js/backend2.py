@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
+from sklearn.manifold import TSNE
 
 
 app = Flask(__name__)
@@ -49,11 +50,18 @@ def kmeans():
     K = int(request.args.get('K'))
     pca = request.args.get('pca')
     variance = float(request.args.get('variance'))
+    perplexity = float(request.args.get('perplexity'))
 
     if pca == "1":
         pca = PCA(variance)
         reduced_data = pca.fit_transform(scaled_df)
         clusters_data = reduced_data
+
+    elif pca == "2":
+        tsne = TSNE(n_components=2, perplexity=perplexity, n_iter=250)
+        reduced_data = tsne.fit_transform(scaled_df)
+        clusters_data = reduced_data
+
     else:
         clusters_data = scaled_df
 
