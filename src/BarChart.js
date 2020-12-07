@@ -162,7 +162,7 @@ class BarChart extends Component {
       this.state.keys.map((k) => [
         k,
         scaleLinear()
-          .domain(extent(this.props.data, (d) => d[k]))
+          .domain([100, 0])
           .range([hy.bandwidth() - 30, 0])
           .nice(),
       ])
@@ -213,7 +213,11 @@ class BarChart extends Component {
         select(this).call(axisLeft(ry.get(d)).ticks(4));
       });
 
-    selection.selectAll(".axis").selectAll("text").attr("fill", "white");
+    selection
+      .selectAll(".axis")
+      .selectAll("text")
+      .attr("fill", "white")
+      .text((d) => 100 - +d);
     selection.selectAll(".axis").selectAll(".domain").attr("stroke", "white");
     selection
       .selectAll(".axis")

@@ -12,6 +12,7 @@ class ParallelCoordinates extends Component {
     super(props);
     this.createParallelCoordinates = this.createParallelCoordinates.bind(this);
     this.pcpRef = React.createRef();
+    this.keys = Object.keys(this.props.data[0]).slice(3);
   }
 
   componentDidMount() {
@@ -20,15 +21,16 @@ class ParallelCoordinates extends Component {
 
   createParallelCoordinates() {
     const selection = select(this.pcpRef.current);
+    selection.selectAll("g");
   }
 
   render() {
     return (
-        <svg
-          ref={this.pcpRef}
-          width={this.props.size[0]}
-          height={this.props.size[1]}
-        ></svg>
+      <svg
+        ref={this.pcpRef}
+        width={this.props.size[0]}
+        height={this.props.size[1]}
+      ></svg>
     );
   }
 }

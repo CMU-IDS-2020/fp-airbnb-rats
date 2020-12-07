@@ -135,6 +135,8 @@ class App extends Component {
                 (this.state.screenWidth * 2) / 3 - 10,
                 (this.state.screenHeight * 2) / 5 - 10,
               ]}
+              data={data}
+              dataGroups={this.state.dataGroups}
             >
               <ParallelCoordinates />
             </CardLayout>
