@@ -12,10 +12,13 @@ class BarChart extends Component {
     this.chartRef = React.createRef();
     this.dataGroupLength = this.props.dataGroups.length;
     this.keys = Object.keys(this.props.data[0]).slice(3);
-    this.hx = scaleBand()
-      .domain(this.keys)
-      .range([0, this.props.size[0]])
-      .padding(0.1);
+    // this.hx = scaleBand()
+    //   .domain(this.keys)
+    //   .range([0, this.props.size[0]])
+    //   .padding(0.1);
+    this.currentHoverGroup = -1
+    this.dataGroupLengths = this.props.dataGroups.length;
+    this.dataGroupLengths = [];
   }
 
   getCurrentHoverGroup() {
@@ -33,8 +36,7 @@ class BarChart extends Component {
   calculateGroupAverages() {
     return this.props.dataGroups
       .map((g) => g.map((d) => this.props.data[d]))
-      .map((g) => this.keys.map((k) => [k, g.map((d) => d[k])]))
-      .map((s) => s.map((k) => [k[0], mean(k[1])]))
+      .map((g) => this.keys.map((k) => [k, mean(g.map((d) => d[k]))]))
       .map((s) => Object.fromEntries(s));
   }
 
@@ -43,12 +45,40 @@ class BarChart extends Component {
   }
 
   componentDidUpdate() {
-    const selection = select(this.chartRef.current);
+    
     const currentHoverGroup = this.getCurrentHoverGroup();
-    const selected = this.calculateGroupAverages();
-    if (this.props.dataGroups.length != this.dataGroupLength) {
-      this.dataGroupLength = this.props.dataGroups.length;
+    let triggerUpdate = false;
+
+    if(currentHoverGroup != this.currentHoverGroup){
+      this.currentHoverGroup = currentHoverGroup;
+      triggerUpdate = true;
     }
+
+    if (this.props.dataGroups.length != this.dataGroupLength) {
+      triggerUpdate = true;
+      this.dataGroupLength = this.props.dataGroups.length;
+      this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
+    } else if (
+      this.props.dataGroups.filter((dg,idx) => this.dataGroupLength[idx] != dg.length).length > 0) 
+      {
+      triggerUpdate = true;
+      this.dataGroupLengths = this.props.dataGroups.map((dg) => dg.length);
+    }
+
+    if(triggerUpdate){
+      this.createBarChart();
+    }
+  }
+
+  createBarChart() {
+    const selection = select(this.chartRef.current);
+    
+    const selected = this.calculateGroupAverages();
+ 
+    this.hx = scaleBand()
+    .domain(this.keys)
+    .range([0, this.props.size[0]])
+    .padding(0.1);
 
     const hy = scaleBand()
       .domain(range(selected.length))
@@ -76,7 +106,7 @@ class BarChart extends Component {
       .attr("opacity", (_, i) =>
         this.props.hoverPoint === null
           ? 1.0
-          : i === currentHoverGroup
+          : i === this.currentHoverGroup
           ? 1.0
           : 0.25
       )
@@ -99,10 +129,6 @@ class BarChart extends Component {
       .attr("height", (d) => d.height)
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y);
-  }
-
-  createBarChart() {
-    const selection = select(this.chartRef.current);
 
     selection
       .selectAll("text")

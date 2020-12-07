@@ -146,10 +146,19 @@ class Coords extends Component {
       const selectedGroup = getSelG();
       if (dataGroups[selectedGroup]) {
         const arr1 = dataGroups[selectedGroup];
-        dataGroups[selectedGroup] = arr1.concat(selPoints);
+        dataGroups[selectedGroup] = [ ... new Set([...arr1, ...selPoints])];
       } else {
         dataGroups[selectedGroup] = selPoints;
       }
+
+      const excludeArray = dataGroups[selectedGroup]
+
+      dataGroups = dataGroups.map( (dg, idx) => {
+        if(idx != selectedGroup){
+          return dg.filter((dgElement) => !excludeArray.includes(dgElement))
+        }
+        return dg;
+      })
 
       changeLastUpdatedIdx(selectedGroup);
       //dataGroups.push(selPoints);
