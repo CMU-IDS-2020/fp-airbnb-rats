@@ -13,7 +13,7 @@ import { Row, Col, Box } from "jsxstyle";
 import data from "./kingscourt_irregular";
 import { UIColors } from "./colors";
 
-const datagroups = {};
+const datagroups = { 0: [] };
 
 const colorScale = scaleOrdinal(schemeTableau10).domain(
   range(datagroups.length + 1)

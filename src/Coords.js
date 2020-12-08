@@ -77,7 +77,7 @@ class Coords extends Component {
     this.penOff;
     this.penOn;
 
-    this.tool = this.props.pen(); 
+    this.tool = this.props.pen();
     this.hoverPoint = null;
   }
 
@@ -88,14 +88,18 @@ class Coords extends Component {
     this.penOn = penFuncs.penOn;
     this.penOff();
     this.props.registerTool("pen", { on: this.penOn, off: this.penOff });
-    this.dataGroupLength = 0;
-    this.dataGroupLengths = [];
+    this.dataGroupLength = 1;
+    this.dataGroupLengths = [0];
   }
 
   componentDidUpdate() {
     const dgKeys = Object.keys(this.props.dataGroups);
     const dgValues = Object.values(this.props.dataGroups);
     let needToUpdate = false;
+
+    //console.log(this.props.dataGroups, dgKeys, dgValues)
+    //console.log(this.dataGroupLength, this.dataGroupLengths)
+
     if (dgKeys.length != this.dataGroupLength) {
       needToUpdate = true;
       this.dataGroupLength = dgKeys.length;
@@ -108,17 +112,17 @@ class Coords extends Component {
       this.dataGroupLengths = dgValues.map((dg) => dg.length);
     }
 
-    if(this.hoverPoint != this.props.hoverPoint){
+    if (this.hoverPoint != this.props.hoverPoint) {
       this.hoverPoint = this.props.hoverPoint;
       needToUpdate = true;
     }
 
-    if(this.tool != this.props.pen()){
-      this.tool = this.props.pen()
+    if (this.tool != this.props.pen()) {
+      this.tool = this.props.pen();
       needToUpdate = true;
     }
 
-    if(needToUpdate){
+    if (needToUpdate) {
       this.createCoords();
     }
   }
@@ -134,7 +138,8 @@ class Coords extends Component {
 		`);
 
     const sdg = this.props.changeDataGroups;
-    let dataGroups = this.props.dataGroups;
+    let dataGroupsGetter = this.props.getDataGroups;
+    //console.log("data groups", dataGroups)
     function draw(polygon) {
       l.datum({
         type: "LineString",
@@ -150,6 +155,7 @@ class Coords extends Component {
     };
 
     function drawEnd(polygon) {
+      const dataGroups = dataGroupsGetter();
 
       l.datum({
         type: "LineString",
@@ -172,8 +178,6 @@ class Coords extends Component {
       } else {
         dataGroups[selectedGroup] = selPoints;
       }
-
-      console.log(selectedGroup, dataGroups);
 
       const excludeArray = dataGroups[selectedGroup];
 
@@ -223,50 +227,52 @@ class Coords extends Component {
   createCoords() {
     const selection = select(this.coordRef.current);
     const tool = this.props.pen;
-    console.log("create coords", tool())
-    if(tool() == "eye"){
+    if (tool() == "eye") {
       selection
-      .selectAll(".pts")
-      .data(this.props.data.map((d, i) => ({ ...d, i: i })))
-      .join("circle")
-      .attr("cx", (d) => d.X)
-      .attr("cy", (d) => d.Y)
-      .attr("r", (d) => (this.hoverPoint == d.i) ? 3 : 1.3)
-      .attr("fill", (d) => (this.hoverPoint == d.i) ?"#88AAFF": this.getColor(d.i))
-      .attr("opacity", (d) => (this.getGroup(d.i) >= 0 || (this.hoverPoint == d.i) ? 1 : 0.25))
-      .attr("class", "pts")
-      .attr("key", (d) => `circle-${d.i}`)
-      .on(
-        "mouseenter",
-        function (e, d) {
-          console.log("mouse enter", tool())
-          const g = this.getGroup(d.i);
-          const newPoint = g >= this.props.dataGroups.length ? null : d.i;
-          this.props.changeHoverPoint(newPoint);
-        }.bind(this)
-      )
-      .on(
-        "mouseleave",
-        function (e, d) {
-          this.props.changeHoverPoint(null);
-        }.bind(this)
-      );
+        .selectAll(".pts")
+        .data(this.props.data.map((d, i) => ({ ...d, i: i })))
+        .join("circle")
+        .attr("cx", (d) => d.X)
+        .attr("cy", (d) => d.Y)
+        .attr("r", (d) => (this.hoverPoint == d.i ? 3 : 1.3))
+        .attr("fill", (d) =>
+          this.hoverPoint == d.i ? "#88AAFF" : this.getColor(d.i)
+        )
+        .attr("opacity", (d) =>
+          this.getGroup(d.i) >= 0 || this.hoverPoint == d.i ? 1 : 0.25
+        )
+        .attr("class", "pts")
+        .attr("key", (d) => `circle-${d.i}`)
+        .on(
+          "mouseenter",
+          function (e, d) {
+            console.log("mouse enter", tool());
+            const g = this.getGroup(d.i);
+            const newPoint = g >= this.props.dataGroups.length ? null : d.i;
+            this.props.changeHoverPoint(newPoint);
+          }.bind(this)
+        )
+        .on(
+          "mouseleave",
+          function (e, d) {
+            this.props.changeHoverPoint(null);
+          }.bind(this)
+        );
     } else {
       selection
-      .selectAll(".pts")
-      .data(this.props.data.map((d, i) => ({ ...d, i: i })))
-      .join("circle")
-      .attr("cx", (d) => d.X)
-      .attr("cy", (d) => d.Y)
-      .attr("r", 1.3)
-      .attr("fill", (d) => this.getColor(d.i))
-      .attr("opacity", (d) => (this.getGroup(d.i) >= 0 ? 1 : 0.25))
-      .attr("class", "pts")
-      .attr("key", (d) => `circle-${d.i}`)
-      .on("mouseenter", null)
-      .on("mouseleave", null)
+        .selectAll(".pts")
+        .data(this.props.data.map((d, i) => ({ ...d, i: i })))
+        .join("circle")
+        .attr("cx", (d) => d.X)
+        .attr("cy", (d) => d.Y)
+        .attr("r", 1.3)
+        .attr("fill", (d) => this.getColor(d.i))
+        .attr("opacity", (d) => (this.getGroup(d.i) >= 0 ? 1 : 0.25))
+        .attr("class", "pts")
+        .attr("key", (d) => `circle-${d.i}`)
+        .on("mouseenter", null)
+        .on("mouseleave", null);
     }
-    
   }
 
   render() {
