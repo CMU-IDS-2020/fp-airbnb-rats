@@ -3,15 +3,8 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Box, Inline } from "jsxstyle";
 import "./App.css";
 import contextImg from "./data/kingscourt_ir/kingscourt_ir_context_image.jpg";
-import trackPointer from "./trackPointer";
-import { dispatch } from "d3-dispatch";
-import { geoPath } from "d3-geo";
-import { polygonContains } from "d3-polygon";
-import { select } from "d3-selection";
 import GroupDropdown from "./GroupDropdown";
-import { schemeTableau10 } from "d3-scale-chromatic";
 import Coords from "./Coords";
-import ZoomPan from "./assets/zoompan.png";
 import ZoomPanIcon from "./assets/zoompanicon.png";
 import LassoIcon from "./assets/lassoicon.png";
 import ZoomPanSelected from "./assets/zoompan_selected.png";
@@ -94,6 +87,10 @@ class ContextImage extends Component {
     if (this.dgLength != Object.keys(this.props.dataGroups).length) {
       this.updateDropdownWithMenu(this.state.selectedGroup);
       this.dgLength = Object.keys(this.props.dataGroups).length;
+    }
+
+    if(this.state.selectedGroup > this.dgLength - 1){
+      this.setSelectedGroup(0)
     }
   }
 
