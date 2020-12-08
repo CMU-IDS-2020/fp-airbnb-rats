@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { scaleBand, scaleLinear, scaleLog } from "d3-scale";
-import { range, extent, mean } from "d3-array";
+import { range, extent, mean, variance } from "d3-array";
 import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
 import { axisLeft } from "d3-axis";
@@ -84,14 +84,11 @@ class BarChart extends Component {
       const values = this.props.dataGroups[idx];
       const trueData = values.map((d) => this.props.data[d]);
       res[idx] = Object.fromEntries(
-        this.state.keys.map((k) => [k, mean(trueData.map((d) => d[k]))])
+        this.state.keys.map((k) => [k, trueData.map((d) => d[k])])
+          .map((k) => [k[0], [mean(k[1]), variance(k[1])]])
       );
       res[idx]["color"] = schemeTableau10[idx];
     });
-    // return Object.values(this.props.dataGroups)
-    //   .map((g) => g.map((d) => this.props.data[d]))
-    //   .map((g) => this.state.keys.map((k) => [k, mean(g.map((d) => d[k]))]))
-    //   .map((s) => Object.fromEntries(s));
     return Object.values(res);
   }
 
@@ -143,31 +140,16 @@ class BarChart extends Component {
     const selected = this.calculateGroupAverages();
     const selectedLen = Object.keys(selected).length;
 
+    console.log(selected)
+
     const hy = scaleBand()
       .domain(range(0, selectedLen))
       .range([this.props.size[1], 0])
       .padding(0.25);
 
-    const gpoints = Object.values(this.props.dataGroups)
-      .map((d) => d.map((p) => this.props.data[p]))
-      .flat();
-
-    const ry = new Map(
-      this.state.keys.map((k) => [
-        k,
-        scaleLog()
-          .domain(
-            extent(
-              this.props.data
-                .map((d) => Object.values(d))
-                .flat()
-                .filter((d) => d)
-            ).reverse()
-          )
-          .range([0, hy.bandwidth() - 30])
-          .nice(),
-      ])
-    );
+    const meansonly = selected.map(d => Object.values(d).map(g => g[0])).flat().filter((b) => b !== 0)
+    const domainMean = extent(meansonly)
+    const ry2 = scaleLog().domain(domainMean).range([hy.bandwidth(), 0]).nice()
 
     const hgroups = selection
       .selectAll(".histgroup")
@@ -186,17 +168,19 @@ class BarChart extends Component {
 
     const bars = hgroups
       .selectAll("rect")
-      .data((d) =>
-        this.state.keys.map((k) => {
+      .data((dat) =>
+        this.state.keys.map((k, i) => {
           const o = {};
-          //console.log(k, d)
+          const d = dat[k]
           o.label = k;
-          o.value = d[k];
+          o.value = d[0];
           o.width = this.hx.bandwidth();
-          o.height = hy.bandwidth() - Math.max(ry.get(k)(d[k]), 0);
+          const transformedHeight = d[0] === 0 ? 0 : ry2(d[0]);
+          o.height = hy.bandwidth() - transformedHeight;
           o.x = this.hx(k);
-          o.y = hy.bandwidth() - o.height;
-          o.i = d.i;
+          o.y = transformedHeight;
+          o.i = i;
+          console.log(dat, k, o)
           return o;
         })
       )
@@ -204,10 +188,7 @@ class BarChart extends Component {
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
       .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y - 30)
-      .on("mouseenter", function (e, d) {
-        console.log(d);
-      });
+      .attr("y", (d) => d.y)
 
     hgroups
       .selectAll(".axis")
@@ -215,10 +196,10 @@ class BarChart extends Component {
       .join("g")
       .attr("class", "axis")
       .attr("transform", (d) => `translate(${this.hx(this.state.keys[0])}, 0)`)
-      .call(axisLeft(ry.get(this.state.keys[0])).ticks(4, ".1"));
+      .call(axisLeft(ry2).ticks(5, "0.2f"));
 
-    selection.selectAll(".axis").selectAll("text").attr("fill", "white");
-    //.text((d) => 100 - +d);
+    selection.selectAll(".axis").selectAll("text").attr("fill", "white")
+    
     selection.selectAll(".axis").selectAll(".domain").attr("stroke", "white");
     selection
       .selectAll(".axis")
