@@ -113,6 +113,14 @@ class BarChart extends Component {
     // console.log(this.state.keys.map( (key, idx) => trueData2.map(td2 => td2[idx]) )) 
   }
 
+  calculateAveragesOfAllGroups() {
+    const points = Object.values(this.props.dataGroups).flat()
+    let trueData = points.map((cluster) => { return this.props.data[cluster]})
+    const mapped = this.state.keys.map(key => [key, trueData.map(datapoint => datapoint[key])]).map(k => [k[0], mean(k[1]), deviation(k[1])])
+    console.log(points, trueData, mapped)
+    //console.log(trueData)
+  }
+
   componentDidMount() {
     this.createBarChart();
     this, this.updateMenuTool();
@@ -160,7 +168,7 @@ class BarChart extends Component {
     const selection = select(this.chartRef.current);
     const selected = this.calculateGroupAverages();
     const bulkAvg = this.calculateBulkAverages(selected)
-    console.log(bulkAvg)
+    this.calculateAveragesOfAllGroups(this.props.dataGroups)
 
     const selectedLen = Object.keys(selected).length;
 
