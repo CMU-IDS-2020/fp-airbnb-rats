@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { scaleBand, scaleLinear, scaleLog } from "d3-scale";
-import { range, extent, mean, variance } from "d3-array";
+import { range, extent, mean, deviation } from "d3-array";
 import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
 import { axisLeft } from "d3-axis";
@@ -88,12 +88,29 @@ class BarChart extends Component {
         res[idx] = Object.fromEntries(
           this.state.keys
             .map((k) => [k, trueData.map((d) => d[k])])
-            .map((k) => [k[0], [mean(k[1]), variance(k[1])]])
+            .map((k) => [k[0], [mean(k[1]), deviation(k[1])]])
         );
         res[idx]["color"] = schemeTableau10[idx];
       }
     });
     return Object.values(res);
+  }
+
+  // calculateBulkAverages( groupAverages ) {
+  //   return (this.state.keys.map(key => Object.values(groupAverages)
+  //     .map(avg => avg[key]).map(m => m[0]) ))
+  // }
+
+  calculateBulkAverages() {
+
+    // const clusters = Object.values(this.props.dataGroups)
+
+    // let trueData = clusters.map((cluster) => { return cluster.map( dataIdx => this.props.data[dataIdx])})
+    // let trueData2 = trueData.map(dataPoint => this.state.keys
+    //   .map((k) => [k, dataPoint.map((d) => d[k])])
+    //   .map((k) => [k[0], [mean(k[1]), deviation(k[1])]]))
+
+    // console.log(this.state.keys.map( (key, idx) => trueData2.map(td2 => td2[idx]) )) 
   }
 
   componentDidMount() {
@@ -142,6 +159,9 @@ class BarChart extends Component {
   createBarChart() {
     const selection = select(this.chartRef.current);
     const selected = this.calculateGroupAverages();
+    const bulkAvg = this.calculateBulkAverages(selected)
+    console.log(bulkAvg)
+
     const selectedLen = Object.keys(selected).length;
 
     const hy = scaleBand()
@@ -167,7 +187,7 @@ class BarChart extends Component {
           ? 1.0
           : i === this.currentHoverGroup
           ? 1.0
-          : 0.25
+          : 0.45
       )
       .attr("fill", (d, i) => d["color"]);
 
@@ -195,12 +215,36 @@ class BarChart extends Component {
       .attr("y", (d) => d.y);
 
     hgroups
+      .selectAll(".vrect")
+      .data((dat) =>
+        this.state.keys.map((k, i) => {
+          const o = {};
+          const d = dat[k];
+          o.label = k;
+          o.value = d[1];
+          o.width = this.hx.bandwidth()/4;
+          const transformedHeight = d[0] === 0 ? 0 : ry2(d[1]);
+          o.height = hy.bandwidth() - transformedHeight;
+          o.x = this.hx(k) + this.hx.bandwidth()/2 - o.width/2;
+          o.y = transformedHeight;
+          o.i = i;
+          return o;
+        })
+      )
+      .join("rect")
+      .attr("width", (d) => d.width)
+      .attr("height", (d) => d.height)
+      .attr("fill", "rgba(255, 255, 255, 0.5)")
+      .attr("x", (d) => d.x)
+      .attr("y", (d) => d.y);
+
+    hgroups
       .selectAll(".axis")
       .data([this.state.keys[0]])
       .join("g")
       .attr("class", "axis")
       .attr("transform", (d) => `translate(${this.hx(this.state.keys[0])}, 0)`)
-      .call(axisLeft(ry2).ticks(5, "0.2f"));
+      .call(axisLeft(ry2).ticks(5, "0.3f"));
 
     selection.selectAll(".axis").selectAll("text").attr("fill", "white");
 
@@ -211,25 +255,26 @@ class BarChart extends Component {
       .selectAll("line")
       .attr("stroke", "white");
 
-    if (this.props.hoverPoint && this.currentHoverGroup > -1) {
+    if (this.props.hoverPoint >= 0 && this.currentHoverGroup > -1) {
       selection
         .selectAll(".hvline")
         .data(this.state.keys)
         .join("line")
         .attr("class", (d) => "hvline")
         .attr("stroke", "white")
+        .attr("stroke-width", 3)
         .attr("transform", `translate(0, ${hy(this.currentHoverGroup)})`)
         .attr("x1", (d) => this.hx(d))
         .attr("x2", (d) => this.hx(d) + this.hx.bandwidth())
         .attr("y1", (d) =>
           this.props.data[this.props.hoverPoint][d] === 0
             ? hy.bandwidth()
-            : hy.bandwidth() - ry2(this.props.data[this.props.hoverPoint][d])
+            : ry2(this.props.data[this.props.hoverPoint][d])
         )
         .attr("y2", (d) =>
           this.props.data[this.props.hoverPoint][d] === 0
             ? hy.bandwidth()
-            : hy.bandwidth() - ry2(this.props.data[this.props.hoverPoint][d])
+            : ry2(this.props.data[this.props.hoverPoint][d])
         );
     } else {
       selection.selectAll(".hvline").remove();
