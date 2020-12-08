@@ -211,7 +211,7 @@ class BarChart extends Component {
   render() {
     this.hx = scaleBand()
       .domain(this.state.keys)
-      .range([100, this.props.size[0]])
+      .range([50, this.props.size[0] - 20])
       .padding(0.1);
 
     return (
