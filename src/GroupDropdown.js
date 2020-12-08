@@ -9,15 +9,22 @@ function DropdownItem(props) {
     <Row
       justifyContent="center"
       alignItems="center"
+      cursor="pointer"
       borderRadius={props.selected ? "12px 12px 0px 0px" : "0px"}
-      backgroundColor={props.selected ? "black" : UIColors.header}
+      backgroundColor={
+        props.selected ? "black" : props.isHover ? "grey" : UIColors.header
+      }
       padding="4px"
       borderBottom={!props.selected ? "1px solid rgba(255, 255, 255, 0.2)" : ""}
-      cursor={props.selected ? "default" : "pointer"}
+      cursor={"pointer"}
       props={
         props.selected
           ? {}
-          : { onClick: () => props.setSelected(props.listItem) }
+          : {
+              onClick: () => props.setSelected(props.listItem),
+              onMouseEnter: () => props.setHoverElement(props.listItem),
+              onMouseLeave: () => props.setHoverElement(-1),
+            }
       }
     >
       <Box
@@ -26,14 +33,13 @@ function DropdownItem(props) {
         width="10px"
         height="10px"
       />
-      <Box marginLeft="6px">
+      <Box
+        marginLeft="6px"
+        props={{ onClick: props.selected ? () => props.toggleIsOpen() : null }}
+      >
         {"Component " + props.idx}
         {props.selected ? (
-          <Inline
-            hoverCursor="pointer"
-            marginLeft="8px"
-            props={{ onClick: () => props.toggleIsOpen() }}
-          >
+          <Inline hoverCursor="pointer" marginLeft="8px">
             {props.isOpen ? "▾" : "◂"}
           </Inline>
         ) : (
@@ -49,17 +55,23 @@ class GroupDropdown extends Component {
     super(props);
     this.state = {
       dropdownOpen: false,
+      hoverIdx: -1,
     };
     this.toggleIsOpen = this.toggleIsOpen.bind(this);
+    this.setHoverElement = this.setHoverElement.bind(this);
   }
 
   toggleIsOpen() {
     this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
+  setHoverElement(idx) {
+    this.setState({ hoverIdx: idx });
+  }
+
   render() {
     return (
-      <Row position="relative" width="160px" marginLeft="8px" height="26px">
+      <Row position="relative" width="145px" marginLeft="8px" height="26px">
         <Col
           color={UIColors.text}
           position="absolute"
@@ -68,6 +80,7 @@ class GroupDropdown extends Component {
           zIndex="2"
           className="dropdown"
           userSelect="none"
+          textTransform="none"
         >
           <DropdownItem
             key="selected"
@@ -75,6 +88,7 @@ class GroupDropdown extends Component {
             idx={this.props.selectedGroup}
             selected={true}
             toggleIsOpen={this.toggleIsOpen}
+            setHoverElement={this.setHoverElement}
             isOpen={this.state.dropdownOpen}
           />
           {this.state.dropdownOpen
@@ -86,6 +100,8 @@ class GroupDropdown extends Component {
                     idx={listItem}
                     selected={false}
                     setSelected={this.props.setSelected}
+                    setHoverElement={this.setHoverElement}
+                    isHover={this.state.hoverIdx === listItem}
                   />
                 ) : (
                   ""
@@ -98,7 +114,16 @@ class GroupDropdown extends Component {
               alignItems="center"
               padding="4px"
               cursor="pointer"
-              backgroundColor={UIColors.header}
+              backgroundColor={
+                this.state.hoverIdx === this.props.numComponents
+                  ? "grey"
+                  : UIColors.header
+              }
+              props={{
+                onMouseEnter: () =>
+                  this.setHoverElement(this.props.numComponents),
+                onMouseLeave: () => this.setHoverElement(-1),
+              }}
             >
               <div onClick={this.props.addListItems}>+ Add item</div>
             </Row>

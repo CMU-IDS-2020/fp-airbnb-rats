@@ -68,6 +68,7 @@ class ContextImage extends Component {
     let dg = this.props.dataGroups;
     dg[dgMax + 1] = [];
     this.props.changeDataGroups(dg);
+    this.setSelectedGroup(dgMax + 1);
   }
 
   setSelectedGroup(idx) {
