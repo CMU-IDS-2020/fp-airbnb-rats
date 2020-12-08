@@ -8,6 +8,7 @@ import { axisLeft } from "d3-axis";
 import { Box, Row } from "jsxstyle";
 import HiddenElementDropdown from "./HiddenElementDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
+import { transition } from "d3-transition";
 
 class BarChart extends Component {
   constructor(props) {
@@ -209,6 +210,30 @@ class BarChart extends Component {
       .selectAll(".tick")
       .selectAll("line")
       .attr("stroke", "white");
+
+    if (this.props.hoverPoint && this.currentHoverGroup > -1) {
+      selection
+        .selectAll(".hvline")
+        .data(this.state.keys)
+        .join("line")
+        .attr("class", (d) => "hvline")
+        .attr("stroke", "white")
+        .attr("transform", `translate(0, ${hy(this.currentHoverGroup)})`)
+        .attr("x1", (d) => this.hx(d))
+        .attr("x2", (d) => this.hx(d) + this.hx.bandwidth())
+        .attr("y1", (d) =>
+          this.props.data[this.props.hoverPoint][d] === 0
+            ? hy.bandwidth()
+            : hy.bandwidth() - ry2(this.props.data[this.props.hoverPoint][d])
+        )
+        .attr("y2", (d) =>
+          this.props.data[this.props.hoverPoint][d] === 0
+            ? hy.bandwidth()
+            : hy.bandwidth() - ry2(this.props.data[this.props.hoverPoint][d])
+        );
+    } else {
+      selection.selectAll(".hvline").remove();
+    }
   }
 
   render() {
