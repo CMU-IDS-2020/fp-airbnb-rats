@@ -11,6 +11,7 @@ import SortElementDropdown from "./SortElementDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
 import { transition } from "d3-transition";
 import { format } from "d3-format";
+import { color } from "d3-color";
 
 const sortingFunctions = {
   "mean-h-l": "Mean: High to Low",
@@ -332,17 +333,21 @@ class BarChart extends Component {
           .attr("height", ts + 10)
           .attr("stroke", "white")
           .attr("fill", "black")
+          .attr("pointer-events", "none")
           .attr("stroke-width", 1);
 
         tg.append("text")
           .attr("x", d.x + d.width / 2)
           .attr("y", d.y + 5)
+          .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
           .attr("font-size", ts - 4)
           .attr("font-family", "sans-serif")
           .attr("fill", "white")
-          .text(`μ = ${format(".2f")(d.value)}, σ = ${format(".2f")(d.variance)}`);
+          .text(
+            `μ = ${format(".2f")(d.value)}, σ = ${format(".2f")(d.variance)}`
+          );
       })
       .on("mouseleave", function (e, d) {
         selection
@@ -367,6 +372,7 @@ class BarChart extends Component {
           o.x = this.hx(k) + this.hx.bandwidth() / 2 - o.width / 2;
           o.y = transformedHeight;
           o.i = i;
+          o.color = dat["color"];
           return o;
         })
       )
@@ -374,9 +380,9 @@ class BarChart extends Component {
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
       .attr("pointer-events", "none")
-      .attr("fill", "rgba(255, 255, 255, 0.5)")
+      .attr("fill", (d) => color(d.color).brighter(0.5))
       .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y)
+      .attr("y", (d) => d.y);
 
     hgroups
       .selectAll(".axis")
