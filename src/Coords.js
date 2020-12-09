@@ -139,6 +139,7 @@ class Coords extends Component {
 
     const sdg = this.props.changeDataGroups;
     let dataGroupsGetter = this.props.getDataGroups;
+    let shiftDownGetter = this.props.shiftDownGetter;
     //console.log("data groups", dataGroups)
     function draw(polygon) {
       l.datum({
@@ -156,6 +157,7 @@ class Coords extends Component {
 
     function drawEnd(polygon) {
       const dataGroups = dataGroupsGetter();
+      const shiftDown = shiftDownGetter();
 
       l.datum({
         type: "LineString",
@@ -172,21 +174,29 @@ class Coords extends Component {
         .data();
       selPoints = selPoints.map((d) => d.i);
       const selectedGroup = getSelG();
-      if (dataGroups[selectedGroup]) {
-        const arr1 = dataGroups[selectedGroup];
-        dataGroups[selectedGroup] = [...new Set([...arr1, ...selPoints])];
-      } else {
-        dataGroups[selectedGroup] = selPoints;
+      if (!shiftDown) {
+        if (dataGroups[selectedGroup]) {
+          const arr1 = dataGroups[selectedGroup];
+          dataGroups[selectedGroup] = [...new Set([...arr1, ...selPoints])];
+        } else {
+          dataGroups[selectedGroup] = selPoints;
+        }
       }
 
-      const excludeArray = dataGroups[selectedGroup];
+      const excludeArray = shiftDown ? selPoints : dataGroups[selectedGroup];
 
       Object.keys(dataGroups).forEach((dg) => {
         const val = dataGroups[dg];
-        if (dg != selectedGroup) {
+        if (shiftDown) {
           dataGroups[dg] = val.filter(
             (dgElement) => !excludeArray.includes(dgElement)
           );
+        } else {
+          if (dg != selectedGroup) {
+            dataGroups[dg] = val.filter(
+              (dgElement) => !excludeArray.includes(dgElement)
+            );
+          }
         }
       });
 

@@ -41,6 +41,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.onResize = this.onResize.bind(this);
+    this.keydown = this.keydown.bind(this);
+    this.keyup = this.keyup.bind(this);
+    this.shiftDownGetter = this.shiftDownGetter.bind(this);
     this.changeKeys = this.changeKeys.bind(this);
     this.changeDataGroups = this.changeDataGroups.bind(this);
     this.changeHoverPoint = this.changeHoverPoint.bind(this);
@@ -63,6 +66,7 @@ class App extends Component {
       removedKeys: [],
       sortingFunctionIdx: 0,
       scaleMode: "log",
+      shiftDown: false,
     };
 
     this.bulkAverages = this.calculateBulkAverages();
@@ -211,15 +215,32 @@ class App extends Component {
     });
   }
 
+  keydown(e) {
+    console.log(e.key);
+    if (e.key === "Shift") {
+      this.setState({ shiftDown: true });
+    }
+  }
+
+  keyup(e) {
+    console.log(e.key);
+    if (e.key === "Shift") {
+      this.setState({ shiftDown: false });
+    }
+  }
   //when component mounts, start listening for resizing so we can update project sizes
   componentDidMount() {
     this.onResize();
     window.addEventListener("resize", () => resize(this.onResize));
+    window.addEventListener("keydown", this.keydown);
+    window.addEventListener("keyup", this.keyup);
     this.setSortingFunction(this.state.sortingFunctionIdx);
   }
   //when component unmounts, stop listening
   componentWillUnmount() {
     window.removeEventListener("resize", () => resize(this.onResize));
+    window.removeEventListener("keydown", this.keydown);
+    window.removeEventListener("keyup", this.keyup);
   }
 
   onBrush(d) {
@@ -232,6 +253,9 @@ class App extends Component {
     } else {
       this.setState({ scaleMode: "linear" });
     }
+  }
+  shiftDownGetter() {
+    return this.state.shiftDown;
   }
 
   render() {
@@ -269,6 +293,7 @@ class App extends Component {
               changeDataGroups={this.changeDataGroups}
               hoverPoint={this.state.hoverPoint}
               changeHoverPoint={this.changeHoverPoint}
+              shiftDownGetter={this.shiftDownGetter}
               size={[
                 (this.state.screenWidth * 1) / 3 - 10,
                 (this.state.screenHeight * 3) / 5 - 10,

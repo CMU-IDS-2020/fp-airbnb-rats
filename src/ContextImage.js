@@ -189,6 +189,7 @@ class ContextImage extends Component {
                     hoverPoint={this.props.hoverPoint}
                     registerTool={this.registerTool}
                     pen={this.getTool}
+                    shiftDownGetter={this.props.shiftDownGetter}
                     getSelectedGroup={this.getSelectedGroup}
                   />
                 ) : (
