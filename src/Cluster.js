@@ -196,14 +196,12 @@ class Cluster extends Component {
         <Col width="80%">
           <Row
             width="100%"
-            fontSize="13px"
+            fontSize="12px"
             marginBottom="14px"
             justifyContent="flex-start"
-            color="grey"
-            fontStyle="italic"
+            color="#AAA"
           >
-            Definition of hierarchical clustering Definition of hierarchical
-            clustering Definition of hierarchical
+            A distance based clustering algorithm that partitions the dataset into 'K' groups using the dist. between the points.
           </Row>
           <Row marginBottom="8px" alignItems="center">
             <Box marginRight="8px" fontWeight="600">
@@ -216,11 +214,12 @@ class Cluster extends Component {
               style={{ width: "40px", height: "24px" }}
             />
           </Row>
-          <Col alignItems="flex-start" height="64px">
-            <Box marginBottom="4px" fontWeight="600">
+          <Col alignItems="flex-start" height="100px" >
+            <Box marginBottom="4px" fontWeight="600" borderBottom="1px solid grey">
               Dimensionality Reduction
             </Box>
-            <Row width="100%" justifyContent="space-evenly">
+            <Row width="100%">
+            <Col width="40%" justifyContent="space-evenly" alignItems="flex-start">
               <Inline>
                 <input
                   type="radio"
@@ -251,8 +250,8 @@ class Cluster extends Component {
                 />
                 None
               </Inline>
-            </Row>
-            <Row marginTop="4px" justifyContent="center" width="100%">
+            </Col>
+            <Col justifyContent="center" width="100%" height="70px">
               <div id="pca_subOptions" style={{ display: "none" }}>
                 <label>Variance %: </label>
                 <input
@@ -261,6 +260,16 @@ class Cluster extends Component {
                   name="variance"
                   style={{ width: "40px", height: "24px" }}
                 />
+                <Row
+                  width="100%"
+                  fontSize="12px"
+                  marginBottom="14px"
+                  justifyContent="flex-start"
+                  color="grey"
+                  fontStyle="italic"
+                >
+                PCA does deterministic, linear dimensionality reduction.
+                </Row>
               </div>
               <div id="tsne_subOptions" style={{ display: "none" }}>
                 <label>Perplexity %: </label>
@@ -270,7 +279,18 @@ class Cluster extends Component {
                   name="perplexity"
                   style={{ width: "40px", height: "24px" }}
                 />
+                <Row
+                  width="100%"
+                  fontSize="12px"
+                  marginBottom="14px"
+                  justifyContent="flex-start"
+                  color="grey"
+                  fontStyle="italic"
+                >
+                t-SNE does probabalistic, non-linear dimensionality
+                </Row>
               </div>
+            </Col>
             </Row>
           </Col>
         </Col>
@@ -280,14 +300,12 @@ class Cluster extends Component {
         <Box width="80%">
           <Row
             width="100%"
-            fontSize="13px"
-            marginBottom="8px"
-            alignItems="center"
-            color="grey"
-            fontStyle="italic"
+            fontSize="12px"
+            marginBottom="14px"
+            justifyContent="flex-start"
+            color="#AAA"
           >
-            Definition of hierarchical clustering Definition of hierarchical
-            clustering Definition of hierarchical
+            Hierarchical clustering builds a hierarchy of clusters based on a distance metric.
           </Row>
           <Row marginBottom="4px" alignItems="center">
             <Box marginRight="8px" fontWeight="600">
@@ -306,7 +324,7 @@ class Cluster extends Component {
                 justifyContent="center"
                 fontWeight="600"
                 fontSize="16px"
-                borderBottom="1px solid white"
+                borderBottom="1px solid grey"
                 marginBottom="4px"
               >
                 Linkage
@@ -345,8 +363,8 @@ class Cluster extends Component {
                 </div>
               </Col>
             </Col>
-            <Col width="150px" color="grey" fontSize="13px" fontStyle="italic">
-              Linkage is important because of these qualities.
+            <Col width="150px" color="grey" fontSize="13px" fontStyle="italic" textAlign="left">
+            Linkage determines which type of distance should be used in building the hierarchy.
             </Col>
           </Row>
         </Box>
@@ -359,11 +377,9 @@ class Cluster extends Component {
             fontSize="13px"
             marginBottom="14px"
             alignItems="center"
-            color="grey"
-            fontStyle="italic"
+            color="#AAA"
           >
-            Definition of hierarchical clustering Definition of hierarchical
-            clustering Definition of hierarchical
+            Generate groups based on maximum abundance elements or minimum abundance elements.
           </Row>
           <Col alignItems="center">
             <Inline
@@ -371,9 +387,8 @@ class Cluster extends Component {
               fontWeight="600"
               fontSize="16px"
               width="120px"
-              borderBottom="1px solid white"
+              borderBottom="1px solid grey"
             >
-              {" "}
               Group by
             </Inline>
             <Col marginTop="8px" alignItems="flex-start">
