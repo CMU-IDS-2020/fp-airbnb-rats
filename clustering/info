@@ -1,0 +1,9 @@
+kmeans: A distance based clustering algorithm that partitions the dataset into 'K' groups based on the distance between the points.
+
+PCA: A deterministic, linear dimensionality reduction technique.
+
+t-SNE: A probabalistic, non-linear dimensionality reduction technique.
+
+hierarchical clustering: Builds a hierarchy of clusters based on a distance metric.
+
+Linkage: Linkage is important because it is the criterion that determines which type of distance should be used in building the hierarchy.
