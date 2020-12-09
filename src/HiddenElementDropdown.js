@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Box } from "jsxstyle";
+import { Box, Col, Inline, Row } from "jsxstyle";
 import { UIColors } from "./colors";
 
 class HiddenElementDropdown extends Component {
@@ -8,12 +8,27 @@ class HiddenElementDropdown extends Component {
     super(props);
     this.state = {
       dropdownOpen: false,
+      hoverIdx: -1
     };
+    this.toggleIsOpen = this.toggleIsOpen.bind(this);
+    this.setHoverElement = this.setHoverElement.bind(this);
+  }
+
+  toggleIsOpen() {
+    this.setState({ dropdownOpen: !this.state.dropdownOpen });
+  }
+
+  setHoverElement(idx) {
+    this.setState({ hoverIdx: idx });
   }
 
   render() {
     return (
       <Box
+      width="160px"
+      textTransform="none"
+      fontSize="12px"
+      fontWeight="600"
         position="relative"
         userSelect="none"
         props={{
@@ -21,15 +36,21 @@ class HiddenElementDropdown extends Component {
           onMouseLeave: () => this.setState({ dropdownOpen: false }),
         }}
       >
-        <Box
+        <Row
           color={UIColors.text}
-          fontSize="12px"
+          height="28px"
+          width="100%"
+          justifyContent="space-between"
+          alignItems="center"
+          padding="4px"
           backgroundColor={UIColors.cardBg}
         >
+          <div>
           {this.state.dropdownOpen && this.props.listItems.length > 0
             ? "Click to add back"
-            : this.props.listItems.length + " elements hidden"}
-        </Box>
+            : this.props.listItems.length + " elements hidden"}</div>
+            {(this.props.listItems.length > 0) ? <div>{this.state.dropdownOpen ? "▾" : "◂"}</div> : ""}
+        </Row>
         {this.state.dropdownOpen && this.props.listItems.length > 0 ? (
           <Box
             position="absolute"
@@ -41,14 +62,20 @@ class HiddenElementDropdown extends Component {
             hoverCursor="pointer"
             color="white"
           >
-            {this.props.listItems.map((li) => {
+            {this.props.listItems.map((li, idx) => {
               return (
                 <Box
                   key={li}
                   width="100%"
-                  padding="4px"
+                  padding="8px"
                   borderTop="1px solid white"
-                  props={{ onClick: () => this.props.setBack(li) }}
+                  backgroundColor={
+                    this.state.hoverIdx === idx ? "grey" : UIColors.header
+                  }
+                  props={{ onClick: () => this.props.setBack(li),               
+                    onMouseEnter: () => this.setHoverElement(idx),
+                    onMouseLeave: () => this.setHoverElement(-1),
+                   }}
                 >
                   {li.split("_")[0]}
                 </Box>

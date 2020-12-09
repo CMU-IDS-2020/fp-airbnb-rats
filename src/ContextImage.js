@@ -89,8 +89,8 @@ class ContextImage extends Component {
       this.dgLength = Object.keys(this.props.dataGroups).length;
     }
 
-    if(this.state.selectedGroup > this.dgLength - 1){
-      this.setSelectedGroup(0)
+    if (this.state.selectedGroup > this.dgLength - 1) {
+      this.setSelectedGroup(0);
     }
   }
 

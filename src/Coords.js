@@ -105,7 +105,7 @@ class Coords extends Component {
       this.dataGroupLength = dgKeys.length;
       this.dataGroupLengths = dgValues.map((dg) => dg.length);
     } else if (
-      dgValues.filter((dg, idx) => this.dataGroupLength[idx] != dg.length)
+      dgValues.filter((dg, idx) => this.dataGroupLengths[idx] != dg.length)
         .length > 0
     ) {
       needToUpdate = true;
