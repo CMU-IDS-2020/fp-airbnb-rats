@@ -5,7 +5,7 @@ import BarChart from "./BarChart";
 import ParallelCoordinates from "./ParallelCoordinates";
 import Cluster from "./Cluster";
 import { scaleOrdinal } from "d3-scale";
-import { schemeTableau10 } from "d3-scale-chromatic";
+import { schemeTableau10, schemePaired } from "d3-scale-chromatic";
 import { range, extent, mean, deviation, quantile } from "d3-array";
 import { geoCentroid } from "d3-geo";
 import CardLayout from "./CardLayout";
@@ -16,6 +16,8 @@ import HiddenElementDropdown from "./HiddenElementDropdown";
 import SortElementDropdown from "./SortElementDropdown";
 
 const datagroups = { 0: [] };
+
+const colSchemes = [...schemeTableau10, ...schemePaired];
 
 const sortingFunctions = {
   "mean-h-l": "Mean: High to Low",
@@ -148,7 +150,18 @@ class App extends Component {
   calculateBulkAverages() {
     let bulkAverages = this.state.keys
       .map((key) => [key, data.map((datapoint) => datapoint[key])])
-      .map((k) => [k[0], [mean(k[1]), deviation(k[1]), quantile(k[1], 0), quantile(k[1], 0.25), quantile(k[1], 0.5), quantile(k[1], 0.75), quantile(k[1], 1)]]);
+      .map((k) => [
+        k[0],
+        [
+          mean(k[1]),
+          deviation(k[1]),
+          quantile(k[1], 0),
+          quantile(k[1], 0.25),
+          quantile(k[1], 0.5),
+          quantile(k[1], 0.75),
+          quantile(k[1], 1),
+        ],
+      ]);
     bulkAverages = Object.fromEntries(bulkAverages);
     bulkAverages["color"] = "#AAAAAA";
     return bulkAverages;
