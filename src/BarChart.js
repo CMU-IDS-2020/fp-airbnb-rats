@@ -9,6 +9,7 @@ import { Box, Row } from "jsxstyle";
 import HiddenElementDropdown from "./HiddenElementDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
 import { transition } from "d3-transition";
+import { format } from "d3-format";
 
 class BarChart extends Component {
   constructor(props) {
@@ -177,6 +178,7 @@ class BarChart extends Component {
           const d = dat[k];
           o.label = k;
           o.value = d[0];
+          o.variance = d[1];
           o.width = this.hx.bandwidth();
           const transformedHeight = d[0] === 0 ? 0 : ry2(d[0]);
           o.height = hy.bandwidth() - transformedHeight;
@@ -190,7 +192,45 @@ class BarChart extends Component {
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
       .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y);
+      .attr("y", (d) => d.y)
+      .on("mouseenter", function (e, d) {
+        const pd = select(this.parentNode).attr("transform");
+        const tg = selection
+          .append("g")
+          .attr("class", "htooltip")
+          .attr("transform", pd)
+          .attr("opacity", 0);
+        tg.transition().attr("dy", -10).attr("opacity", 1);
+
+        const rw = 60;
+        const ts = 16;
+        tg.append("rect")
+          .attr("x", d.x + d.width / 2 - rw / 2)
+          .attr("y", d.y - ts / 2)
+          .attr("width", rw)
+          .attr("height", ts)
+          .attr("stroke", "white")
+          .attr("fill", "black")
+          .attr("stroke-width", 1);
+
+        tg.append("text")
+          .attr("x", d.x + d.width / 2)
+          .attr("y", d.y)
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("font-size", ts - 4)
+          .attr("font-family", "sans-serif")
+          .attr("fill", "white")
+          .text(`σ = ${format(".2f")(d.variance)}`);
+      })
+      .on("mouseleave", function (e, d) {
+        selection
+          .selectAll(".htooltip")
+          .transition()
+          .attr("opacity", 0)
+          .transition()
+          .remove();
+      });
 
     hgroups
       .selectAll(".axis")
@@ -212,11 +252,14 @@ class BarChart extends Component {
     if (this.props.hoverPoint && this.currentHoverGroup > -1) {
       selection
         .selectAll(".hvline")
+        .data(selected)
+        .join("g")
+        .attr("transform", (_, i) => `translate(0, ${hy(i)})`)
+        .selectAll("line")
         .data(this.state.keys)
         .join("line")
         .attr("class", (d) => "hvline")
         .attr("stroke", "white")
-        .attr("transform", `translate(0, ${hy(this.currentHoverGroup)})`)
         .attr("x1", (d) => this.hx(d))
         .attr("x2", (d) => this.hx(d) + this.hx.bandwidth())
         .attr("y1", (d) =>
