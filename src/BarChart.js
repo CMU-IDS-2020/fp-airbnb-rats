@@ -255,7 +255,6 @@ class BarChart extends Component {
   }
 
   updateMenuTool() {
-    //console.log(this.sortingElementDropdown)
     let mt = this.hiddenElementDropdown;
     this.props.setMenuTools([mt, this.sortingElementDropdown]);
   }
@@ -263,9 +262,7 @@ class BarChart extends Component {
   createBarChart() {
     const selection = select(this.chartRef.current);
     const selected = this.calculateGroupAverages();
-    const bulkAvg = this.calculateBulkAverages();
-    console.log(selected, bulkAvg)
-    selected.push(bulkAvg)
+    selected.push(this.bulkAverages)
 
     const selectedLen = Object.keys(selected).length;
 
