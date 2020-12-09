@@ -135,9 +135,9 @@ class BarChart extends Component {
     let bulkAverages = this.state.keys
       .map((key) => [key, this.props.data.map((datapoint) => datapoint[key])])
       .map((k) => [k[0], [mean(k[1]), deviation(k[1])]]);
-    bulkAverages = Object.fromEntries(bulkAverages)
-    bulkAverages["color"] = "#AAAAAA"
-    return bulkAverages
+    bulkAverages = Object.fromEntries(bulkAverages);
+    bulkAverages["color"] = "#AAAAAA";
+    return bulkAverages;
   }
 
   calculateAveragesOfAllGroups() {
@@ -262,7 +262,7 @@ class BarChart extends Component {
   createBarChart() {
     const selection = select(this.chartRef.current);
     const selected = this.calculateGroupAverages();
-    selected.push(this.bulkAverages)
+    selected.push(this.bulkAverages);
 
     const selectedLen = Object.keys(selected).length;
 
@@ -402,6 +402,21 @@ class BarChart extends Component {
       .selectAll(".tick")
       .selectAll("line")
       .attr("stroke", "white");
+
+    selection.selectAll(".bulklabel").remove();
+
+    selection
+      .selectAll(".histgroup:last-child")
+      .append("text")
+      .text("Bulk Sum")
+      .attr("class", "bulklabel")
+      .attr("fill", "white")
+      .attr("dominant-baseline", "hanging")
+      .attr("text-anchor", "middle")
+      .attr("font-size", 8)
+      .attr("dy", 4)
+      .attr("x", this.props.size[0] / 2)
+      .attr("y", hy.bandwidth());
 
     if (this.props.hoverPoint !== null) {
       selection
