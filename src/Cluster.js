@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Box, Row, Col } from "jsxstyle";
+import { Box, Row, Col, Inline } from "jsxstyle";
 import $ from "jquery";
+import { UIColors } from "./colors";
 
 var flaskAppURL = "http://ec2-54-198-69-44.compute-1.amazonaws.com/";
 var yourGroups = { 0: [0, 1, 2, 3, 4, 5], 1: [6, 7, 8, 9] };
@@ -11,11 +12,17 @@ class Cluster extends Component {
     super(props);
     this.state = {
       selectedTab: "km",
+      running: false
     };
     this.sendToApp = this.sendToApp.bind(this);
     this.sendToBackend = this.sendToBackend.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.setTab = this.setTab.bind(this);
+    this.setIsRunning = this.setIsRunning.bind(this);
+  }
+
+  setIsRunning(isRunning){
+    this.setState({running: isRunning})
   }
 
   setTab(key) {
@@ -23,8 +30,8 @@ class Cluster extends Component {
   }
 
   sendToApp() {
-    console.log("inside sendToApp");
-    console.log(yourGroups);
+    //console.log("inside sendToApp");
+    //console.log(yourGroups);
     this.props.changeDataGroups(yourGroups);
   }
 
@@ -53,21 +60,25 @@ class Cluster extends Component {
       var params_url = "hierarchical?num=" + K + "&linkage=" + linkage;
       var url = flaskAppURL + params_url;
     } else {
-      console.log("hello");
+      //console.log("hello");
       var maxmin = params[0];
       var params_url = "none?type=" + maxmin;
       var url = flaskAppURL + params_url;
     }
     console.log(url);
 
+    const IS = this.setIsRunning;
+    IS(true);
+
     var x = 0;
     var result = await $.ajax({
       url: url,
       type: "GET",
       success: function (data) {
+        IS(false);
         var response = JSON.parse(data);
         yourGroups = response;
-        console.log("inside success function");
+        console.log("Successful request callback");
         console.log(yourGroups);
         x = 1;
       },
@@ -159,41 +170,6 @@ class Cluster extends Component {
     this.setState({ value: event.target.value });
   }
 
-  // selectedTechnique(id) {
-  //   var km = document.getElementById("km");
-  //   var hc = document.getElementById("hc");
-  //   var nc = document.getElementById("nc");
-  //   // km.style.background = 'black';
-  //   // hc.style.background = 'black';
-  //   // nc.style.background = 'black';
-
-  //   var km_so = document.getElementById("km_so");
-  //   var hc_so = document.getElementById("hc_so");
-  //   var nc_so = document.getElementById("nc_so");
-  //   // km_so.style.display = "none";
-  //   // hc_so.style.display = "none";
-  //   // nc_so.style.display = "none";
-
-  //   var div_id = document.getElementById(id);
-  //   // div_id.style.fontWeight = "800"
-  //   // div_id.style.color = "teal"
-
-  //   if (id == "km") {
-  //     km_so.style.display = "block";
-  //     this.state.selectedTab = 'km';
-  //   }
-
-  //   if (id == "hc") {
-  //     hc_so.style.display = "block";
-  //     this.state.selectedTab = 'hc';
-  //   }
-
-  //   if (id == "nc") {
-  //     nc_so.style.display = "block";
-  //     this.state.selectedTab = 'nc';
-  //   }
-  // }
-
   showSubOptions_dr(id) {
     var pca_so = document.getElementById("pca_subOptions");
     var tsne_so = document.getElementById("tsne_subOptions");
@@ -217,103 +193,183 @@ class Cluster extends Component {
     let suboptionMenu;
     if (this.state.selectedTab === "km") {
       suboptionMenu = (
-        <div id="km_so">
-          <div>
-            <label>K: </label>
-            <input id="k_val" type="text" name="k" />
-          </div>
-          <div>
-            <label>Dimensionality Reduction? </label>
-            <br></br>
+        <Col width="80%">
+                    <Row width="100%" fontSize="13px" marginBottom="14px" justifyContent="flex-start" color="grey" fontStyle="italic">
+            Definition of hierarchical clustering Definition of hierarchical clustering Definition of hierarchical
+          </Row>
+          <Row marginBottom="8px" alignItems="center">
+            <Box marginRight="8px" fontWeight="600">
+              Number of clusters:
+            </Box>
             <input
-              type="radio"
-              onClick={this.showSubOptions_dr.bind(this, "pca")}
-              id="pca"
-              value="1"
-              name="dr"
+              id="k_val"
+              type="text"
+              name="k"
+              style={{ width: "40px", height: "24px" }}
             />
-            PCA
-            <input
-              type="radio"
-              onClick={this.showSubOptions_dr.bind(this, "tsne")}
-              id="tsne"
-              value="2"
-              name="dr"
-            />
-            t-SNE
-            <input
-              type="radio"
-              onClick={this.showSubOptions_dr.bind(this, "no")}
-              id="no"
-              value="0"
-              name="dr"
-            />
-            None
-          </div>
-
-          <div id="pca_subOptions" style={{ display: "none" }}>
-            <label>Variance %: </label>
-            <input id="variance" type="text" name="variance" />
-          </div>
-
-          <div id="tsne_subOptions" style={{ display: "none" }}>
-            <label>Perplexity %: </label>
-            <input id="perplexity" type="text" name="perplexity" />
-          </div>
-        </div>
+          </Row>
+          <Col alignItems="flex-start" height="64px">
+            <Box marginBottom="4px" fontWeight="600">
+              Dimensionality Reduction
+            </Box>
+            <Row width="100%" justifyContent="space-evenly">
+              <Inline>
+                <input
+                  type="radio"
+                  onClick={this.showSubOptions_dr.bind(this, "pca")}
+                  id="pca"
+                  value="1"
+                  name="dr"
+                />
+                PCA
+              </Inline>
+              <Inline>
+                <input
+                  type="radio"
+                  onClick={this.showSubOptions_dr.bind(this, "tsne")}
+                  id="tsne"
+                  value="2"
+                  name="dr"
+                />
+                t-SNE
+              </Inline>
+              <Inline>
+                <input
+                  type="radio"
+                  onClick={this.showSubOptions_dr.bind(this, "no")}
+                  id="no"
+                  value="0"
+                  name="dr"
+                />
+                None
+              </Inline>
+            </Row>
+            <Row marginTop="4px" justifyContent="center" width="100%">
+              <div id="pca_subOptions" style={{ display: "none" }}>
+                <label>Variance %: </label>
+                <input
+                  id="variance"
+                  type="text"
+                  name="variance"
+                  style={{ width: "40px", height: "24px" }}
+                />
+              </div>
+              <div id="tsne_subOptions" style={{ display: "none" }}>
+                <label>Perplexity %: </label>
+                <input
+                  id="perplexity"
+                  type="text"
+                  name="perplexity"
+                  style={{ width: "40px", height: "24px" }}
+                />
+              </div>
+            </Row>
+          </Col>
+        </Col>
       );
     } else if (this.state.selectedTab === "hc") {
       suboptionMenu = (
-        <div id="hc_so">
-          <div>
-            <label># of clusters: </label>
-            <input id="hc_val" type="text" name="hc" />
-          </div>
-
-          <div>
-            <div>
-              <label> Linkage:</label>
-              <input type="radio" id="ward" value="ward" name="linkage" />
-              ward
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="complete"
-                value="complete"
-                name="linkage"
-              />
-              complete
-            </div>
-            <div>
-              <input type="radio" id="average" value="average" name="linkage" />
-              average
-            </div>
-            <div>
-              <input type="radio" id="single" value="single" name="linkage" />
-              single
-            </div>
-          </div>
-        </div>
+        <Box width="80%">
+          <Row width="100%" fontSize="13px" marginBottom="8px" alignItems="center" color="grey" fontStyle="italic">
+            Definition of hierarchical clustering Definition of hierarchical clustering Definition of hierarchical
+          </Row>
+          <Row marginBottom="4px" alignItems="center">
+            <Box marginRight="8px" fontWeight="600">
+              Number of clusters:
+            </Box>
+            <input
+              id="hc_val"
+              type="text"
+              name="hc"
+              style={{ width: "40px", height: "24px" }}
+            />
+          </Row>
+          <Row width="100%" justifyContent="space-evenly" alignItems="center">
+            <Col alignItems="center" fontSize="13px">
+              <Box
+                justifyContent="center"
+                fontWeight="600"
+                fontSize="16px"
+                borderBottom="1px solid white"
+                marginBottom="4px"
+              >
+                Linkage
+              </Box>
+              <Col alignItems="flex-start">
+                <div>
+                  <input type="radio" id="ward" value="ward" name="linkage" />
+                  Ward
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="complete"
+                    value="complete"
+                    name="linkage"
+                  />
+                  Complete
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="average"
+                    value="average"
+                    name="linkage"
+                  />
+                  Average
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="single"
+                    value="single"
+                    name="linkage"
+                  />
+                  Single
+                </div>
+              </Col>
+            </Col>
+            <Col width="150px" color="grey" fontSize="13px" fontStyle="italic">
+              Linkage is important because of these qualities.
+            </Col>
+          </Row>
+        </Box>
       );
     } else {
       suboptionMenu = (
-        <div id="nc_so">
-          <div>
-            <label>Group by: </label>
-          </div>
-          <div>
+        <Col width="80%">
+          <Row width="100%" fontSize="13px" marginBottom="14px" alignItems="center" color="grey" fontStyle="italic">
+            Definition of hierarchical clustering Definition of hierarchical clustering Definition of hierarchical
+          </Row>
+          <Col alignItems="center">
+            <Inline
+                justifyContent="center"
+                fontWeight="600"
+                fontSize="16px"
+                width="120px"
+                borderBottom="1px solid white"
+              > Group by 
+            </Inline>
+          <Col marginTop="8px" alignItems="flex-start">
+            <Inline>
             <input type="radio" id="max" value="max" name="maxmin" />
-            maximum
+            Maximum</Inline>
+            <Inline>
             <input type="radio" id="min" value="min" name="maxmin" />
-            minimum
-          </div>
-        </div>
+            Minimum</Inline>
+          </Col>
+          </Col>
+        </Col>
       );
     }
 
     return (
-      <Col width="100%" height="100%" alignItems="center">
+      <Col
+        width="100%"
+        height="100%"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <Row
           width="90%"
           justifyContent="space-evenly"
@@ -321,9 +377,9 @@ class Cluster extends Component {
           paddingBottom="12px"
           borderBottom="1px solid white"
         >
-          {" "}
           {Object.keys(this.tabmappings).map((key) => (
             <Row
+              key={key}
               props={{ id: key, onClick: () => this.setTab(key) }}
               color={this.state.selectedTab == key ? "#AAAAFF" : "#CCC"}
               fontWeight={this.state.selectedTab == key ? 800 : 500}
@@ -335,12 +391,28 @@ class Cluster extends Component {
             </Row>
           ))}
         </Row>
-        <Row color="white">
+        <Row
+          color="white"
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+        >
           {suboptionMenu}
         </Row>
-        <div id="buttons">
-          <button onClick={this.sendToBackend}>Fetch Clusters</button>
-        </div>
+        <Box paddingBottom="16px">
+          <Box
+            props={{ onClick: this.state.running ? () => alert("Please wait for last clustering algorithm to finish running.") : this.sendToBackend }}
+            background={UIColors.header}
+            padding="12px 20px 12px 20px"
+            color={UIColors.text}
+            fontWeight="bold"
+            borderRadius="12px"
+            cursor="pointer"
+            margin="0px"
+          >
+            {this.state.running ? "Running..." : "Fetch Clusters"}     
+          </Box>
+        </Box>
       </Col>
     );
   }
