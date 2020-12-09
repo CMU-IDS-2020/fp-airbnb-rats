@@ -17,6 +17,7 @@ import SortElementDropdown from "./SortElementDropdown";
 import Toggle from "./Toggle";
 
 const datagroups = { 0: [] };
+const datagroupsMetadata = { 0: { annotation: "", locked: false } };
 
 const colSchemes = [...schemeTableau10, ...schemePaired];
 
@@ -43,6 +44,7 @@ class App extends Component {
     this.onResize = this.onResize.bind(this);
     this.changeKeys = this.changeKeys.bind(this);
     this.changeDataGroups = this.changeDataGroups.bind(this);
+    this.changeMetadata = this.changeMetadata.bind(this);
     this.changeHoverPoint = this.changeHoverPoint.bind(this);
     this.calculateBulkAverages = this.calculateBulkAverages.bind(this);
     this.calculateAveragesOfAllGroups = this.calculateAveragesOfAllGroups.bind(
@@ -52,12 +54,17 @@ class App extends Component {
     this.onToggle = this.onToggle.bind(this);
     this.setBack = this.setBack.bind(this);
     this.setSortingFunction = this.setSortingFunction.bind(this);
+    this.toggleLock = this.toggleLock.bind(this);
+    this.setAnnotation = this.setAnnotation.bind(this);
+
+    this.getMetadata = this.getMetadata.bind(this);
 
     this.state = {
       screenWidth: 1000,
       screenHeight: 500,
       brushExtent: [0, 40],
       dataGroups: datagroups,
+      metadata: datagroupsMetadata,
       hoverPoint: null,
       keys: Object.keys(data[0]).slice(3),
       removedKeys: [],
@@ -66,6 +73,16 @@ class App extends Component {
     };
 
     this.bulkAverages = this.calculateBulkAverages();
+  }
+
+  toggleLock(idx) {
+    this.state.metadata[idx]["locked"] = !this.state.metadata[idx]["locked"];
+    this.changeMetadata(this.state.metadata);
+  }
+
+  setAnnotation(idx, a) {
+    this.state.metadata[idx]["annotation"] = a;
+    this.changeMetadata(this.state.metadata);
   }
 
   hideKey(key) {
@@ -77,6 +94,10 @@ class App extends Component {
       keys: this.state.keys,
       removedKeys: this.state.removedKeys,
     });
+  }
+
+  getMetadata(){
+    return this.state.metadata;
   }
 
   reorderKeys(sortingFunctionIdx) {
@@ -193,8 +214,18 @@ class App extends Component {
   }
 
   changeDataGroups(data) {
-    console.log("changing data groups to ", data);
-    this.setState({ dataGroups: data });
+    //console.log("changing data groups to ", data);
+    Object.keys(data).forEach((key) => {
+      if (this.state.metadata[key] == null) {
+        this.state.metadata[key] = { annotation: "", locked: false };
+      }
+    });
+    //console.log("metadata changed to", this.state.metadata)
+    this.setState({ dataGroups: data, metadata: this.state.metadata });
+  }
+
+  changeMetadata(mData) {
+    this.setState({ metadata: mData });
   }
 
   changeHoverPoint(pt) {
@@ -273,6 +304,10 @@ class App extends Component {
                 (this.state.screenWidth * 1) / 3 - 10,
                 (this.state.screenHeight * 3) / 5 - 10,
               ]}
+              metadata={this.state.metadata}
+              getMetadata={this.getMetadata}
+              setMetadata={this.changeMetadata}
+              toggleLock={this.toggleLock}
             >
               <ContextImage />
             </CardLayout>
@@ -294,6 +329,10 @@ class App extends Component {
               hideKey={this.hideKey}
               menuComponents={barMenuComponents}
               scaleMode={this.state.scaleMode}
+              metadata={this.state.metadata}
+              setMetadata={this.changeMetadata}
+              toggleLock={this.toggleLock}
+              setAnnotation={this.setAnnotation}
             >
               <BarChart />
             </CardLayout>

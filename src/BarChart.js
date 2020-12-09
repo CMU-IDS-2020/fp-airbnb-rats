@@ -6,7 +6,7 @@ import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
 import HistogramOptions from "./HistogramOptions";
 import { axisLeft } from "d3-axis";
-import { Box, Row,Col } from "jsxstyle";
+import { Box, Row, Col } from "jsxstyle";
 import { schemeTableau10 } from "d3-scale-chromatic";
 import { transition } from "d3-transition";
 import { format } from "d3-format";
@@ -21,6 +21,7 @@ class BarChart extends Component {
   constructor(props) {
     super(props);
     this.createBarChart = this.createBarChart.bind(this);
+
     //this.createHistogramOptions = this.createHistogramOptions.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = Object.values(this.props.dataGroups).length;
@@ -383,6 +384,13 @@ class BarChart extends Component {
       .range([70, this.props.size[0] - 20])
       .padding(0.1);
 
+    const histogramMenuOptions = Object.keys(this.props.metadata)
+      .filter((key) => this.props.dataGroups[key].length > 0)
+      .map((key) => {
+        this.props.metadata[key]["key"] = key;
+        return this.props.metadata[key];
+      });
+    //console.log("rerendering bar chart with ", histogramMenuOptions)
     return (
       <Box position="relative">
         <Box color="white" position="absolute" width="100%" paddingTop="12px">
@@ -395,10 +403,29 @@ class BarChart extends Component {
             />
           ))}
         </Box>
-        <Box pointerEvents="none" position="absolute" height="100%" width="100%">
-          <Col marginTop="12px" marginLeft="4px" height="calc(100% - 12px)" width="20px" justifyContent="space-around">
-            {[...Array(Object.keys(this.props.dataGroups).length + 1).keys()].map((idx) => <HistogramOptions key={"menu" + idx}/>)}
-            </Col>
+        <Box position="absolute" height="100%" width="20px">
+          <Col
+            marginTop={
+              ((this.props.size[1] - 40) * 1) / histogramMenuOptions.length
+            }
+            marginLeft="4px"
+            height={this.props.size[1] * (1 - 1 / histogramMenuOptions.length)}
+            width="100%"
+            justifyContent="space-around"
+            position="relative"
+            zIndex="0"
+          >
+            {histogramMenuOptions.map((val, idx) => (
+              <HistogramOptions
+                key={"menu" + idx}
+                compIdx={val["key"]}
+                locked={val["locked"]}
+                annotation={val["annotation"]}
+                setAnnotation={(a) => this.props.setAnnotation(idx, a)}
+                toggleLock={() => this.props.toggleLock(idx)}
+              />
+            ))}
+          </Col>
         </Box>
         <svg
           ref={this.chartRef}
