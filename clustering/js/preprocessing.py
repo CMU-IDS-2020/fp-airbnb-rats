@@ -1,13 +1,17 @@
 import pandas as pd
+import json
 
 if __name__ == "__main__":
     filename = 'preprocessed_kingscourt.csv'
-    df = pd.read_csv('datasets_Kingscourt_Kingscourt_Piquant_wt-percent.csv')
-    df.columns = ['X','Y_c','Z','Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni', 'Cu', 'Zn', 'As',
-                     'Y', 'Sr', 'Zr', 'Pb', 'Rb', 'Bi', 'U', 'Co']
+    with open('data.json') as f:
+        data = json.load(f)
+
+    df = pd.DataFrame(data["data"])
+
+    df.columns = ['X','Y_c','Z','Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni', 'Cu', 'Zn', 'As', 'Y', 'Sr', 'Zr', 'Pb', 'Rb', 'Bi', 'U', 'Co', 'La', 'Ce']
 
     features = df[['Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni', 'Cu', 'Zn', 'As',
-                     'Y', 'Sr', 'Zr', 'Pb', 'Rb', 'Bi', 'U', 'Co']]
+                     'Y', 'Sr', 'Zr', 'Pb', 'Rb', 'Bi', 'U', 'Co', 'La', 'Ce']]
 
     df['maxElement'] = features.idxmax(axis=1)
     df['minElement'] = features.idxmin(axis=1)
