@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Box, Inline } from "jsxstyle";
+import { Box, Inline, Col } from "jsxstyle";
 import "./App.css";
 import contextImg from "./data/kingscourt_ir/kingscourt_ir_context_image.jpg";
 import GroupDropdown from "./GroupDropdown";
@@ -163,7 +163,20 @@ class ContextImage extends Component {
       cursor = cursor[2];
     }
     return (
-      <>
+      <>{(this.state.selectedTool === "pen") ? (<Col
+        position="absolute"
+        bottom="0px"
+        left="0px"
+        color="white"
+        zIndex="2"
+        padding="8px"
+        alignItems="flex-start"
+      >
+        <Box>Lasso to select points.</Box>
+        <Box>Lasso + SHIFT to erase.</Box>
+      </Col>
+        ) : ""}
+      
         <TransformWrapper
           options={{ disabled: !(this.state.selectedTool == "zoom") }}
         >
