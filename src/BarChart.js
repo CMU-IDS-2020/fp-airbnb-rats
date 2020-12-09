@@ -88,7 +88,10 @@ class BarChart extends Component {
       }
     });
 
-    if(prevProps.size[0] != this.props.size[0] || prevProps.size[1] != this.props.size[1]){
+    if (
+      prevProps.size[0] != this.props.size[0] ||
+      prevProps.size[1] != this.props.size[1]
+    ) {
       triggerUpdate = true;
     }
 
@@ -182,6 +185,7 @@ class BarChart extends Component {
           o.q3 = d[4];
           o.qmax = d[5];
           o.innerwidth = this.props.size[0];
+          o.innerheight = this.props.size[1];
           return o;
         })
       )
@@ -192,7 +196,14 @@ class BarChart extends Component {
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y)
       .on("mouseenter", function (e, d) {
+        const boundpadx = -20;
+        const boundpady = -80;
         const pd = select(this.parentNode).attr("transform");
+        function dopad() {
+          const dx = d.x > d.innerwidth * 0.75 ? boundpadx : 0;
+          const dy = d.y < d.innerheight * 0.25 ? boundpady : 0;
+          return `translate(${dx}, ${dy})`;
+        }
         const tg = selection
           .append("g")
           .attr("class", "htooltip")
@@ -205,10 +216,7 @@ class BarChart extends Component {
         tg.append("rect")
           .attr("x", d.x + d.width / 2 - rw / 2)
           .attr("y", d.y - ts / 2)
-          .attr(
-            "transform",
-            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
-          )
+          .attr("transform", dopad)
           .attr("width", rw)
           .attr("height", ts * 4 + 25)
           .attr("fill", UIColors.background)
@@ -218,10 +226,7 @@ class BarChart extends Component {
         tg.append("text")
           .attr("x", d.x + d.width / 2)
           .attr("y", d.y + 5)
-          .attr(
-            "transform",
-            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
-          )
+          .attr("transform", dopad)
           .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
@@ -234,10 +239,7 @@ class BarChart extends Component {
         tg.append("text")
           .attr("x", d.x + d.width / 2)
           .attr("y", d.y + 25)
-          .attr(
-            "transform",
-            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
-          )
+          .attr("transform", dopad)
           .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
@@ -250,10 +252,7 @@ class BarChart extends Component {
         tg.append("text")
           .attr("x", d.x + d.width / 2)
           .attr("y", d.y + 45)
-          .attr(
-            "transform",
-            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
-          )
+          .attr("transform", dopad)
           .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
@@ -262,10 +261,7 @@ class BarChart extends Component {
           .attr("fill", "white")
           .text(`Q1 = ${format(".2f")(d.q1)}, Q3 = ${format(".2f")(d.q3)}`);
         tg.append("text")
-          .attr(
-            "transform",
-            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
-          )
+          .attr("transform", dopad)
           .attr("x", d.x + d.width / 2)
           .attr("y", d.y + 65)
           .attr("pointer-events", "none")
