@@ -5,34 +5,41 @@ import { Box, Col, Row, Inline } from "jsxstyle";
 import { schemeTableau10 } from "d3-scale-chromatic";
 
 function DropdownItem(props) {
-  //console.log(props)
   return (
     <Row
       justifyContent="center"
       alignItems="center"
+      cursor="pointer"
       borderRadius={props.selected ? "12px 12px 0px 0px" : "0px"}
-      backgroundColor={props.selected ? "black" : UIColors.header}
+      backgroundColor={
+        props.selected ? "black" : props.isHover ? "grey" : UIColors.header
+      }
       padding="4px"
       borderBottom={!props.selected ? "1px solid rgba(255, 255, 255, 0.2)" : ""}
-      cursor={props.selected ? "default" : "pointer"}
+      cursor={"pointer"}
       props={
-        props.selected ? {} : { onClick: () => props.setSelected(props.idx) }
+        props.selected
+          ? {}
+          : {
+              onClick: () => props.setSelected(props.listItem),
+              onMouseEnter: () => props.setHoverElement(props.listItem),
+              onMouseLeave: () => props.setHoverElement(-1),
+            }
       }
     >
       <Box
-        backgroundColor={props.listItem}
+        backgroundColor={schemeTableau10[props.listItem]}
         borderRadius="10px"
         width="10px"
         height="10px"
       />
-      <Box marginLeft="6px">
+      <Box
+        marginLeft="6px"
+        props={{ onClick: props.selected ? () => props.toggleIsOpen() : null }}
+      >
         {"Component " + props.idx}
         {props.selected ? (
-          <Inline
-            hoverCursor="pointer"
-            marginLeft="8px"
-            props={{ onClick: () => props.toggleIsOpen() }}
-          >
+          <Inline hoverCursor="pointer" marginLeft="8px">
             {props.isOpen ? "▾" : "◂"}
           </Inline>
         ) : (
@@ -47,35 +54,24 @@ class GroupDropdown extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listItems: [[schemeTableau10[0]]],
       dropdownOpen: false,
+      hoverIdx: -1,
     };
-    this.setListItems = this.setListItems.bind(this);
-    this.addListItem = this.addListItem.bind(this);
     this.toggleIsOpen = this.toggleIsOpen.bind(this);
-  }
-
-  setListItems(items) {
-    this.setState({ listItems: items });
+    this.setHoverElement = this.setHoverElement.bind(this);
   }
 
   toggleIsOpen() {
     this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
-  addListItem() {
-    this.state.listItems.push(schemeTableau10[this.state.listItems.length]);
-    this.setState({ listItems: this.state.listItems });
-    this.props.setSelected(this.state.listItems.length - 1);
+  setHoverElement(idx) {
+    this.setState({ hoverIdx: idx });
   }
 
   render() {
     return (
-      <Row 
-        position="relative" 
-        width="160px" 
-        marginLeft="8px"
-        height="26px">
+      <Row position="relative" width="145px" marginLeft="8px" height="26px">
         <Col
           color={UIColors.text}
           position="absolute"
@@ -84,24 +80,28 @@ class GroupDropdown extends Component {
           zIndex="2"
           className="dropdown"
           userSelect="none"
+          textTransform="none"
         >
           <DropdownItem
             key="selected"
-            listItem={this.state.listItems[this.props.selectedGroup]}
+            listItem={this.props.selectedGroup}
             idx={this.props.selectedGroup}
             selected={true}
             toggleIsOpen={this.toggleIsOpen}
+            setHoverElement={this.setHoverElement}
             isOpen={this.state.dropdownOpen}
           />
           {this.state.dropdownOpen
-            ? this.state.listItems.map((listItem, idx) => {
-                return !(idx == this.props.selectedGroup) ? (
+            ? [...Array(this.props.numComponents).keys()].map((listItem) => {
+                return !(listItem == this.props.selectedGroup) ? (
                   <DropdownItem
-                    key={"component" + idx}
+                    key={"component" + listItem}
                     listItem={listItem}
-                    idx={idx}
+                    idx={listItem}
                     selected={false}
                     setSelected={this.props.setSelected}
+                    setHoverElement={this.setHoverElement}
+                    isHover={this.state.hoverIdx === listItem}
                   />
                 ) : (
                   ""
@@ -114,9 +114,18 @@ class GroupDropdown extends Component {
               alignItems="center"
               padding="4px"
               cursor="pointer"
-              backgroundColor={UIColors.header}
+              backgroundColor={
+                this.state.hoverIdx === this.props.numComponents
+                  ? "grey"
+                  : UIColors.header
+              }
+              props={{
+                onMouseEnter: () =>
+                  this.setHoverElement(this.props.numComponents),
+                onMouseLeave: () => this.setHoverElement(-1),
+              }}
             >
-              <div onClick={this.addListItem}>+ Add item</div>
+              <div onClick={this.props.addListItems}>+ Add item</div>
             </Row>
           ) : (
             ""

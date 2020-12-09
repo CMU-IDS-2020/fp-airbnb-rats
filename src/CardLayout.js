@@ -16,9 +16,7 @@ class MenuToolButtons extends Component {
       return "";
     }
     return (
-      <Row
-        alignItems="center"
-      >
+      <Row alignItems="center">
         {this.props.mapping.map((item, idx) => {
           return React.cloneElement(item, { key: "i" + idx, selected: false });
         })}

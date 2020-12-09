@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/fp-airbnb-rats/static/css/main.050ee6ac.chunk.css",
-    "main.js": "/fp-airbnb-rats/static/js/main.bdc0fce4.chunk.js",
-    "main.js.map": "/fp-airbnb-rats/static/js/main.bdc0fce4.chunk.js.map",
+    "main.js": "/fp-airbnb-rats/static/js/main.5dd1b9fd.chunk.js",
+    "main.js.map": "/fp-airbnb-rats/static/js/main.5dd1b9fd.chunk.js.map",
     "runtime-main.js": "/fp-airbnb-rats/static/js/runtime-main.c689b988.js",
     "runtime-main.js.map": "/fp-airbnb-rats/static/js/runtime-main.c689b988.js.map",
-    "static/js/2.3e1cd93f.chunk.js": "/fp-airbnb-rats/static/js/2.3e1cd93f.chunk.js",
-    "static/js/2.3e1cd93f.chunk.js.map": "/fp-airbnb-rats/static/js/2.3e1cd93f.chunk.js.map",
+    "static/js/2.cc155520.chunk.js": "/fp-airbnb-rats/static/js/2.cc155520.chunk.js",
+    "static/js/2.cc155520.chunk.js.map": "/fp-airbnb-rats/static/js/2.cc155520.chunk.js.map",
     "index.html": "/fp-airbnb-rats/index.html",
     "static/css/main.050ee6ac.chunk.css.map": "/fp-airbnb-rats/static/css/main.050ee6ac.chunk.css.map",
-    "static/js/2.3e1cd93f.chunk.js.LICENSE.txt": "/fp-airbnb-rats/static/js/2.3e1cd93f.chunk.js.LICENSE.txt",
+    "static/js/2.cc155520.chunk.js.LICENSE.txt": "/fp-airbnb-rats/static/js/2.cc155520.chunk.js.LICENSE.txt",
     "static/media/kingscourt_ir_context_image.124cd1e4.jpg": "/fp-airbnb-rats/static/media/kingscourt_ir_context_image.124cd1e4.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.c689b988.js",
-    "static/js/2.3e1cd93f.chunk.js",
+    "static/js/2.cc155520.chunk.js",
     "static/css/main.050ee6ac.chunk.css",
-    "static/js/main.bdc0fce4.chunk.js"
+    "static/js/main.5dd1b9fd.chunk.js"
   ]
 }
