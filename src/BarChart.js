@@ -132,9 +132,12 @@ class BarChart extends Component {
   }
 
   calculateBulkAverages() {
-    this.bulkAverages = this.state.keys
+    let bulkAverages = this.state.keys
       .map((key) => [key, this.props.data.map((datapoint) => datapoint[key])])
-      .map((k) => [k[0], mean(k[1]), deviation(k[1])]);
+      .map((k) => [k[0], [mean(k[1]), deviation(k[1])]]);
+    bulkAverages = Object.fromEntries(bulkAverages)
+    bulkAverages["color"] = "#AAAAAA"
+    return bulkAverages
   }
 
   calculateAveragesOfAllGroups() {
@@ -201,7 +204,6 @@ class BarChart extends Component {
   reorderKeys() {
     const sortingData = this.calculateAveragesOfAllGroups();
     if (sortingData == null) return;
-    this.calculateBulkAverages();
     let compareFunction;
     const sortMode = Object.keys(sortingFunctions)[
       this.state.sortingFunctionIdx
@@ -261,6 +263,9 @@ class BarChart extends Component {
   createBarChart() {
     const selection = select(this.chartRef.current);
     const selected = this.calculateGroupAverages();
+    const bulkAvg = this.calculateBulkAverages();
+    console.log(selected, bulkAvg)
+    selected.push(bulkAvg)
 
     const selectedLen = Object.keys(selected).length;
 
