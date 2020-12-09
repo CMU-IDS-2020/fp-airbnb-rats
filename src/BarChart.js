@@ -375,33 +375,7 @@ class BarChart extends Component {
     } else {
       selection.selectAll(".hvline").remove();
     }
-    //HistogramOptions();
   }
-
-  // createHistogramOptions() {
-  //   const selection = select(this.chartRef.current);
-  //   selection.selectAll(".icon").remove();
-
-  //   selection
-  //     .selectAll(".histgroup")
-  //     .append("image")
-  //     .attr("xlink:href", open_lock)
-  //     .attr("width", 20)
-  //     .attr("height", 20)
-  //     .attr("class", "icon")
-  //     .attr("x", 10)
-  //     .attr("y", this.hy.bandwidth() * 0.6);
-
-  //   selection
-  //     .selectAll(".histgroup")
-  //     .append("image")
-  //     .attr("xlink:href", info)
-  //     .attr("width", 20)
-  //     .attr("height", 20)
-  //     .attr("class", "icon")
-  //     .attr("x", 10)
-  //     .attr("y", this.hy.bandwidth() * 0.5 - 20);
-  // }
 
   render() {
     this.hx = scaleBand()
@@ -421,9 +395,9 @@ class BarChart extends Component {
             />
           ))}
         </Box>
-        <Box position="absolute" height="100%" width="100%">
-          <Col marginTop="12px" height="calc(100% - 12px)" width="20px" justifyContent="space-around">
-            {Object.keys(this.props.dataGroups).map(() => <HistogramOptions/>)}
+        <Box pointerEvents="none" position="absolute" height="100%" width="100%">
+          <Col marginTop="12px" marginLeft="4px" height="calc(100% - 12px)" width="20px" justifyContent="space-around">
+            {[...Array(Object.keys(this.props.dataGroups).length + 1).keys()].map((idx) => <HistogramOptions key={"menu" + idx}/>)}
             </Col>
         </Box>
         <svg
