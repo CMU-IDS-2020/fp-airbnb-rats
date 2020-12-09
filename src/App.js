@@ -62,7 +62,7 @@ class App extends Component {
       keys: Object.keys(data[0]).slice(3),
       removedKeys: [],
       sortingFunctionIdx: 0,
-      scaleMode: "log"
+      scaleMode: "log",
     };
 
     this.bulkAverages = this.calculateBulkAverages();
@@ -226,11 +226,11 @@ class App extends Component {
     this.setState({ brushExtent: d });
   }
 
-  onToggle(t){
-    if(t){
-      this.setState({scaleMode: "log"})
+  onToggle(t) {
+    if (t) {
+      this.setState({ scaleMode: "log" });
     } else {
-      this.setState({scaleMode: "linear"})
+      this.setState({ scaleMode: "linear" });
     }
   }
 

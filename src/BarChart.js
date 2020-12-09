@@ -4,18 +4,24 @@ import { scaleBand, scaleLinear, scaleLog } from "d3-scale";
 import { range, extent, mean, deviation, quantile } from "d3-array";
 import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
+import HistogramOptions from "./HistogramOptions";
 import { axisLeft } from "d3-axis";
-import { Box, Row } from "jsxstyle";
+import { Box, Row,Col } from "jsxstyle";
 import { schemeTableau10 } from "d3-scale-chromatic";
 import { transition } from "d3-transition";
 import { format } from "d3-format";
 import { color } from "d3-color";
 import { UIColors } from "./colors";
 
+import lock from "./assets/lock.svg";
+import open_lock from "./assets/open_lock.svg";
+import info from "./assets/info.svg";
+
 class BarChart extends Component {
   constructor(props) {
     super(props);
     this.createBarChart = this.createBarChart.bind(this);
+    //this.createHistogramOptions = this.createHistogramOptions.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = Object.values(this.props.dataGroups).length;
     this.currentHoverGroup = -1;
@@ -85,7 +91,7 @@ class BarChart extends Component {
       }
     });
 
-    if(prevProps.scaleMode != this.props.scaleMode){
+    if (prevProps.scaleMode != this.props.scaleMode) {
       triggerUpdate = true;
     }
 
@@ -136,6 +142,8 @@ class BarChart extends Component {
       .domain(range(0, selectedLen))
       .range([this.props.size[1], 0])
       .padding(0.25);
+
+    this.hy = hy;
 
     const meansonly = selected
       .map((d) => Object.values(d).map((g) => g[0]))
@@ -367,12 +375,38 @@ class BarChart extends Component {
     } else {
       selection.selectAll(".hvline").remove();
     }
+    //HistogramOptions();
   }
+
+  // createHistogramOptions() {
+  //   const selection = select(this.chartRef.current);
+  //   selection.selectAll(".icon").remove();
+
+  //   selection
+  //     .selectAll(".histgroup")
+  //     .append("image")
+  //     .attr("xlink:href", open_lock)
+  //     .attr("width", 20)
+  //     .attr("height", 20)
+  //     .attr("class", "icon")
+  //     .attr("x", 10)
+  //     .attr("y", this.hy.bandwidth() * 0.6);
+
+  //   selection
+  //     .selectAll(".histgroup")
+  //     .append("image")
+  //     .attr("xlink:href", info)
+  //     .attr("width", 20)
+  //     .attr("height", 20)
+  //     .attr("class", "icon")
+  //     .attr("x", 10)
+  //     .attr("y", this.hy.bandwidth() * 0.5 - 20);
+  // }
 
   render() {
     this.hx = scaleBand()
       .domain(this.props.keys)
-      .range([50, this.props.size[0] - 20])
+      .range([70, this.props.size[0] - 20])
       .padding(0.1);
 
     return (
@@ -386,6 +420,11 @@ class BarChart extends Component {
               left={this.hx(k) + this.hx.bandwidth() / 2}
             />
           ))}
+        </Box>
+        <Box position="absolute" height="100%" width="100%">
+          <Col marginTop="12px" height="calc(100% - 12px)" width="20px" justifyContent="space-around">
+            {Object.keys(this.props.dataGroups).map(() => <HistogramOptions/>)}
+            </Col>
         </Box>
         <svg
           ref={this.chartRef}

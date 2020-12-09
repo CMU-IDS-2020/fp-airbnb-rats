@@ -201,7 +201,8 @@ class Cluster extends Component {
             justifyContent="flex-start"
             color="#AAA"
           >
-            A distance based clustering algorithm that partitions the dataset into 'K' groups using the dist. between the points.
+            A distance based clustering algorithm that partitions the dataset
+            into 'K' groups using the dist. between the points.
           </Row>
           <Row marginBottom="8px" alignItems="center">
             <Box marginRight="8px" fontWeight="600">
@@ -214,83 +215,91 @@ class Cluster extends Component {
               style={{ width: "40px", height: "24px" }}
             />
           </Row>
-          <Col alignItems="flex-start" height="100px" >
-            <Box marginBottom="4px" fontWeight="600" borderBottom="1px solid grey">
+          <Col alignItems="flex-start" height="100px">
+            <Box
+              marginBottom="4px"
+              fontWeight="600"
+              borderBottom="1px solid grey"
+            >
               Dimensionality Reduction
             </Box>
             <Row width="100%">
-            <Col width="40%" justifyContent="space-evenly" alignItems="flex-start">
-              <Inline>
-                <input
-                  type="radio"
-                  onClick={this.showSubOptions_dr.bind(this, "pca")}
-                  id="pca"
-                  value="1"
-                  name="dr"
-                />
-                PCA
-              </Inline>
-              <Inline>
-                <input
-                  type="radio"
-                  onClick={this.showSubOptions_dr.bind(this, "tsne")}
-                  id="tsne"
-                  value="2"
-                  name="dr"
-                />
-                t-SNE
-              </Inline>
-              <Inline>
-                <input
-                  type="radio"
-                  onClick={this.showSubOptions_dr.bind(this, "no")}
-                  id="no"
-                  value="0"
-                  name="dr"
-                />
-                None
-              </Inline>
-            </Col>
-            <Col justifyContent="center" width="100%" height="70px">
-              <div id="pca_subOptions" style={{ display: "none" }}>
-                <label>Variance %: </label>
-                <input
-                  id="variance"
-                  type="text"
-                  name="variance"
-                  style={{ width: "40px", height: "24px" }}
-                />
-                <Row
-                  width="100%"
-                  fontSize="12px"
-                  marginBottom="14px"
-                  justifyContent="flex-start"
-                  color="grey"
-                  fontStyle="italic"
-                >
-                PCA does deterministic, linear dimensionality reduction.
-                </Row>
-              </div>
-              <div id="tsne_subOptions" style={{ display: "none" }}>
-                <label>Perplexity %: </label>
-                <input
-                  id="perplexity"
-                  type="text"
-                  name="perplexity"
-                  style={{ width: "40px", height: "24px" }}
-                />
-                <Row
-                  width="100%"
-                  fontSize="12px"
-                  marginBottom="14px"
-                  justifyContent="flex-start"
-                  color="grey"
-                  fontStyle="italic"
-                >
-                t-SNE does probabalistic, non-linear dimensionality
-                </Row>
-              </div>
-            </Col>
+              <Col
+                width="40%"
+                justifyContent="space-evenly"
+                alignItems="flex-start"
+              >
+                <Inline>
+                  <input
+                    type="radio"
+                    onClick={this.showSubOptions_dr.bind(this, "pca")}
+                    id="pca"
+                    value="1"
+                    name="dr"
+                  />
+                  PCA
+                </Inline>
+                <Inline>
+                  <input
+                    type="radio"
+                    onClick={this.showSubOptions_dr.bind(this, "tsne")}
+                    id="tsne"
+                    value="2"
+                    name="dr"
+                  />
+                  t-SNE
+                </Inline>
+                <Inline>
+                  <input
+                    type="radio"
+                    onClick={this.showSubOptions_dr.bind(this, "no")}
+                    id="no"
+                    value="0"
+                    name="dr"
+                  />
+                  None
+                </Inline>
+              </Col>
+              <Col justifyContent="center" width="100%" height="70px">
+                <div id="pca_subOptions" style={{ display: "none" }}>
+                  <label>Variance %: </label>
+                  <input
+                    id="variance"
+                    type="text"
+                    name="variance"
+                    style={{ width: "40px", height: "24px" }}
+                  />
+                  <Row
+                    width="100%"
+                    fontSize="12px"
+                    marginBottom="14px"
+                    justifyContent="flex-start"
+                    color="grey"
+                    fontStyle="italic"
+                  >
+                    PCA does deterministic, linear dimensionality reduction.
+                  </Row>
+                </div>
+                <div id="tsne_subOptions" style={{ display: "none" }}>
+                  <label>Perplexity %: </label>
+                  <input
+                    id="perplexity"
+                    type="text"
+                    name="perplexity"
+                    style={{ width: "40px", height: "24px" }}
+                  />
+                  <Row
+                    width="100%"
+                    fontSize="12px"
+                    marginBottom="14px"
+                    justifyContent="flex-start"
+                    color="grey"
+                    fontStyle="italic"
+                  >
+                    t-SNE does probabalistic, non-linear dimensionality
+                  </Row>
+                </div>
+              </Col>
             </Row>
           </Col>
         </Col>
@@ -305,7 +314,8 @@ class Cluster extends Component {
             justifyContent="flex-start"
             color="#AAA"
           >
-            Hierarchical clustering builds a hierarchy of clusters based on a distance metric.
+            Hierarchical clustering builds a hierarchy of clusters based on a
+            distance metric.
           </Row>
           <Row marginBottom="4px" alignItems="center">
             <Box marginRight="8px" fontWeight="600">
@@ -363,8 +373,15 @@ class Cluster extends Component {
                 </div>
               </Col>
             </Col>
-            <Col width="150px" color="grey" fontSize="13px" fontStyle="italic" textAlign="left">
-            Linkage determines which type of distance should be used in building the hierarchy.
+            <Col
+              width="150px"
+              color="grey"
+              fontSize="13px"
+              fontStyle="italic"
+              textAlign="left"
+            >
+              Linkage determines which type of distance should be used in
+              building the hierarchy.
             </Col>
           </Row>
         </Box>
@@ -379,7 +396,8 @@ class Cluster extends Component {
             alignItems="center"
             color="#AAA"
           >
-            Generate groups based on maximum abundance elements or minimum abundance elements.
+            Generate groups based on maximum abundance elements or minimum
+            abundance elements.
           </Row>
           <Col alignItems="center">
             <Inline
