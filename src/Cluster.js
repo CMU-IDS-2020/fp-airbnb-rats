@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Box } from "jsxstyle";
+import { Box, Row, Col } from "jsxstyle";
 import $ from 'jquery';
 
 var option_global = 'type'
@@ -210,20 +210,35 @@ class Cluster extends Component {
 
   render() {
     return (
-      <div id="content">
-
-        <div id="options">
-          <div id="km" onClick={this.selectedTechnique.bind(this, 'km')} className="techniques">K-means</div>
-
-          <div id="hc" onClick={this.selectedTechnique.bind(this, 'hc')} className="techniques">Hierarchical</div>
-
-          <div id="nc" onClick={this.selectedTechnique.bind(this, 'nc')} className="techniques">No Clusters</div>
-
-          <div id="buttons">
-            <button onClick={this.sendToBackend}>Fetch Clusters</button>
-          </div>
-
-        </div>
+      <Col 
+        width="100%"
+        height="100%"
+        border="1px solid red"
+        alignItems="center"
+      >
+        <Row
+         width="90%"
+         justifyContent="space-evenly"
+        >
+          <Box 
+            props={{id:"km", onClick:this.selectedTechnique.bind(this, 'km')}}
+            color="white"
+          >
+            K-means
+          </Box>
+          <Box
+            props={{id:"hc", onClick:this.selectedTechnique.bind(this, 'hc')}}
+            color="white"
+          >
+            Hierarchical
+          </Box>
+          <Box 
+            props={{id:"nc", onClick:this.selectedTechnique.bind(this, 'nc')}}
+            color="white"
+          >
+              No Clusters
+          </Box>
+        </Row>
 
         <div id="suboptions" className="sub_options">
 
@@ -277,9 +292,11 @@ class Cluster extends Component {
             </div>
 
         </div>
+        <div id="buttons">
+            <button onClick={this.sendToBackend}>Fetch Clusters</button>
+          </div>
 
-
-      </div>
+      </Col>
     );
   }
 }
