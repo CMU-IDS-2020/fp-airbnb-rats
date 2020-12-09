@@ -11,7 +11,7 @@ import { select } from "d3-selection";
 import GroupDropdown from "./GroupDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
 
-const beamparams = [45, 100, -45, 400];
+const beamparams = [46, 100, -44, 400];
 
 function lasso() {
   const lDispatch = dispatch("start", "lasso", "end");
