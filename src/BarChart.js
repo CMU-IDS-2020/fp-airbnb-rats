@@ -34,6 +34,7 @@ class BarChart extends Component {
       keys: Object.keys(this.props.data[0]).slice(3),
       removedKeys: [],
       sortingFunctionIdx: 0,
+      scaleMode: "log",
     };
 
     this.currentHoverGroup = -1;
@@ -276,7 +277,13 @@ class BarChart extends Component {
       .flat()
       .filter((b) => b !== 0);
     const domainMean = extent(meansonly);
-    const ry2 = scaleLog().domain(domainMean).range([hy.bandwidth(), 0]).nice();
+    const ry2 =
+      this.state.scaleMode === "log"
+        ? scaleLog().domain(domainMean).range([hy.bandwidth(), 0]).nice()
+        : scaleLinear()
+            .domain([0, domainMean[1]])
+            .range([hy.bandwidth(), 0])
+            .nice();
 
     const hgroups = selection
       .selectAll(".histgroup")
