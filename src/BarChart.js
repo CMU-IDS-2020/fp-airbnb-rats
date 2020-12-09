@@ -199,11 +199,10 @@ class BarChart extends Component {
         const boundpadx = -20;
         const boundpady = -80;
         const pd = select(this.parentNode).attr("transform");
-        function dopad() {
-          const dx = d.x > d.innerwidth * 0.75 ? boundpadx : 0;
-          const dy = d.y < d.innerheight * 0.25 ? boundpady : 0;
-          return `translate(${dx}, ${dy})`;
-        }
+        const tx = +pd.split(",")[1].replace(/[^0-9\.]/g, "");
+        const dx = d.x > d.innerwidth * 0.75 ? boundpadx : 0;
+        const dy = tx + d.y > d.innerheight * 0.5 ? boundpady : 0;
+        const dopad = `translate(${dx}, ${dy})`;
         const tg = selection
           .append("g")
           .attr("class", "htooltip")
