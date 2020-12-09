@@ -18,19 +18,18 @@ class BarChart extends Component {
     this.chartRef = React.createRef();
     this.dataGroupLength = Object.values(this.props.dataGroups).length;
     this.state = {
-      scaleMode: "log"
+      scaleMode: "log",
     };
     this.currentHoverGroup = -1;
     this.dataGroupLengths = 0;
     this.dataGroupLengths = [];
-    this.keysLength = 23
+    this.keysLength = 23;
     this.bulkAverages = this.props.bulkAverages;
 
     this.hx = scaleBand()
       .domain(this.props.keys)
       .range([0, this.props.size[0]])
       .padding(0.1);
-
   }
 
   getCurrentHoverGroup() {

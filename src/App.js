@@ -42,7 +42,9 @@ class App extends Component {
     this.changeDataGroups = this.changeDataGroups.bind(this);
     this.changeHoverPoint = this.changeHoverPoint.bind(this);
     this.calculateBulkAverages = this.calculateBulkAverages.bind(this);
-    this.calculateAveragesOfAllGroups = this.calculateAveragesOfAllGroups.bind(this);
+    this.calculateAveragesOfAllGroups = this.calculateAveragesOfAllGroups.bind(
+      this
+    );
     this.hideKey = this.hideKey.bind(this);
     this.setBack = this.setBack.bind(this);
     this.setSortingFunction = this.setSortingFunction.bind(this);
@@ -55,7 +57,7 @@ class App extends Component {
       hoverPoint: null,
       keys: Object.keys(data[0]).slice(3),
       removedKeys: [],
-      sortingFunctionIdx: 0
+      sortingFunctionIdx: 0,
     };
 
     this.bulkAverages = this.calculateBulkAverages();
@@ -76,9 +78,7 @@ class App extends Component {
     const sortingData = this.calculateAveragesOfAllGroups();
     if (sortingData == null) return;
     let compareFunction;
-    const sortMode = Object.keys(sortingFunctions)[
-      sortingFunctionIdx
-    ];
+    const sortMode = Object.keys(sortingFunctions)[sortingFunctionIdx];
     switch (sortMode) {
       case "variance-h-l":
         compareFunction = (a, b) => {
@@ -125,8 +125,8 @@ class App extends Component {
     return sortedKeys.map((key) => key[0]);
   }
 
-  changeKeys(keys){
-    this.setState({keys: keys})
+  changeKeys(keys) {
+    this.setState({ keys: keys });
   }
 
   setBack(key) {
@@ -138,7 +138,7 @@ class App extends Component {
       keys: this.state.keys,
       removedKeys: this.state.removedKeys,
     });
-    this.setSortingFunction(this.state.sortingFunctionIdx)
+    this.setSortingFunction(this.state.sortingFunctionIdx);
   }
 
   setSortingFunction(idx) {
@@ -155,11 +155,16 @@ class App extends Component {
   }
 
   calculateAveragesOfAllGroups() {
-
     const points = Object.values(this.state.dataGroups).flat();
-    if(points.length == 0){
-      let bulkAvgKeysNoColor = Object.keys(this.bulkAverages).filter(k => k != "color")
-      return bulkAvgKeysNoColor.map((key) => [key, this.bulkAverages[key][0], this.bulkAverages[key][1]/this.bulkAverages[key][0]])
+    if (points.length == 0) {
+      let bulkAvgKeysNoColor = Object.keys(this.bulkAverages).filter(
+        (k) => k != "color"
+      );
+      return bulkAvgKeysNoColor.map((key) => [
+        key,
+        this.bulkAverages[key][0],
+        this.bulkAverages[key][1] / this.bulkAverages[key][0],
+      ]);
     }
 
     let trueData = points.map((cluster) => {
@@ -194,7 +199,7 @@ class App extends Component {
   componentDidMount() {
     this.onResize();
     window.addEventListener("resize", () => resize(this.onResize));
-    this.setSortingFunction(this.state.sortingFunctionIdx)
+    this.setSortingFunction(this.state.sortingFunctionIdx);
   }
   //when component unmounts, stop listening
   componentWillUnmount() {
@@ -207,17 +212,18 @@ class App extends Component {
 
   render() {
     const barMenuComponents = (
-    <Row>
-      <HiddenElementDropdown
-        setBack={this.setBack}
-        listItems={this.state.removedKeys}
-      />
-      <SortElementDropdown
-        listItems={Object.values(sortingFunctions)}
-        selectedIdx={this.state.sortingFunctionIdx}
-        setSelected={this.setSortingFunction}
-      />
-    </Row>)
+      <Row>
+        <HiddenElementDropdown
+          setBack={this.setBack}
+          listItems={this.state.removedKeys}
+        />
+        <SortElementDropdown
+          listItems={Object.values(sortingFunctions)}
+          selectedIdx={this.state.sortingFunctionIdx}
+          setSelected={this.setSortingFunction}
+        />
+      </Row>
+    );
 
     return (
       <Col className="App" width="100%" height="100%" position="relative">
@@ -258,7 +264,7 @@ class App extends Component {
               bulkAverages={this.bulkAverages}
               setBack={this.setBack}
               hideKey={this.hideKey}
-              menuComponents={ barMenuComponents }
+              menuComponents={barMenuComponents}
             >
               <BarChart />
             </CardLayout>

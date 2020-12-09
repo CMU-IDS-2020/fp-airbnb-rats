@@ -65,10 +65,10 @@ export default class CardLayout extends Component {
           zIndex="2"
         >
           <Box>{this.props.title}</Box>
-          <Box>
+          <Row height="100%" alignItems="center">
             {this.props.menuComponents ? this.props.menuComponents : ""}
             <MenuToolButtons mapping={this.state.tools} />
-          </Box>
+          </Row>
         </Row>
         <Row
           width={wid}

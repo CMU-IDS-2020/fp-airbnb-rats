@@ -113,6 +113,7 @@ class ContextImage extends Component {
       <Inline
         marginLeft="8px"
         key={t}
+        height="24px"
         hoverCursor="pointer"
         props={{
           onClick: () => {
@@ -123,7 +124,7 @@ class ContextImage extends Component {
         <Box
           component="img"
           props={{ src: imgMappings[t][tool == t ? 1 : 0] }}
-          height="26px"
+          height="24px"
         />
       </Inline>
     ));

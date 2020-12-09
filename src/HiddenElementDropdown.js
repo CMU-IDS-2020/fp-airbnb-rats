@@ -8,7 +8,7 @@ class HiddenElementDropdown extends Component {
     super(props);
     this.state = {
       dropdownOpen: false,
-      hoverIdx: -1
+      hoverIdx: -1,
     };
     this.toggleIsOpen = this.toggleIsOpen.bind(this);
     this.setHoverElement = this.setHoverElement.bind(this);
@@ -25,10 +25,10 @@ class HiddenElementDropdown extends Component {
   render() {
     return (
       <Box
-      width="160px"
-      textTransform="none"
-      fontSize="12px"
-      fontWeight="600"
+        width="160px"
+        textTransform="none"
+        fontSize="12px"
+        fontWeight="600"
         position="relative"
         userSelect="none"
         props={{
@@ -46,10 +46,15 @@ class HiddenElementDropdown extends Component {
           backgroundColor={UIColors.cardBg}
         >
           <div>
-          {this.state.dropdownOpen && this.props.listItems.length > 0
-            ? "Click to add back"
-            : this.props.listItems.length + " elements hidden"}</div>
-            {(this.props.listItems.length > 0) ? <div>{this.state.dropdownOpen ? "▾" : "◂"}</div> : ""}
+            {this.state.dropdownOpen && this.props.listItems.length > 0
+              ? "Click to add back"
+              : this.props.listItems.length + " elements hidden"}
+          </div>
+          {this.props.listItems.length > 0 ? (
+            <div>{this.state.dropdownOpen ? "▾" : "◂"}</div>
+          ) : (
+            ""
+          )}
         </Row>
         {this.state.dropdownOpen && this.props.listItems.length > 0 ? (
           <Box
@@ -72,10 +77,11 @@ class HiddenElementDropdown extends Component {
                   backgroundColor={
                     this.state.hoverIdx === idx ? "grey" : UIColors.header
                   }
-                  props={{ onClick: () => this.props.setBack(li),               
+                  props={{
+                    onClick: () => this.props.setBack(li),
                     onMouseEnter: () => this.setHoverElement(idx),
                     onMouseLeave: () => this.setHoverElement(-1),
-                   }}
+                  }}
                 >
                   {li.split("_")[0]}
                 </Box>
