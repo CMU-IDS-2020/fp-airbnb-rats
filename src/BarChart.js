@@ -313,7 +313,45 @@ class BarChart extends Component {
       .attr("height", (d) => d.height)
       .attr("fill", (d) => d["color"])
       .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y);
+      .attr("y", (d) => d.y)
+      .on("mouseenter", function (e, d) {
+        const pd = select(this.parentNode).attr("transform");
+        const tg = selection
+          .append("g")
+          .attr("class", "htooltip")
+          .attr("transform", pd)
+          .attr("opacity", 0);
+        tg.transition().duration(300).attr("dy", -10).attr("opacity", 1);
+
+        const rw = 120;
+        const ts = 16;
+        tg.append("rect")
+          .attr("x", d.x + d.width / 2 - rw / 2)
+          .attr("y", d.y - ts / 2)
+          .attr("width", rw)
+          .attr("height", ts + 10)
+          .attr("stroke", "white")
+          .attr("fill", "black")
+          .attr("stroke-width", 1);
+
+        tg.append("text")
+          .attr("x", d.x + d.width / 2)
+          .attr("y", d.y + 5)
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("font-size", ts - 4)
+          .attr("font-family", "sans-serif")
+          .attr("fill", "white")
+          .text(`μ = ${format(".2f")(d.value)}, σ = ${format(".2f")(d.variance)}`);
+      })
+      .on("mouseleave", function (e, d) {
+        selection
+          .selectAll(".htooltip")
+          .transition()
+          .attr("opacity", 0)
+          .transition()
+          .remove();
+      });
 
     hgroups
       .selectAll(".vrect")
@@ -335,47 +373,10 @@ class BarChart extends Component {
       .join("rect")
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
+      .attr("pointer-events", "none")
       .attr("fill", "rgba(255, 255, 255, 0.5)")
       .attr("x", (d) => d.x)
       .attr("y", (d) => d.y)
-      .on("mouseenter", function (e, d) {
-        const pd = select(this.parentNode).attr("transform");
-        const tg = selection
-          .append("g")
-          .attr("class", "htooltip")
-          .attr("transform", pd)
-          .attr("opacity", 0);
-        tg.transition().attr("dy", -10).attr("opacity", 1);
-
-        const rw = 60;
-        const ts = 16;
-        tg.append("rect")
-          .attr("x", d.x + d.width / 2 - rw / 2)
-          .attr("y", d.y - ts / 2)
-          .attr("width", rw)
-          .attr("height", ts)
-          .attr("stroke", "white")
-          .attr("fill", "black")
-          .attr("stroke-width", 1);
-
-        tg.append("text")
-          .attr("x", d.x + d.width / 2)
-          .attr("y", d.y)
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "middle")
-          .attr("font-size", ts - 4)
-          .attr("font-family", "sans-serif")
-          .attr("fill", "white")
-          .text(`σ = ${format(".2f")(d.variance)}`);
-      })
-      .on("mouseleave", function (e, d) {
-        selection
-          .selectAll(".htooltip")
-          .transition()
-          .attr("opacity", 0)
-          .transition()
-          .remove();
-      });
 
     hgroups
       .selectAll(".axis")
