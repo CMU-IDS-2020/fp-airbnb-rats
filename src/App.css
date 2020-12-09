@@ -59,3 +59,29 @@ html,
 * {
   box-sizing: border-box;
 }
+
+#content {
+  position: absolute;
+  left:40px;
+}
+
+#options {
+  float:left;
+}
+
+.techniques {
+  color: white;
+  border: solid 1px white;
+  padding: 10px;
+}
+
+#suboptions {
+  color: white;
+  float: left;
+  margin-left: 20px;
+}
+
+#buttons {
+  margin-top: 20px;
+}
+
