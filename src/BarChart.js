@@ -77,6 +77,10 @@ class BarChart extends Component {
       }
     });
 
+    if(prevProps.size[0] != this.props.size[0] || prevProps.size[1] != this.props.size[1]){
+      triggerUpdate = true;
+    }
+
     if (this.keysLength != this.props.keys.length) {
       this.keysLength = this.props.keys.length;
       triggerUpdate = true;
