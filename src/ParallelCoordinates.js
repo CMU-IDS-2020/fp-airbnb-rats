@@ -13,7 +13,6 @@ class ParallelCoordinates extends Component {
     super(props);
     this.createParallelCoordinates = this.createParallelCoordinates.bind(this);
     this.pcpRef = React.createRef();
-    this.state = { keys: Object.keys(this.props.data[0]).slice(3) };
   }
 
   componentDidMount() {
@@ -30,7 +29,7 @@ class ParallelCoordinates extends Component {
       const values = this.props.dataGroups[idx];
       const trueData = values.map((d) => this.props.data[d]);
       res[idx] = Object.fromEntries(
-        this.state.keys
+        this.props.keys
           .map((k) => [k, trueData.map((d) => d[k])])
           .map((k) => [k[0], mean(k[1])])
       );
@@ -46,12 +45,12 @@ class ParallelCoordinates extends Component {
     const pad = 30;
 
     const px = scaleBand()
-      .domain(this.state.keys)
+      .domain(this.props.keys)
       .range([pad, this.props.size[0] - pad / 3])
       .padding(0.25);
 
     const py = new Map(
-      this.state.keys.map((k) => [
+      this.props.keys.map((k) => [
         k,
         scaleLinear()
           .domain(extent(this.props.data, (d) => +d[k]))
@@ -77,12 +76,12 @@ class ParallelCoordinates extends Component {
       .data((d) => [d])
       .join("path")
       .attr("d", (d) =>
-        ln(cross(this.state.keys, [d], (key, d) => [key, d[key]]))
+        ln(cross(this.props.keys, [d], (key, d) => [key, d[key]]))
       );
 
     selection
       .selectAll(".axis")
-      .data(this.state.keys)
+      .data(this.props.keys)
       .join("g")
       .attr("class", "axis")
       .attr("transform", (k) => `translate(${px(k)}, 0)`)
@@ -92,7 +91,7 @@ class ParallelCoordinates extends Component {
 
     selection
       .selectAll(".label")
-      .data(this.state.keys)
+      .data(this.props.keys)
       .join("text")
       .attr("class", "label")
       .attr("x", (d) => px(d))

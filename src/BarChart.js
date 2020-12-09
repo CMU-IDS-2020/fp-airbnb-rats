@@ -6,99 +6,29 @@ import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
 import { axisLeft } from "d3-axis";
 import { Box, Row } from "jsxstyle";
-import HiddenElementDropdown from "./HiddenElementDropdown";
-import SortElementDropdown from "./SortElementDropdown";
 import { schemeTableau10 } from "d3-scale-chromatic";
 import { transition } from "d3-transition";
 import { format } from "d3-format";
 import { color } from "d3-color";
 
-const sortingFunctions = {
-  "mean-h-l": "Mean: High to Low",
-  "mean-l-h": "Mean: Low to high",
-  "variance-h-l": "Std Dev / Mean: High to Low",
-  "variance-l-h": "Std Dev / Mean: Low to High",
-};
-
 class BarChart extends Component {
   constructor(props) {
     super(props);
     this.createBarChart = this.createBarChart.bind(this);
-    this.hideKey = this.hideKey.bind(this);
-    this.setBack = this.setBack.bind(this);
-    this.updateMenuTool = this.updateMenuTool.bind(this);
-    this.setSortingFunction = this.setSortingFunction.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = Object.values(this.props.dataGroups).length;
-    this.state = {
-      keys: Object.keys(this.props.data[0]).slice(3),
-      removedKeys: [],
-      sortingFunctionIdx: 0,
-    };
-
+    
     this.currentHoverGroup = -1;
     this.dataGroupLengths = 0;
     this.dataGroupLengths = [];
-
-    this.keysLength = this.state.keys.length;
-
-    this.bulkAverages = this.calculateBulkAverages();
+    this.keysLength = 23
+    this.bulkAverages = this.props.bulkAverages;
 
     this.hx = scaleBand()
-      .domain(this.state.keys)
+      .domain(this.props.keys)
       .range([0, this.props.size[0]])
       .padding(0.1);
 
-    this.hiddenElementDropdown = (
-      <HiddenElementDropdown
-        setBack={this.setBack}
-        listItems={this.state.removedKeys}
-      />
-    );
-
-    this.sortingElementDropdown = (
-      <SortElementDropdown
-        listItems={Object.values(sortingFunctions)}
-        selectedIdx={this.state.sortingFunctionIdx}
-        setSelected={this.setSortingFunction}
-      />
-    );
-  }
-
-  setSortingFunction(idx) {
-    this.sortingElementDropdown = (
-      <SortElementDropdown
-        listItems={Object.values(sortingFunctions)}
-        selectedIdx={idx}
-        setSelected={this.setSortingFunction}
-      />
-    );
-    this.setState({ sortingFunctionIdx: idx });
-    this.updateMenuTool();
-  }
-
-  hideKey(key) {
-    const index = this.state.keys.indexOf(key);
-    if (index > -1) {
-      this.state.removedKeys.push(this.state.keys.splice(index, 1)[0]);
-    }
-    this.setState({
-      keys: this.state.keys,
-      removedKeys: this.state.removedKeys,
-    });
-    this.updateMenuTool();
-  }
-
-  setBack(key) {
-    const index = this.state.removedKeys.indexOf(key);
-    if (index > -1) {
-      this.state.keys.push(this.state.removedKeys.splice(index, 1)[0]);
-    }
-    this.setState({
-      keys: this.state.keys,
-      removedKeys: this.state.removedKeys,
-    });
-    this.updateMenuTool();
   }
 
   getCurrentHoverGroup() {
@@ -120,7 +50,7 @@ class BarChart extends Component {
       if (values.length != 0) {
         const trueData = values.map((d) => this.props.data[d]);
         res[idx] = Object.fromEntries(
-          this.state.keys
+          this.props.keys
             .map((k) => [k, trueData.map((d) => d[k])])
             .map((k) => [k[0], [mean(k[1]), deviation(k[1])]])
         );
@@ -131,48 +61,22 @@ class BarChart extends Component {
     return Object.values(res);
   }
 
-  calculateBulkAverages() {
-    let bulkAverages = this.state.keys
-      .map((key) => [key, this.props.data.map((datapoint) => datapoint[key])])
-      .map((k) => [k[0], [mean(k[1]), deviation(k[1])]]);
-    bulkAverages = Object.fromEntries(bulkAverages);
-    bulkAverages["color"] = "#AAAAAA";
-    return bulkAverages;
-  }
-
-  calculateAveragesOfAllGroups() {
-    const points = Object.values(this.props.dataGroups).flat();
-    let trueData = points.map((cluster) => {
-      return this.props.data[cluster];
-    });
-    const mapped = this.state.keys
-      .map((key) => [key, trueData.map((datapoint) => datapoint[key])])
-      .map((k) => [k[0], mean(k[1]), deviation(k[1]) / mean(k[1])]);
-    return mapped;
-  }
-
   componentDidMount() {
     this.createBarChart();
-    this.updateMenuTool();
+    //this.updateMenuTool();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    //console.log(prevState, this.state)
-
     const currentHoverGroup = this.getCurrentHoverGroup();
     let triggerUpdate = false;
-    prevState.keys.forEach((key, idx) => {
-      if (key != this.state.keys[idx]) {
+    prevProps.keys.forEach((key, idx) => {
+      if (key != this.props.keys[idx]) {
         triggerUpdate = true;
       }
     });
 
-    if (prevState.sortingFunctionIdx != this.state.sortingFunctionIdx) {
-      triggerUpdate = true;
-    }
-
-    if (this.keysLength != this.state.keys.length) {
-      this.keysLength = this.state.keys.length;
+    if (this.keysLength != this.props.keys.length) {
+      this.keysLength = this.props.keys.length;
       triggerUpdate = true;
     }
 
@@ -196,68 +100,14 @@ class BarChart extends Component {
     }
 
     if (triggerUpdate) {
-      this.reorderKeys();
       this.createBarChart();
     }
   }
 
-  reorderKeys() {
-    const sortingData = this.calculateAveragesOfAllGroups();
-    if (sortingData == null) return;
-    let compareFunction;
-    const sortMode = Object.keys(sortingFunctions)[
-      this.state.sortingFunctionIdx
-    ];
-    switch (sortMode) {
-      case "variance-h-l":
-        compareFunction = (a, b) => {
-          if (a[2] > b[2]) {
-            return -1;
-          } else if (a[2] < b[2]) {
-            return 1;
-          }
-          return 0;
-        };
-        break;
-      case "variance-l-h":
-        compareFunction = (a, b) => {
-          if (a[2] > b[2]) {
-            return 1;
-          } else if (a[2] < b[2]) {
-            return -1;
-          }
-          return 0;
-        };
-        break;
-      case "mean-h-l":
-        compareFunction = (a, b) => {
-          if (a[1] > b[1]) {
-            return -1;
-          } else if (a[1] < b[1]) {
-            return 1;
-          }
-          return 0;
-        };
-        break;
-      case "mean-l-h":
-        compareFunction = (a, b) => {
-          if (a[1] > b[1]) {
-            return 1;
-          } else if (a[1] < b[1]) {
-            return -1;
-          }
-          return 0;
-        };
-        break;
-    }
-    const sortedKeys = sortingData.sort(compareFunction);
-    this.setState({ keys: sortedKeys.map((key) => key[0]) });
-  }
-
-  updateMenuTool() {
-    let mt = this.hiddenElementDropdown;
-    this.props.setMenuTools([mt, this.sortingElementDropdown]);
-  }
+  // updateMenuTool() {
+  //   let mt = this.hiddenElementDropdown;
+  //   this.props.setMenuTools([mt, this.sortingElementDropdown]);
+  // }
 
   createBarChart() {
     const selection = select(this.chartRef.current);
@@ -295,7 +145,7 @@ class BarChart extends Component {
     const bars = hgroups
       .selectAll("rect")
       .data((dat) =>
-        this.state.keys.map((k, i) => {
+        this.props.keys.map((k, i) => {
           const o = {};
           const d = dat[k];
           o.label = k;
@@ -363,7 +213,7 @@ class BarChart extends Component {
     hgroups
       .selectAll(".vrect")
       .data((dat) =>
-        this.state.keys.map((k, i) => {
+        this.props.keys.map((k, i) => {
           const o = {};
           const d = dat[k];
           o.label = k;
@@ -388,10 +238,10 @@ class BarChart extends Component {
 
     hgroups
       .selectAll(".axis")
-      .data([this.state.keys[0]])
+      .data([this.props.keys[0]])
       .join("g")
       .attr("class", "axis")
-      .attr("transform", (d) => `translate(${this.hx(this.state.keys[0])}, 0)`)
+      .attr("transform", (d) => `translate(${this.hx(this.props.keys[0])}, 0)`)
       .call(axisLeft(ry2).ticks(5, "0.3f"));
 
     selection.selectAll(".axis").selectAll("text").attr("fill", "white");
@@ -408,12 +258,12 @@ class BarChart extends Component {
     selection
       .selectAll(".histgroup:last-child")
       .append("text")
-      .text("Bulk Sum")
+      .text("Average of all samples")
       .attr("class", "bulklabel")
       .attr("fill", "white")
       .attr("dominant-baseline", "hanging")
       .attr("text-anchor", "middle")
-      .attr("font-size", 8)
+      .attr("font-size", 12)
       .attr("dy", 4)
       .attr("x", this.props.size[0] / 2)
       .attr("y", hy.bandwidth());
@@ -425,7 +275,7 @@ class BarChart extends Component {
         .join("g")
         .attr("transform", (_, i) => `translate(0, ${hy(i)})`)
         .selectAll("line")
-        .data(this.state.keys)
+        .data(this.props.keys)
         .join("line")
         .attr("class", (d) => "hvline")
         .attr("stroke", "white")
@@ -449,17 +299,17 @@ class BarChart extends Component {
 
   render() {
     this.hx = scaleBand()
-      .domain(this.state.keys)
+      .domain(this.props.keys)
       .range([50, this.props.size[0] - 20])
       .padding(0.1);
 
     return (
       <Box position="relative">
         <Box color="white" position="absolute" width="100%" paddingTop="12px">
-          {this.state.keys.map((k) => (
+          {this.props.keys.map((k) => (
             <HistogramElement
               key={k}
-              hideKey={() => this.hideKey(k)}
+              hideKey={() => this.props.hideKey(k)}
               name={k.split("_")[0]}
               left={this.hx(k) + this.hx.bandwidth() / 2}
             />

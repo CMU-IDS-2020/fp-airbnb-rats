@@ -66,6 +66,7 @@ export default class CardLayout extends Component {
         >
           <Box>{this.props.title}</Box>
           <Box>
+            {this.props.menuComponents ? this.props.menuComponents : ""}
             <MenuToolButtons mapping={this.state.tools} />
           </Box>
         </Row>
