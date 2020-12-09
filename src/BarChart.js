@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { scaleBand, scaleLinear, scaleLog } from "d3-scale";
-import { range, extent, mean, deviation } from "d3-array";
+import { range, extent, mean, deviation, quantile } from "d3-array";
 import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
 import { axisLeft } from "d3-axis";
@@ -10,6 +10,7 @@ import { schemeTableau10 } from "d3-scale-chromatic";
 import { transition } from "d3-transition";
 import { format } from "d3-format";
 import { color } from "d3-color";
+import { UIColors } from "./colors";
 
 class BarChart extends Component {
   constructor(props) {
@@ -53,7 +54,7 @@ class BarChart extends Component {
         res[idx] = Object.fromEntries(
           this.props.keys
             .map((k) => [k, trueData.map((d) => d[k])])
-            .map((k) => [k[0], [mean(k[1]), deviation(k[1])]])
+            .map((k) => [k[0], [mean(k[1]), deviation(k[1]), quantile(k[1], 0), quantile(k[1], 0.25), quantile(k[1], 0.5), quantile(k[1], 0.75), quantile(k[1], 1)]])
         );
 
         res[idx]["color"] = schemeTableau10[idx];
@@ -104,11 +105,6 @@ class BarChart extends Component {
       this.createBarChart();
     }
   }
-
-  // updateMenuTool() {
-  //   let mt = this.hiddenElementDropdown;
-  //   this.props.setMenuTools([mt, this.sortingElementDropdown]);
-  // }
 
   createBarChart() {
     const selection = select(this.chartRef.current);
@@ -165,6 +161,11 @@ class BarChart extends Component {
           o.y = transformedHeight;
           o.i = i;
           o.color = dat["color"];
+          o.qmin = d[2]
+          o.q1 = d[3]
+          o.qmed = d[4]
+          o.q3 = d[4]
+          o.qmax = d[5]
           return o;
         })
       )
@@ -183,15 +184,14 @@ class BarChart extends Component {
           .attr("opacity", 0);
         tg.transition().duration(300).attr("dy", -10).attr("opacity", 1);
 
-        const rw = 120;
-        const ts = 16;
+        const rw = 124;
+        const ts = 15;
         tg.append("rect")
           .attr("x", d.x + d.width / 2 - rw / 2)
           .attr("y", d.y - ts / 2)
           .attr("width", rw)
-          .attr("height", ts + 10)
-          .attr("stroke", "white")
-          .attr("fill", "black")
+          .attr("height", ts * 4 + 25)
+          .attr("fill", UIColors.background)
           .attr("pointer-events", "none")
           .attr("stroke-width", 1);
 
@@ -207,11 +207,45 @@ class BarChart extends Component {
           .text(
             `μ = ${format(".2f")(d.value)}, σ = ${format(".2f")(d.variance)}`
           );
+        tg.append("text")
+          .attr("x", d.x + d.width / 2)
+          .attr("y", d.y + 25).attr("pointer-events", "none")
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("font-size", ts - 4)
+          .attr("font-family", "sans-serif")
+          .attr("fill", "white")
+          .text(
+            `min = ${format(".2f")(d.qmin)}, max = ${format(".2f")(d.qmax)}`
+          );
+        tg.append("text")
+          .attr("x", d.x + d.width / 2)
+          .attr("y", d.y + 45).attr("pointer-events", "none")
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("font-size", ts - 4)
+          .attr("font-family", "sans-serif")
+          .attr("fill", "white")
+          .text(
+            `Q1 = ${format(".2f")(d.q1)}, Q3 = ${format(".2f")(d.q3)}`
+          );
+          tg.append("text")
+          .attr("x", d.x + d.width / 2)
+          .attr("y", d.y + 65).attr("pointer-events", "none")
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("font-size", ts - 4)
+          .attr("font-family", "sans-serif")
+          .attr("fill", "white")
+          .text(
+            `Median = ${format(".2f")(d.qmed)}`
+          );
       })
       .on("mouseleave", function (e, d) {
         selection
           .selectAll(".htooltip")
           .transition()
+          .duration(300)
           .attr("opacity", 0)
           .transition()
           .remove();
