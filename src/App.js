@@ -14,6 +14,7 @@ import data from "./kingscourt_irregular";
 import { UIColors } from "./colors";
 import HiddenElementDropdown from "./HiddenElementDropdown";
 import SortElementDropdown from "./SortElementDropdown";
+import Toggle from "./Toggle";
 
 const datagroups = { 0: [] };
 
@@ -48,6 +49,7 @@ class App extends Component {
       this
     );
     this.hideKey = this.hideKey.bind(this);
+    this.onToggle = this.onToggle.bind(this);
     this.setBack = this.setBack.bind(this);
     this.setSortingFunction = this.setSortingFunction.bind(this);
 
@@ -60,6 +62,7 @@ class App extends Component {
       keys: Object.keys(data[0]).slice(3),
       removedKeys: [],
       sortingFunctionIdx: 0,
+      scaleMode: "log"
     };
 
     this.bulkAverages = this.calculateBulkAverages();
@@ -223,9 +226,21 @@ class App extends Component {
     this.setState({ brushExtent: d });
   }
 
+  onToggle(t){
+    if(t){
+      this.setState({scaleMode: "log"})
+    } else {
+      this.setState({scaleMode: "linear"})
+    }
+  }
+
   render() {
     const barMenuComponents = (
       <Row>
+        <Toggle
+          toggle={this.state.scaleMode === "log"}
+          setToggle={this.onToggle}
+        />
         <HiddenElementDropdown
           setBack={this.setBack}
           listItems={this.state.removedKeys}
@@ -278,6 +293,7 @@ class App extends Component {
               setBack={this.setBack}
               hideKey={this.hideKey}
               menuComponents={barMenuComponents}
+              scaleMode={this.state.scaleMode}
             >
               <BarChart />
             </CardLayout>

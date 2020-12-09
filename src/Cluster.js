@@ -12,7 +12,7 @@ class Cluster extends Component {
     super(props);
     this.state = {
       selectedTab: "km",
-      running: false
+      running: false,
     };
     this.sendToApp = this.sendToApp.bind(this);
     this.sendToBackend = this.sendToBackend.bind(this);
@@ -21,8 +21,8 @@ class Cluster extends Component {
     this.setIsRunning = this.setIsRunning.bind(this);
   }
 
-  setIsRunning(isRunning){
-    this.setState({running: isRunning})
+  setIsRunning(isRunning) {
+    this.setState({ running: isRunning });
   }
 
   setTab(key) {
@@ -194,8 +194,16 @@ class Cluster extends Component {
     if (this.state.selectedTab === "km") {
       suboptionMenu = (
         <Col width="80%">
-                    <Row width="100%" fontSize="13px" marginBottom="14px" justifyContent="flex-start" color="grey" fontStyle="italic">
-            Definition of hierarchical clustering Definition of hierarchical clustering Definition of hierarchical
+          <Row
+            width="100%"
+            fontSize="13px"
+            marginBottom="14px"
+            justifyContent="flex-start"
+            color="grey"
+            fontStyle="italic"
+          >
+            Definition of hierarchical clustering Definition of hierarchical
+            clustering Definition of hierarchical
           </Row>
           <Row marginBottom="8px" alignItems="center">
             <Box marginRight="8px" fontWeight="600">
@@ -270,8 +278,16 @@ class Cluster extends Component {
     } else if (this.state.selectedTab === "hc") {
       suboptionMenu = (
         <Box width="80%">
-          <Row width="100%" fontSize="13px" marginBottom="8px" alignItems="center" color="grey" fontStyle="italic">
-            Definition of hierarchical clustering Definition of hierarchical clustering Definition of hierarchical
+          <Row
+            width="100%"
+            fontSize="13px"
+            marginBottom="8px"
+            alignItems="center"
+            color="grey"
+            fontStyle="italic"
+          >
+            Definition of hierarchical clustering Definition of hierarchical
+            clustering Definition of hierarchical
           </Row>
           <Row marginBottom="4px" alignItems="center">
             <Box marginRight="8px" fontWeight="600">
@@ -338,26 +354,38 @@ class Cluster extends Component {
     } else {
       suboptionMenu = (
         <Col width="80%">
-          <Row width="100%" fontSize="13px" marginBottom="14px" alignItems="center" color="grey" fontStyle="italic">
-            Definition of hierarchical clustering Definition of hierarchical clustering Definition of hierarchical
+          <Row
+            width="100%"
+            fontSize="13px"
+            marginBottom="14px"
+            alignItems="center"
+            color="grey"
+            fontStyle="italic"
+          >
+            Definition of hierarchical clustering Definition of hierarchical
+            clustering Definition of hierarchical
           </Row>
           <Col alignItems="center">
             <Inline
-                justifyContent="center"
-                fontWeight="600"
-                fontSize="16px"
-                width="120px"
-                borderBottom="1px solid white"
-              > Group by 
+              justifyContent="center"
+              fontWeight="600"
+              fontSize="16px"
+              width="120px"
+              borderBottom="1px solid white"
+            >
+              {" "}
+              Group by
             </Inline>
-          <Col marginTop="8px" alignItems="flex-start">
-            <Inline>
-            <input type="radio" id="max" value="max" name="maxmin" />
-            Maximum</Inline>
-            <Inline>
-            <input type="radio" id="min" value="min" name="maxmin" />
-            Minimum</Inline>
-          </Col>
+            <Col marginTop="8px" alignItems="flex-start">
+              <Inline>
+                <input type="radio" id="max" value="max" name="maxmin" />
+                Maximum
+              </Inline>
+              <Inline>
+                <input type="radio" id="min" value="min" name="maxmin" />
+                Minimum
+              </Inline>
+            </Col>
           </Col>
         </Col>
       );
@@ -401,7 +429,14 @@ class Cluster extends Component {
         </Row>
         <Box paddingBottom="16px">
           <Box
-            props={{ onClick: this.state.running ? () => alert("Please wait for last clustering algorithm to finish running.") : this.sendToBackend }}
+            props={{
+              onClick: this.state.running
+                ? () =>
+                    alert(
+                      "Please wait for last clustering algorithm to finish running."
+                    )
+                : this.sendToBackend,
+            }}
             background={UIColors.header}
             padding="12px 20px 12px 20px"
             color={UIColors.text}
@@ -410,7 +445,7 @@ class Cluster extends Component {
             cursor="pointer"
             margin="0px"
           >
-            {this.state.running ? "Running..." : "Fetch Clusters"}     
+            {this.state.running ? "Running..." : "Fetch Clusters"}
           </Box>
         </Box>
       </Col>
