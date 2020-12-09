@@ -70,7 +70,7 @@ class ParallelCoordinates extends Component {
       .join("g")
       .attr("class", "pcp-ln")
       .attr("stroke", (_, i) => schemeTableau10[i])
-      .attr("stroke-width", 1.5)
+      .attr("stroke-width", 2.75)
       .attr("fill", "none")
       .selectAll("path")
       .data((d) => [d])

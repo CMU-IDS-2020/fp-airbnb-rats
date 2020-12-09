@@ -17,7 +17,9 @@ class BarChart extends Component {
     this.createBarChart = this.createBarChart.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = Object.values(this.props.dataGroups).length;
-    
+    this.state = {
+      scaleMode: "log"
+    };
     this.currentHoverGroup = -1;
     this.dataGroupLengths = 0;
     this.dataGroupLengths = [];
@@ -126,7 +128,13 @@ class BarChart extends Component {
       .flat()
       .filter((b) => b !== 0);
     const domainMean = extent(meansonly);
-    const ry2 = scaleLog().domain(domainMean).range([hy.bandwidth(), 0]).nice();
+    const ry2 =
+      this.state.scaleMode === "log"
+        ? scaleLog().domain(domainMean).range([hy.bandwidth(), 0]).nice()
+        : scaleLinear()
+            .domain([0, domainMean[1]])
+            .range([hy.bandwidth(), 0])
+            .nice();
 
     const hgroups = selection
       .selectAll(".histgroup")
