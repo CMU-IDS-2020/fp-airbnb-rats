@@ -44,9 +44,7 @@ function DropdownItem(props) {
       </Row>
       <Box>
         {props.selected ? (
-          <Inline marginLeft="8px">
-            {props.isOpen ? "▾" : "◂"}
-          </Inline>
+          <Inline marginLeft="8px">{props.isOpen ? "▾" : "◂"}</Inline>
         ) : (
           ""
         )}
@@ -144,7 +142,7 @@ class GroupDropdown extends Component {
                 onMouseEnter: () =>
                   this.setHoverElement(this.props.numComponents),
                 onMouseLeave: () => this.setHoverElement(-1),
-                onClick: this.props.addListItems
+                onClick: this.props.addListItems,
               }}
             >
               <div>+ Add item</div>

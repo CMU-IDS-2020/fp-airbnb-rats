@@ -62,11 +62,11 @@ html,
 
 #content {
   position: absolute;
-  left:40px;
+  left: 40px;
 }
 
 #options {
-  float:left;
+  float: left;
 }
 
 .techniques {
@@ -84,4 +84,3 @@ html,
 #buttons {
   margin-top: 20px;
 }
-
