@@ -401,7 +401,7 @@ class BarChart extends Component {
       .selectAll("line")
       .attr("stroke", "white");
 
-    if (this.props.hoverPoint >= 0 && this.currentHoverGroup > -1) {
+    if (this.props.hoverPoint !== null) {
       selection
         .selectAll(".hvline")
         .data(selected)
