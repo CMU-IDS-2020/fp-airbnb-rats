@@ -54,7 +54,18 @@ class BarChart extends Component {
         res[idx] = Object.fromEntries(
           this.props.keys
             .map((k) => [k, trueData.map((d) => d[k])])
-            .map((k) => [k[0], [mean(k[1]), deviation(k[1]), quantile(k[1], 0), quantile(k[1], 0.25), quantile(k[1], 0.5), quantile(k[1], 0.75), quantile(k[1], 1)]])
+            .map((k) => [
+              k[0],
+              [
+                mean(k[1]),
+                deviation(k[1]),
+                quantile(k[1], 0),
+                quantile(k[1], 0.25),
+                quantile(k[1], 0.5),
+                quantile(k[1], 0.75),
+                quantile(k[1], 1),
+              ],
+            ])
         );
 
         res[idx]["color"] = schemeTableau10[idx];
@@ -161,11 +172,12 @@ class BarChart extends Component {
           o.y = transformedHeight;
           o.i = i;
           o.color = dat["color"];
-          o.qmin = d[2]
-          o.q1 = d[3]
-          o.qmed = d[4]
-          o.q3 = d[4]
-          o.qmax = d[5]
+          o.qmin = d[2];
+          o.q1 = d[3];
+          o.qmed = d[4];
+          o.q3 = d[4];
+          o.qmax = d[5];
+          o.innerwidth = this.props.size[0];
           return o;
         })
       )
@@ -182,13 +194,17 @@ class BarChart extends Component {
           .attr("class", "htooltip")
           .attr("transform", pd)
           .attr("opacity", 0);
-        tg.transition().duration(300).attr("dy", -10).attr("opacity", 1);
+        tg.transition().duration(300).attr("opacity", 1);
 
         const rw = 124;
         const ts = 15;
         tg.append("rect")
           .attr("x", d.x + d.width / 2 - rw / 2)
           .attr("y", d.y - ts / 2)
+          .attr(
+            "transform",
+            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
+          )
           .attr("width", rw)
           .attr("height", ts * 4 + 25)
           .attr("fill", UIColors.background)
@@ -198,6 +214,10 @@ class BarChart extends Component {
         tg.append("text")
           .attr("x", d.x + d.width / 2)
           .attr("y", d.y + 5)
+          .attr(
+            "transform",
+            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
+          )
           .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
@@ -209,7 +229,12 @@ class BarChart extends Component {
           );
         tg.append("text")
           .attr("x", d.x + d.width / 2)
-          .attr("y", d.y + 25).attr("pointer-events", "none")
+          .attr("y", d.y + 25)
+          .attr(
+            "transform",
+            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
+          )
+          .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
           .attr("font-size", ts - 4)
@@ -220,26 +245,32 @@ class BarChart extends Component {
           );
         tg.append("text")
           .attr("x", d.x + d.width / 2)
-          .attr("y", d.y + 45).attr("pointer-events", "none")
+          .attr("y", d.y + 45)
+          .attr(
+            "transform",
+            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
+          )
+          .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
           .attr("font-size", ts - 4)
           .attr("font-family", "sans-serif")
           .attr("fill", "white")
-          .text(
-            `Q1 = ${format(".2f")(d.q1)}, Q3 = ${format(".2f")(d.q3)}`
-          );
-          tg.append("text")
+          .text(`Q1 = ${format(".2f")(d.q1)}, Q3 = ${format(".2f")(d.q3)}`);
+        tg.append("text")
+          .attr(
+            "transform",
+            d.x > d.innerwidth * 0.75 ? "translate(-20, 0)" : ""
+          )
           .attr("x", d.x + d.width / 2)
-          .attr("y", d.y + 65).attr("pointer-events", "none")
+          .attr("y", d.y + 65)
+          .attr("pointer-events", "none")
           .attr("text-anchor", "middle")
           .attr("dominant-baseline", "middle")
           .attr("font-size", ts - 4)
           .attr("font-family", "sans-serif")
           .attr("fill", "white")
-          .text(
-            `Median = ${format(".2f")(d.qmed)}`
-          );
+          .text(`Median = ${format(".2f")(d.qmed)}`);
       })
       .on("mouseleave", function (e, d) {
         selection
