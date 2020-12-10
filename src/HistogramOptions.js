@@ -141,7 +141,7 @@ class HistogramOptions extends Component {
           component="img"
           hoverCursor="pointer"
           position="relative"
-          zIndex="-2"
+          zIndex="0"
           props={{
             onClick: this.props.toggleLock,
             src: this.props.locked ? lock : open_lock,

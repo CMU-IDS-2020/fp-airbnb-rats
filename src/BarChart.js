@@ -389,7 +389,8 @@ class BarChart extends Component {
       .map((key) => {
         this.props.metadata[key]["key"] = key;
         return this.props.metadata[key];
-      });
+      })
+    
     //console.log("rerendering bar chart with ", histogramMenuOptions)
     return (
       <Box position="relative">
@@ -424,7 +425,7 @@ class BarChart extends Component {
                 setAnnotation={(a) => this.props.setAnnotation(idx, a)}
                 toggleLock={() => this.props.toggleLock(idx)}
               />
-            ))}
+            )).reverse()}
           </Col>
         </Box>
         <svg

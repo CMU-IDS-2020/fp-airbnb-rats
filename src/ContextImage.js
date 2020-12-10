@@ -173,9 +173,11 @@ class ContextImage extends Component {
   }
 
   render() {
-    const hoverGroup = this.getCurrentHoverGroup(this.props.hoverPoint);
-
-    console.log(this.props);
+    let hoverGroup;
+    
+    if(this.state.selectedTool == "eye"){
+      hoverGroup = this.getCurrentHoverGroup(this.props.hoverPoint);
+    }
 
     let cursor = imgMappings[this.state.selectedTool];
     if (cursor != null) {
@@ -262,6 +264,7 @@ class ContextImage extends Component {
                     pen={this.getTool}
                     shiftDownGetter={this.props.shiftDownGetter}
                     getSelectedGroup={this.getSelectedGroup}
+                    metadataGetter={this.props.metadataGetter}
                   />
                 ) : (
                   "Loading image..."

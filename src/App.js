@@ -247,14 +247,12 @@ class App extends Component {
   }
 
   keydown(e) {
-    console.log(e.key);
     if (e.key === "Shift") {
       this.setState({ shiftDown: true });
     }
   }
 
   keyup(e) {
-    console.log(e.key);
     if (e.key === "Shift") {
       this.setState({ shiftDown: false });
     }
@@ -330,7 +328,7 @@ class App extends Component {
                 (this.state.screenHeight * 3) / 5 - 10,
               ]}
               metadata={this.state.metadata}
-              getMetadata={this.getMetadata}
+              metadataGetter={this.getMetadata}
               setMetadata={this.changeMetadata}
               toggleLock={this.toggleLock}
             >

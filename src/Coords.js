@@ -140,7 +140,8 @@ class Coords extends Component {
     const sdg = this.props.changeDataGroups;
     let dataGroupsGetter = this.props.getDataGroups;
     let shiftDownGetter = this.props.shiftDownGetter;
-    //console.log("data groups", dataGroups)
+    let metadataGetter = this.props.metadataGetter;
+
     function draw(polygon) {
       l.datum({
         type: "LineString",
@@ -168,13 +169,18 @@ class Coords extends Component {
         svg.dispatchEvent(new CustomEvent("input"));
         return;
       }
+
+      const metadata = metadataGetter();
+      const lockedGroups = Object.keys(metadata).filter(key => metadata[key]["locked"]).map(m => parseInt(m))
+      console.log(lockedGroups)
+
       const points = selection.selectAll(".pts");
       let selPoints = points
         .filter((d) => polygonContains(polygon, [d.X, d.Y]))
         .data();
       selPoints = selPoints.map((d) => d.i);
       const selectedGroup = getSelG();
-      if (!shiftDown) {
+      if (!shiftDown && !lockedGroups.includes(selectedGroup)) {
         if (dataGroups[selectedGroup]) {
           const arr1 = dataGroups[selectedGroup];
           dataGroups[selectedGroup] = [...new Set([...arr1, ...selPoints])];
@@ -186,16 +192,19 @@ class Coords extends Component {
       const excludeArray = shiftDown ? selPoints : dataGroups[selectedGroup];
 
       Object.keys(dataGroups).forEach((dg) => {
+        dg = parseInt(dg)
         const val = dataGroups[dg];
-        if (shiftDown) {
-          dataGroups[dg] = val.filter(
-            (dgElement) => !excludeArray.includes(dgElement)
-          );
-        } else {
-          if (dg != selectedGroup) {
+        if(!lockedGroups.includes(dg)){
+          if (shiftDown) {
             dataGroups[dg] = val.filter(
               (dgElement) => !excludeArray.includes(dgElement)
             );
+          } else {
+            if (dg != selectedGroup) {
+              dataGroups[dg] = val.filter(
+                (dgElement) => !excludeArray.includes(dgElement)
+              );
+            }
           }
         }
       });
@@ -256,7 +265,6 @@ class Coords extends Component {
         .on(
           "mouseenter",
           function (e, d) {
-            console.log("mouse enter", tool());
             const g = this.getGroup(d.i);
             const newPoint = g >= this.props.dataGroups.length ? null : d.i;
             this.props.changeHoverPoint(newPoint);
