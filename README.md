@@ -1,6 +1,6 @@
 # CMU Interactive Data Science Final Project
 
-- **Online URL**: [https://connie.cafe](https://connie.cafe)
+- **Online URL**: [https://cmu-ids-2020.github.io/fp-airbnb-rats/](https://cmu-ids-2020.github.io/fp-airbnb-rats/)
 - **Team members**:
   - nyildiri@andrew.cmu.edu
   - constany@andrew.cmu.edu
@@ -16,18 +16,18 @@ Update towards the end of the project.
 
 ### Proposal
 
-- [ ] The URL at the top of this readme needs to point to your application online. It should also list the names of the team members.
-- [ ] A completed proposal. The contact should submit it as a PDF on Canvas.
+- [ X ] The URL at the top of this readme needs to point to your application online. It should also list the names of the team members.
+- [ X ] A completed proposal. The contact should submit it as a PDF on Canvas.
 
 ### Design review
 
-- [ ] Develop a prototype of your project.
-- [ ] Create a 5 minute video to demonstrate your project and lists any question you have for the course staff. The contact should submit the video on Canvas.
+- [ X ] Develop a prototype of your project.
+- [ X ] Create a 5 minute video to demonstrate your project and lists any question you have for the course staff. The contact should submit the video on Canvas.
 
 ### Final deliverables
 
-- [ ] All code for the project should be in the repo.
-- [ ] A 5 minute video demonstration.
+- [ X ] All code for the project should be in the repo.
+- [ X ] A 5 minute video demonstration.
 - [ ] Update Readme according to Canvas instructions.
 - [ ] A detailed project report. The contact should submit the video and report as a PDF on Canvas.
 
