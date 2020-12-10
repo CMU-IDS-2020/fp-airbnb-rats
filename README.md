@@ -1,4 +1,4 @@
-# CMU Interactive Data Science Final Project
+# IDS Final Project: Pixlise+
 
 ![demo gif](/readme_assets/pixl.gif)
 
@@ -10,35 +10,39 @@
   - shravyab@andrew.cmu.edu
 - **Track**: Interactive Visualization/Application
 
+## Abstract
+
+## [Link to Paper](/Report.md)
+
+## [Demonstration Video](https://drive.google.com/file/d/1_QGiacQm2zVKVjjAQtvHT8NS_-jSTGu_/view?usp=sharing)
+
 ## Work distribution
 
 Please see [our task assignment spreadsheet](https://docs.google.com/spreadsheets/d/1ObvsKfcrZAta7omCOEnC_HmJAQJEn698Jha5Pph43Yk/edit?usp=sharing) for details on this.
 
-## Deliverables
+## Setting up the software
 
-### Proposal
+### Frontend: 
 
-- [X] The URL at the top of this readme needs to point to your application online. It should also list the names of the team members.
-- [X] A completed proposal. The contact should submit it as a PDF on Canvas.
+Required:
+- Node
 
-### Design review
+Installing packages: 
 
-- [X] Develop a prototype of your project.
-- [X] Create a 5 minute video to demonstrate your project and lists any question you have for the course staff. The contact should submit the video on Canvas.
+```
+npm i
+``` 
 
-### Final deliverables
+Running:
+```
+npm run start
+```
 
-- [X] All code for the project should be in the repo.
-- [X] A 5 minute video demonstration.
-- [ ] Update Readme according to Canvas instructions.
-- [ ] A detailed project report. The contact should submit the video and report as a PDF on Canvas.
+Building:
+```
+npm run build
+```
 
-# Setting up
-
-`npm i` and `npm start` from the `/reactd3` and you should see a dashboard at `localhost:3000`
-
-No need to worry about the npm audit vulnerabilities - they're all related to react-scripts, which is just a dev dependency and shouldn't change the production build.
-
-# Special thanks
+## Special thanks
 
 @emeeks on github for his [repository](https://github.com/emeeks/d3_in_action_2) with starter code.
