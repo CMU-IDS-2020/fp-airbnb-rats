@@ -16,10 +16,6 @@
 
 ## [Demonstration Video](https://drive.google.com/file/d/1_QGiacQm2zVKVjjAQtvHT8NS_-jSTGu_/view?usp=sharing)
 
-## Work distribution
-
-Please see [our task assignment spreadsheet](https://docs.google.com/spreadsheets/d/1ObvsKfcrZAta7omCOEnC_HmJAQJEn698Jha5Pph43Yk/edit?usp=sharing) for details on this.
-
 ## Setting up the software
 
 ### Frontend: 
@@ -52,6 +48,10 @@ Running:
 ```
 python3 backend2.py
 ```
+
+## Work distribution
+
+Please see [our task assignment spreadsheet](https://docs.google.com/spreadsheets/d/1ObvsKfcrZAta7omCOEnC_HmJAQJEn698Jha5Pph43Yk/edit?usp=sharing) for details on this.
 
 ## Process
 During the first few weeks we met with 
