@@ -4,8 +4,7 @@ import { scaleBand, scaleLinear } from "d3-scale";
 import { range, extent, mean, cross } from "d3-array";
 import { select } from "d3-selection";
 import { axisLeft } from "d3-axis";
-import { Box, Row } from "jsxstyle";
-import { schemeTableau10 } from "d3-scale-chromatic";
+import { colSchemes } from "./App";
 import { line } from "d3-shape";
 
 class ParallelCoordinates extends Component {
@@ -33,7 +32,7 @@ class ParallelCoordinates extends Component {
           .map((k) => [k, trueData.map((d) => d[k])])
           .map((k) => [k[0], mean(k[1])])
       );
-      res[idx]["color"] = schemeTableau10[idx];
+      res[idx]["color"] = colSchemes[idx];
     });
     return Object.values(res);
   }
@@ -69,7 +68,7 @@ class ParallelCoordinates extends Component {
       .data(selected)
       .join("g")
       .attr("class", "pcp-ln")
-      .attr("stroke", (_, i) => schemeTableau10[i])
+      .attr("stroke", (_, i) => colSchemes[i])
       .attr("stroke-width", 2.75)
       .attr("fill", "none")
       .selectAll("path")

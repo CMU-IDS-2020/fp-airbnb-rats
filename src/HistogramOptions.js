@@ -113,7 +113,7 @@ class HistogramOptions extends Component {
             position="relative"
             zIndex="0"
             component="img"
-            width="100%"
+            width={this.props.smallMode > 8 ? (23 - this.props.smallMode) + "px" : "100%"}
             props={{
               src: info,
             }}
@@ -146,8 +146,8 @@ class HistogramOptions extends Component {
             onClick: this.props.toggleLock,
             src: this.props.locked ? lock : open_lock,
           }}
-          width="100%"
-          marginTop="4px"
+          width={this.props.smallMode > 8 ? (23 - this.props.smallMode) + "px" : "100%"}
+          marginTop={this.props.smallMode > 8 ? "2px" : "4px"}
         />
       </Box>
     );

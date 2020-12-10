@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import { UIColors } from "./colors";
 import { Box, Col, Row, Inline } from "jsxstyle";
-import { schemeTableau10 } from "d3-scale-chromatic";
+import { colSchemes } from "./App";
 
 function DropdownItem(props) {
   return (
@@ -35,7 +35,7 @@ function DropdownItem(props) {
     >
       <Row alignItems="center">
         <Box
-          backgroundColor={schemeTableau10[props.listItem]}
+          backgroundColor={colSchemes[props.listItem]}
           borderRadius="10px"
           width="10px"
           height="10px"

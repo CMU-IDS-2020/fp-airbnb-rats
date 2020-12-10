@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Box, Col, Inline, Row } from "jsxstyle";
+import { Box, Row } from "jsxstyle";
 import { UIColors } from "./colors";
 
 class HiddenElementDropdown extends Component {

@@ -1,21 +1,24 @@
 {
   "files": {
-    "main.css": "/fp-airbnb-rats/static/css/main.6f987eec.chunk.css",
-    "main.js": "/fp-airbnb-rats/static/js/main.f8f0c6dd.chunk.js",
-    "main.js.map": "/fp-airbnb-rats/static/js/main.f8f0c6dd.chunk.js.map",
+    "main.css": "/fp-airbnb-rats/static/css/main.bdc7feba.chunk.css",
+    "main.js": "/fp-airbnb-rats/static/js/main.535f3641.chunk.js",
+    "main.js.map": "/fp-airbnb-rats/static/js/main.535f3641.chunk.js.map",
     "runtime-main.js": "/fp-airbnb-rats/static/js/runtime-main.c689b988.js",
     "runtime-main.js.map": "/fp-airbnb-rats/static/js/runtime-main.c689b988.js.map",
-    "static/js/2.42f652e9.chunk.js": "/fp-airbnb-rats/static/js/2.42f652e9.chunk.js",
-    "static/js/2.42f652e9.chunk.js.map": "/fp-airbnb-rats/static/js/2.42f652e9.chunk.js.map",
+    "static/js/2.5f216c3d.chunk.js": "/fp-airbnb-rats/static/js/2.5f216c3d.chunk.js",
+    "static/js/2.5f216c3d.chunk.js.map": "/fp-airbnb-rats/static/js/2.5f216c3d.chunk.js.map",
     "index.html": "/fp-airbnb-rats/index.html",
-    "static/css/main.6f987eec.chunk.css.map": "/fp-airbnb-rats/static/css/main.6f987eec.chunk.css.map",
-    "static/js/2.42f652e9.chunk.js.LICENSE.txt": "/fp-airbnb-rats/static/js/2.42f652e9.chunk.js.LICENSE.txt",
-    "static/media/kingscourt_ir_context_image.124cd1e4.jpg": "/fp-airbnb-rats/static/media/kingscourt_ir_context_image.124cd1e4.jpg"
+    "static/css/main.bdc7feba.chunk.css.map": "/fp-airbnb-rats/static/css/main.bdc7feba.chunk.css.map",
+    "static/js/2.5f216c3d.chunk.js.LICENSE.txt": "/fp-airbnb-rats/static/js/2.5f216c3d.chunk.js.LICENSE.txt",
+    "static/media/info.234f449d.svg": "/fp-airbnb-rats/static/media/info.234f449d.svg",
+    "static/media/kingscourt_ir_context_image.124cd1e4.jpg": "/fp-airbnb-rats/static/media/kingscourt_ir_context_image.124cd1e4.jpg",
+    "static/media/lock.78f330db.svg": "/fp-airbnb-rats/static/media/lock.78f330db.svg",
+    "static/media/open_lock.8ef337fd.svg": "/fp-airbnb-rats/static/media/open_lock.8ef337fd.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.c689b988.js",
-    "static/js/2.42f652e9.chunk.js",
-    "static/css/main.6f987eec.chunk.css",
-    "static/js/main.f8f0c6dd.chunk.js"
+    "static/js/2.5f216c3d.chunk.js",
+    "static/css/main.bdc7feba.chunk.css",
+    "static/js/main.535f3641.chunk.js"
   ]
 }

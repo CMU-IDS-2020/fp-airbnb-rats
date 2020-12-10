@@ -6,23 +6,18 @@ import { select } from "d3-selection";
 import HistogramElement from "./HistogramElement";
 import HistogramOptions from "./HistogramOptions";
 import { axisLeft } from "d3-axis";
-import { Box, Row, Col } from "jsxstyle";
-import { schemeTableau10 } from "d3-scale-chromatic";
-import { transition } from "d3-transition";
+import { Box, Col } from "jsxstyle";
+import { colSchemes } from "./App";
 import { format } from "d3-format";
 import { color } from "d3-color";
 import { UIColors } from "./colors";
-
-import lock from "./assets/lock.svg";
-import open_lock from "./assets/open_lock.svg";
-import info from "./assets/info.svg";
+import { transition } from "d3-transition";
 
 class BarChart extends Component {
   constructor(props) {
     super(props);
     this.createBarChart = this.createBarChart.bind(this);
 
-    //this.createHistogramOptions = this.createHistogramOptions.bind(this);
     this.chartRef = React.createRef();
     this.dataGroupLength = Object.values(this.props.dataGroups).length;
     this.currentHoverGroup = -1;
@@ -72,7 +67,7 @@ class BarChart extends Component {
             ])
         );
 
-        res[idx]["color"] = schemeTableau10[idx];
+        res[idx]["color"] = colSchemes[idx];
       }
     });
     return Object.values(res);
@@ -80,7 +75,6 @@ class BarChart extends Component {
 
   componentDidMount() {
     this.createBarChart();
-    //this.updateMenuTool();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -387,11 +381,10 @@ class BarChart extends Component {
     const histogramMenuOptions = Object.keys(this.props.metadata)
       .filter((key) => this.props.dataGroups[key].length > 0)
       .map((key) => {
-        this.props.metadata[key]["key"] = key;
+        this.props.metadata[key]["key"] = parseInt(key);
         return this.props.metadata[key];
       })
     
-    //console.log("rerendering bar chart with ", histogramMenuOptions)
     return (
       <Box position="relative">
         <Box color="white" position="absolute" width="100%" paddingTop="12px">
@@ -422,8 +415,9 @@ class BarChart extends Component {
                 compIdx={val["key"]}
                 locked={val["locked"]}
                 annotation={val["annotation"]}
-                setAnnotation={(a) => this.props.setAnnotation(idx, a)}
-                toggleLock={() => this.props.toggleLock(idx)}
+                setAnnotation={(a) => this.props.setAnnotation(val["key"], a)}
+                toggleLock={() => this.props.toggleLock(val["key"])}
+                smallMode={histogramMenuOptions.length}
               />
             )).reverse()}
           </Col>

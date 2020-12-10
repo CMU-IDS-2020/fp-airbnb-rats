@@ -4,10 +4,8 @@ import ContextImage from "./ContextImage";
 import BarChart from "./BarChart";
 import ParallelCoordinates from "./ParallelCoordinates";
 import Cluster from "./Cluster";
-import { scaleOrdinal } from "d3-scale";
 import { schemeTableau10, schemePaired } from "d3-scale-chromatic";
-import { range, extent, mean, deviation, quantile } from "d3-array";
-import { geoCentroid } from "d3-geo";
+import { mean, deviation, quantile } from "d3-array";
 import CardLayout from "./CardLayout";
 import { Row, Col, Box } from "jsxstyle";
 import data from "./kingscourt_irregular";
@@ -27,10 +25,6 @@ const sortingFunctions = {
   "variance-h-l": "Std Dev / Mean: High to Low",
   "variance-l-h": "Std Dev / Mean: Low to High",
 };
-
-const colorScale = scaleOrdinal(schemeTableau10).domain(
-  range(datagroups.length + 1)
-);
 
 var resizeTimeout;
 const resize = function (onResize) {
@@ -218,13 +212,14 @@ class App extends Component {
   }
 
   changeDataGroups(data) {
-    //console.log("changing data groups to ", data);
+    if(Object.keys(data).length < Object.keys(this.state.metadata).length){
+      this.state.metadata = { 0: { annotation: "", locked: false } }
+    }
     Object.keys(data).forEach((key) => {
       if (this.state.metadata[key] == null) {
         this.state.metadata[key] = { annotation: "", locked: false };
       }
     });
-    //console.log("metadata changed to", this.state.metadata)
     this.setState({ dataGroups: data, metadata: this.state.metadata });
   }
 
@@ -390,5 +385,5 @@ class App extends Component {
     );
   }
 }
-
+export {colSchemes};
 export default App;

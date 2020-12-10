@@ -1,15 +1,11 @@
 import React, { Component } from "react";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Box } from "jsxstyle";
 import "./App.css";
-import contextImg from "./data/kingscourt_ir/kingscourt_ir_context_image.jpg";
 import trackPointer from "./trackPointer";
 import { dispatch } from "d3-dispatch";
 import { geoPath } from "d3-geo";
 import { polygonContains } from "d3-polygon";
 import { select } from "d3-selection";
-import GroupDropdown from "./GroupDropdown";
-import { schemeTableau10 } from "d3-scale-chromatic";
+import { colSchemes } from "./App";
 
 const beamparams = [46, 100, -44, 400];
 
@@ -97,9 +93,6 @@ class Coords extends Component {
     const dgValues = Object.values(this.props.dataGroups);
     let needToUpdate = false;
 
-    //console.log(this.props.dataGroups, dgKeys, dgValues)
-    //console.log(this.dataGroupLength, this.dataGroupLengths)
-
     if (dgKeys.length != this.dataGroupLength) {
       needToUpdate = true;
       this.dataGroupLength = dgKeys.length;
@@ -172,13 +165,16 @@ class Coords extends Component {
 
       const metadata = metadataGetter();
       const lockedGroups = Object.keys(metadata).filter(key => metadata[key]["locked"]).map(m => parseInt(m))
-      console.log(lockedGroups)
+      let lockedGroupPoints = Object.keys(dataGroups).filter(key => lockedGroups.includes(parseInt(key)))
+      
+      lockedGroupPoints = lockedGroupPoints.map(k => dataGroups[k]).flat()
 
       const points = selection.selectAll(".pts");
       let selPoints = points
         .filter((d) => polygonContains(polygon, [d.X, d.Y]))
         .data();
-      selPoints = selPoints.map((d) => d.i);
+      selPoints = selPoints.map((d) => d.i).filter( p => !lockedGroupPoints.includes(p) )
+
       const selectedGroup = getSelG();
       if (!shiftDown && !lockedGroups.includes(selectedGroup)) {
         if (dataGroups[selectedGroup]) {
@@ -239,7 +235,7 @@ class Coords extends Component {
     if (cg < 0) {
       return "#FFFFFF";
     } else {
-      return schemeTableau10[cg];
+      return colSchemes[cg];
     }
   }
 

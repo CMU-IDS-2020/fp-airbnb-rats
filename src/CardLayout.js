@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Col, Box, Row, Inline } from "jsxstyle";
+import { Col, Box, Row } from "jsxstyle";
 import { UIColors } from "./colors";
-import { thresholdFreedmanDiaconis } from "d3-array";
 
 class MenuToolButtons extends Component {
   constructor(props) {

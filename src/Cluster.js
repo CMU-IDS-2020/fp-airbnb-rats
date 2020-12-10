@@ -126,6 +126,11 @@ class Cluster extends Component {
       params.push(variance);
       params.push(perplexity);
 
+      if(k >= 20){
+        alert("Please select a number less than 20.")
+        return;
+      }
+
       console.log(params);
       var element = document.getElementById("km");
       var r = await this.getData(element, params);
@@ -148,6 +153,11 @@ class Cluster extends Component {
       params.push(num);
       params.push(linkage);
       console.log(params);
+
+      if(num >= 20){
+        alert("Please select a number less than 20.")
+        return;
+      }
 
       var element = document.getElementById("hc");
       var r = await this.getData(element, params);
@@ -465,7 +475,7 @@ class Cluster extends Component {
         >
           {suboptionMenu}
         </Row>
-        <Box paddingBottom="16px">
+        <Row paddingBottom="16px" alignItems="center">
           <Box
             props={{
               onClick: this.state.running
@@ -485,7 +495,10 @@ class Cluster extends Component {
           >
             {this.state.running ? "Running..." : "Fetch Clusters"}
           </Box>
-        </Box>
+          <Box width="200px" color="#AAA" fontSize="12px" paddingLeft="12px">
+            *Note that this will overwrite your current selections.
+          </Box>
+        </Row>
       </Col>
     );
   }
