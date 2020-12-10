@@ -10,7 +10,7 @@
 
 ## Work distribution
 
-Update towards the end of the project.
+Please see [our task assignment spreadsheet](https://docs.google.com/spreadsheets/d/1ObvsKfcrZAta7omCOEnC_HmJAQJEn698Jha5Pph43Yk/edit?usp=sharing) for details on this.
 
 ## Deliverables
 
