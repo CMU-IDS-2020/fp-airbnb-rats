@@ -100,7 +100,7 @@ class App extends Component {
     });
   }
 
-  getMetadata(){
+  getMetadata() {
     return this.state.metadata;
   }
 

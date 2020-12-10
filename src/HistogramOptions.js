@@ -13,16 +13,16 @@ class HistogramOptions extends Component {
     this.state = {
       dropdownOpen: false,
       editAnnotation: false,
-      value: ""
+      value: "",
     };
     this.name = this.props.name;
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({ value: event.target.value });
   }
-  
+
   render() {
     const mainScreen = (
       <>
@@ -70,9 +70,13 @@ class HistogramOptions extends Component {
     const editScreen = (
       <>
         <Box fontWeight="600" marginBottom="4px">
-           Add your annotation
+          Add your annotation
         </Box>
-        <input type="text" value={this.state.value} onChange={this.handleChange} />
+        <input
+          type="text"
+          value={this.state.value}
+          onChange={this.handleChange}
+        />
         <Box
           fontStyle="italic"
           marginTop="4px"
@@ -80,7 +84,13 @@ class HistogramOptions extends Component {
           padding="8px 12px 8px 12px"
           borderRadius="8px"
           hoverCursor="pointer"
-          props={{ onClick: () => { this.props.setAnnotation(this.state.value); this.setState({value: ""}); this.setState({ editAnnotation: false }) }}}
+          props={{
+            onClick: () => {
+              this.props.setAnnotation(this.state.value);
+              this.setState({ value: "" });
+              this.setState({ editAnnotation: false });
+            },
+          }}
         >
           Done
         </Box>

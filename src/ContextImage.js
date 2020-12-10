@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Box, Inline, Col } from "jsxstyle";
+import { Box, Inline, Col, Row } from "jsxstyle";
 import "./App.css";
 import contextImg from "./data/kingscourt_ir/kingscourt_ir_context_image.jpg";
 import GroupDropdown from "./GroupDropdown";
@@ -11,6 +11,7 @@ import ZoomPanSelected from "./assets/zoompan_selected.png";
 import LassoIconSelected from "./assets/lasso_selected.png";
 import EyeIcon from "./assets/eyeicon.png";
 import EyeIconSelected from "./assets/eyeicon_selected.png";
+import { UIColors } from "./colors";
 
 const imgMappings = {
   zoom: [ZoomPanIcon, ZoomPanSelected, "move"],
@@ -41,6 +42,8 @@ class ContextImage extends Component {
     this.setSelectedGroup = this.setSelectedGroup.bind(this);
     this.getSelectedGroup = this.getSelectedGroup.bind(this);
     this.menuTools;
+
+    this.getCurrentHoverGroup = this.getCurrentHoverGroup.bind(this);
 
     this.dropdown = (
       <GroupDropdown
@@ -75,6 +78,18 @@ class ContextImage extends Component {
 
   getTool() {
     return this.state.selectedTool;
+  }
+
+  getCurrentHoverGroup() {
+    let group = -1;
+    if (this.props.hoverPoint !== null) {
+      Object.values(this.props.dataGroups).forEach((g, i) => {
+        if (g.includes(this.props.hoverPoint)) {
+          group = i;
+        }
+      });
+    }
+    return group;
   }
 
   componentDidMount() {
@@ -158,25 +173,68 @@ class ContextImage extends Component {
   }
 
   render() {
+    const hoverGroup = this.getCurrentHoverGroup(this.props.hoverPoint);
+
+    console.log(this.props);
+
     let cursor = imgMappings[this.state.selectedTool];
     if (cursor != null) {
       cursor = cursor[2];
     }
     return (
-      <>{(this.state.selectedTool === "pen") ? (<Col
-        position="absolute"
-        bottom="0px"
-        left="0px"
-        color="white"
-        zIndex="2"
-        padding="8px"
-        alignItems="flex-start"
-      >
-        <Box>Lasso to select points.</Box>
-        <Box>Lasso + SHIFT to erase.</Box>
-      </Col>
-        ) : ""}
-      
+      <>
+        {this.state.selectedTool === "pen" ? (
+          <Col
+            position="absolute"
+            bottom="0px"
+            left="0px"
+            color="white"
+            zIndex="2"
+            padding="8px"
+            alignItems="flex-start"
+          >
+            <Box>Lasso to select points.</Box>
+            <Box>Lasso + SHIFT to erase.</Box>
+          </Col>
+        ) : (
+          ""
+        )}
+        {this.state.selectedTool === "eye" ? (
+          <Row
+            position="absolute"
+            left="0px"
+            bottom="0px"
+            width="100%"
+            marginBottom="12px"
+            justifyContent="center"
+          >
+            <Col
+              color="white"
+              zIndex="2"
+              padding="8px"
+              alignItems="flex-start"
+              width="80%"
+              borderRadius="4px"
+              backgroundColor={UIColors.header}
+              boxShadow="12px 12px 12px rgba(0, 0, 0, 0.2), 4px 4px 4px rgba(0,0,0,0.2)"
+            >
+              <Box fontWeight="600">
+                {hoverGroup < 0
+                  ? "Hover on a point to start"
+                  : "Component " + hoverGroup}
+              </Box>
+              {hoverGroup >= 0
+                  ? (
+              <Box marginTop="12px" fontStyle="italic" fontSize="12px" color="#AAA">
+                
+                  {this.props.metadata[hoverGroup]["annotation"]}
+              </Box>) :""}
+            </Col>
+          </Row>
+        ) : (
+          ""
+        )}
+
         <TransformWrapper
           options={{ disabled: !(this.state.selectedTool == "zoom") }}
         >

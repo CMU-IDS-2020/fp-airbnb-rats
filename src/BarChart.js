@@ -406,7 +406,7 @@ class BarChart extends Component {
         <Box position="absolute" height="100%" width="20px">
           <Col
             marginTop={
-              ((this.props.size[1] - 40) * 1) / histogramMenuOptions.length
+              ((this.props.size[1] - 150/histogramMenuOptions.length) * 1) / histogramMenuOptions.length
             }
             marginLeft="4px"
             height={this.props.size[1] * (1 - 1 / histogramMenuOptions.length)}
