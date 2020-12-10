@@ -4,7 +4,7 @@ import { Box, Row, Col, Inline } from "jsxstyle";
 import $ from "jquery";
 import { UIColors } from "./colors";
 
-var flaskAppURL = "http://ec2-54-198-69-44.compute-1.amazonaws.com/";
+var flaskAppURL = "http://ec2-174-129-189-31.compute-1.amazonaws.com/";
 var yourGroups = { 0: [0, 1, 2, 3, 4, 5], 1: [6, 7, 8, 9] };
 
 class Cluster extends Component {
