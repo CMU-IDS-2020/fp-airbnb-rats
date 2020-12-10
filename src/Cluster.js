@@ -4,7 +4,9 @@ import { Box, Row, Col, Inline } from "jsxstyle";
 import $ from "jquery";
 import { UIColors } from "./colors";
 
-var flaskAppURL = "http://ec2-174-129-189-31.compute-1.amazonaws.com/";
+//var flaskAppURL = "http://ec2-174-129-189-31.compute-1.amazonaws.com/";
+var flaskAppURL = "https://cors-anywhere.herokuapp.com/http://ec2-52-201-141-111.compute-1.amazonaws.com/";
+
 var yourGroups = { 0: [0, 1, 2, 3, 4, 5], 1: [6, 7, 8, 9] };
 
 class Cluster extends Component {
@@ -74,6 +76,9 @@ class Cluster extends Component {
     var result = await $.ajax({
       url: url,
       type: "GET",
+      headers: {
+      "X-Requested-With": "XMLHttpRequest"
+      },
       success: function (data) {
         IS(false);
         var response = JSON.parse(data);
