@@ -43,6 +43,19 @@ Building:
 npm run build
 ```
 
+### Backend
+Installing packages:
+```
+pip install -r requirements.txt
+```
+Running:
+```
+python3 backend2.py
+```
+
+## Process
+During the first few weeks we met with 
+
 ## Special thanks
 
-@emeeks on github for his [repository](https://github.com/emeeks/d3_in_action_2) with starter code.
+Thank you to IDS professors Dominic Mortiz and Adam Perer and the TAs for their help!
