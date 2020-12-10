@@ -1,5 +1,7 @@
 # CMU Interactive Data Science Final Project
 
+![demo gif](/readme_assets/pixl.gif)
+
 - **Online URL**: [https://cmu-ids-2020.github.io/fp-airbnb-rats/](https://cmu-ids-2020.github.io/fp-airbnb-rats/)
 - **Team members**:
   - nyildiri@andrew.cmu.edu
