@@ -1,8 +1,8 @@
-# Abstract
+## Abstract
 
 NASA JPL scientists working on the micro x-ray fluorescence (microXRF) spectroscopy data collected from Mars surface perform data analysis to look for signs of past microbial life on Mars. Their data analysis workflow mainly involves identifying mineral compounds through the element abundance in spatially distributed data points. Working with the NASA JPL team, we identified pain points and needs to further develop their existing data visualization and analysis tool. Specially, the team desired improvements for the process of creating and interpreting mineral composition groups. To address this problem, we developed an interactive tool that enables scientists to (1) semi-automatically cluster the data, and (2) compare the clusters and individual data points to make informed decisions about mineral compositions. Our tool supports a hybrid data analysis workflow where the user can manually refine the machine generated clusters. 
 
-# 1. Introduction
+## 1. Introduction
 
 Our project is carried out in collaboration with NASA Jet Propulsion Laboratory Human Interfaces Group in order to support the exploratory analysis of astrobiological data collected via Mars 2020 Perseverance rover. The mission of NASA scientists is to look for signs of past microbial life on Mars by examining the chemical makeup of rock and soil textures at a very fine scale. This is performed by analysing the micro x-ray fluorescence (microXRF) spectroscopy data collected by The Planetary Instrument for X-ray Lithochemistry (PIXL). By looking at the concentration and the spatial distribution of elements, the scientists are able to interpret the microXRF data and identify the mineral compounds that were likely created by microbes [2].
 
@@ -12,30 +12,28 @@ In order to support the process of interpretation, we developed an interactive d
 
 This application was developed over the course of about a month. We first had an initial meeting with one of our stakeholders, the project lead UX manager at NASA JPL where we gathered resources and learned about the possible problems that we could tackle. After more research into the datasets provided and some brainstorming about possible problem scopes, we presented initial mockups to the UX manager. Based on the feedback, we produced new mockups of 10 possible new interaction models or features and presented them to the co-investigator astrologists, who is a main beneficiary. Their input helped to validate our initial mockups, guide future design decisions and also helped us to prioritize which features to focus on. In the remaining weeks, we built the final application based on these findings.
 
-# 2. Dataset, Pixlise App and The Data Analysis Workflow
+## 2. Dataset, Pixlise App and The Data Analysis Workflow
 
 PIXL data set is a collection of spatially localized spectroscopy data as the instrument on Perseverance rover passes over the sampling area. The microXRF data has 1024 ordinal channels, each with a count of x-rays sensed by the instrument at that particular channel. The dataset is organized into a CSV file that contains information on points, coordinate data (X, Y, Z), and spectrum data with more than 4000 points per each data point.
 
 The current data visualization tool facilitates the data analysis workflow through multiple interaction techniques (Figure 1). The main interaction touchpoint is the context image pane (Figure 1a) that displays the discrete points in the microXRF data. Using this map display allows scientists to visually isolate, select, and analyze discrete geological features within a sample data point [1]. As a first step, users have to assign elements to each data point. The spectrum pane (Figure 1b) visualizes the energy spectral density [5] of data points individually or in bulk. By looking at the peaks in the wavelength, users are able to infer element transitions. The instrument can detect over 20 elements, including Na, Mg, Al, Si, P, S, Cl, K, Ca, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Zn, Br, Rb, Sr, Y, Ga, Ge, As, Zr, Rb, Sr, Y and Zr at 10’s ppm level [2]. The element assignment process is semi-automatic as the tool can infer the presence of some elements, yet the domain knowledge of scientists are necessary to fine tune and validate the assignment.
 
-![report image 2](assets/report_img_2.png)
+![report image 2](readme_assets/report_img_2.png)
 
-
-Figure 1: Pixlise Interface
+*Figure 1: Pixlise Interface*
 
 Once the elements are assigned, users introspect the element abundance to make associations for mineral identification using supporting panes. The histogram tool (Figure 1c) shows the quantified weight percentages of different elements in selected samples in linear or log scale. The chord diagram (Figure 1d), the ternary diagram (Figure 1e), and the binary diagram (Figure 1f) indicate the correlations between abundant elements to inform the interpretation of mineral compositions.
 
 While the Pixlise tool supports the process of element assignment and quantification, there is little support in terms of comparison between points and regions. Our interviews with the stakeholders, including the project lead UX Manager and the co-lead research scientist, revealed that there are several pain points and needs in terms of selection, grouping, annotation, clustering, and comparison. Specifically, the current interface does not provide any means to do multiple selections (individual or group) at the same time in order to compare the element distributions across different regions. Additionally, the scientists desired to have auto generated clusters with various algorithm options, so that they do not have to start from scratch and instead semi-automatically create groups of the mapped area. Our tool aims to address these gaps through extending the existing data analysis workflow with novel and targeted interaction design solutions.
 
-**3. Pixlise+**
+## 3. Pixlise+
 
 We present an interactive data visualization tool, Pixlise+, that extends the current system in place. We built our tool as a standalone application instead of integrated development, as the current architecture has several authentication layers that makes the development process difficult. However, our tool builds on the current application in terms of interface layout, interaction styles, and overall design to maintain familiarity.
 
 
-![report image 1](assets/report_img_1.jpg)
+![report image 1](readme_assets/report_img_1.jpg)
 
-
-Figure 2: Pixlise+ Interface
+*Figure 2: Pixlise+ Interface*
 
 Pixlise+ interface consists of four main components: Context Image (Figure 2a), Comparison Sandbox (Figure 2b), Clustering (Figure 2c), and Parallel Coordinate Plots (Figure 2d). Below, we describe each component in detail.
 
@@ -51,17 +49,17 @@ As users create multiple groups using the selection and component creation tools
 
 Hierarchical clustering builds a hierarchy of clusters based on a distance metric defined by the linkage hyperparameters (ward, complete, average, or single). Similar to k-means, the number of clusters is user defined in hierarchical clustering. Finally, users can create auto generated groups without using a clustering algorithm. In this case, they can group the dataset based on maximum or minimum abundance of elements. The clustering tool aims to enable scientists to play around with different clustering options and fine tune parameters for finding insights.
 
-**4. Technical Implementation**
+## 4. Technical Implementation
 
 We developed our application using React and deployed it using Github pages. Our code is open source [4]. While React was used to develop the UI and coordinate the different components across the application, D3.js, a popular visualization Javascript library, was used to create the visualizations within the components. 
 
 For the clustering implementation, we use a Python backend to dynamically generate cluster information based on the many different hyperparameters that our app allows.The client app and the Python backend communicate using Flask and an ajax call using jQuery. The backend itself is hosted on Amazon Web Services. The clustering backend uses popular data science libraries such as sklearn and pandas. Sklearn is used to perform all of our machine learning algorithms, including hierarchical clustering, t-SNE, PCA, and k-means. Our application also enables hyperparameters such as linkage, variance percentage, perplexity, and number of clusters, to be passed to the backend as well.
 
-**5. Results**
+## 5. Results
 
 We present a walkthrough of our tool in our project demonstration video using a sample dataset called “King’s Court”. This dataset has samples from a terrain with a crater-like geological feature. Using the clustering tool, we were able to test various algorithms and hyperparameters for grouping the dataset into meaningful subsets. Our explorative results show that both PCA and t-SNE were able to identify the large cluster around the crater (Figure 2a-1) with multiple discrete groups around its perimeters (Figure 2a-2). Once the initial groups were identified using the clustering algorithm, we used the hovering feature in the Context Image tools for examining individual data points within clusters. Based on the histogram information in the Comparison Sandbox, we were able to add or remove specific data points using the lasso tool.
 
-**6. Discussion and Future Work**
+## 6. Discussion and Future Work
 
 The main contributions of our work include interaction techniques for the comparative analysis and clustering of microXRF spectroscopy data in the context of the PIXL project. Our tool Pixlise+ enabled a semi-automatic data analysis workflow that enabled an augmented grouping of microXRF data based on element abundance. Using built-in statistical analyses, scientists can compare several clusters at once to fine tune and validate the grouping of the data. Moreover, tools that support documentation including locking and annotation open the way to future developments for multi-user collaboration.
 
