@@ -49,6 +49,9 @@ Running:
 ```
 python3 backend2.py
 ```
+
+If running your own server, be sure to change the backend URL in the Cluster.js file to the new url and port.
+
 ## Clustering server rate limitations
 We are running the clustering backend on an AWS instance. Because it's a free trail of an instance, it will expire around Janurary 9th, 2021. *The app will continue to work afterwards, but the clustering feature will not work unless you set up your own server.* We are also using a free proxy server service (CORS-anywhere) to forward our CORS requests because otherwise we will get https client to http errors. Due to the limits of free AWS and the free proxy server service, the rate and speed of responses may be limited if the app traffic is very high. 
 
