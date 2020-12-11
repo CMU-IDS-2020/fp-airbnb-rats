@@ -126,8 +126,18 @@ class Cluster extends Component {
       params.push(variance);
       params.push(perplexity);
 
-      if(k >= 20){
-        alert("Please select a number less than 20.")
+      if(k >= 20 || k < 1){
+        alert("Please select a number between 1 and 20.")
+        return;
+      }
+
+      if(dr == "1" && variance < 0){
+        alert("Please select a nonnegative number for variance.")
+        return;
+      }
+
+      if(dr == "2" && perplexity < 0){
+        alert("Please select a nonnegative number for perplexity.")
         return;
       }
 
@@ -154,8 +164,8 @@ class Cluster extends Component {
       params.push(linkage);
       console.log(params);
 
-      if(num >= 20){
-        alert("Please select a number less than 20.")
+      if(num >= 20 || num < 1){
+        alert("Please select a number between 1 and 20.")
         return;
       }
 
@@ -225,7 +235,9 @@ class Cluster extends Component {
             </Box>
             <input
               id="k_val"
-              type="text"
+              type="number"
+              min="1"
+              max="19"
               name="k"
               style={{ width: "40px", height: "24px" }}
             />
@@ -277,12 +289,14 @@ class Cluster extends Component {
               </Col>
               <Col justifyContent="center" width="100%" height="70px">
                 <div id="pca_subOptions" style={{ display: "none" }}>
-                  <label>Variance %: </label>
+                  <Inline fontSize="12px">Variance % (optional): </Inline>
                   <input
                     id="variance"
-                    type="text"
+                    type="number"
+                    step="0.01"
+                    min="0"
                     name="variance"
-                    style={{ width: "40px", height: "24px" }}
+                    style={{ width: "55px", height: "24px" }}
                   />
                   <Row
                     width="100%"
@@ -296,12 +310,13 @@ class Cluster extends Component {
                   </Row>
                 </div>
                 <div id="tsne_subOptions" style={{ display: "none" }}>
-                  <label>Perplexity %: </label>
+                <Inline fontSize="12px">Perplexity % (optional): </Inline>
                   <input
                     id="perplexity"
-                    type="text"
+                    type="number"
+                    min="0"
                     name="perplexity"
-                    style={{ width: "40px", height: "24px" }}
+                    style={{ width: "55px", height: "24px" }}
                   />
                   <Row
                     width="100%"
@@ -338,7 +353,9 @@ class Cluster extends Component {
             </Box>
             <input
               id="hc_val"
-              type="text"
+              type="number"
+              min="1"
+              max="19"
               name="hc"
               style={{ width: "40px", height: "24px" }}
             />
