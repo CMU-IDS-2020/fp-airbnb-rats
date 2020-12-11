@@ -1,7 +1,5 @@
 # Final Project Proposal
 
-**Project URL**: TODO
-
 ## ➝ Project Abstract
 
 This project will be an **interactive application** in tandem with NASA JPL that aids scientists from the Mars 2020 Rover’s Planetary Instrument for X-Ray Lithochemistry (PIXL) team in analyzing astrobiological data. There exists a significant amount of data from the Mars 2020 project that is being used to explore the possibility of alien biosignatures. Researchers need an intuitive way to compare data including mineral concentrations, spatially located X-Ray samples, and ordinal channel comparisons.
