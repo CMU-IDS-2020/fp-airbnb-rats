@@ -56,7 +56,9 @@ If running your own server, be sure to change the backend URL in the Cluster.js 
 ## Clustering server rate limitations
 We are running the clustering backend on an AWS instance. Because it's a free trail of an instance, it will expire around Janurary 9th, 2021. *The app will continue to work afterwards, but the clustering feature will not work unless you set up your own server.* We are also using a free proxy server service (CORS-anywhere) to forward our CORS requests because otherwise we will get https client to http errors. **Due to the limits of free AWS and the free proxy server service, the rate and speed of responses may be limited if the app traffic is very high.**
 
-In this case, we recommend cloning our repository and setting it up locally using the instructions above. Please contact one of the team members with any questions about this.
+In this case there are two possible solutions:
+1. Contact the team mebmers who can set up an alternative proxy server for you
+2. Clone our repository and set it up locally using the instructions above.
 
 ## Work distribution
 
