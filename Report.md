@@ -1,8 +1,8 @@
-**Abstract**
+# Abstract
 
 NASA JPL scientists working on the micro x-ray fluorescence (microXRF) spectroscopy data collected from Mars surface perform data analysis to look for signs of past microbial life on Mars. Their data analysis workflow mainly involves identifying mineral compounds through the element abundance in spatially distributed data points. Working with the NASA JPL team, we identified pain points and needs to further develop their existing data visualization and analysis tool. Specially, the team desired improvements for the process of creating and interpreting mineral composition groups. To address this problem, we developed an interactive tool that enables scientists to (1) semi-automatically cluster the data, and (2) compare the clusters and individual data points to make informed decisions about mineral compositions. Our tool supports a hybrid data analysis workflow where the user can manually refine the machine generated clusters. 
 
-**1. Introduction**
+# 1. Introduction
 
 Our project is carried out in collaboration with NASA Jet Propulsion Laboratory Human Interfaces Group in order to support the exploratory analysis of astrobiological data collected via Mars 2020 Perseverance rover. The mission of NASA scientists is to look for signs of past microbial life on Mars by examining the chemical makeup of rock and soil textures at a very fine scale. This is performed by analysing the micro x-ray fluorescence (microXRF) spectroscopy data collected by The Planetary Instrument for X-ray Lithochemistry (PIXL). By looking at the concentration and the spatial distribution of elements, the scientists are able to interpret the microXRF data and identify the mineral compounds that were likely created by microbes [2].
 
@@ -12,18 +12,13 @@ In order to support the process of interpretation, we developed an interactive d
 
 This application was developed over the course of about a month. We first had an initial meeting with one of our stakeholders, the project lead UX manager at NASA JPL where we gathered resources and learned about the possible problems that we could tackle. After more research into the datasets provided and some brainstorming about possible problem scopes, we presented initial mockups to the UX manager. Based on the feedback, we produced new mockups of 10 possible new interaction models or features and presented them to the co-investigator astrologists, who is a main beneficiary. Their input helped to validate our initial mockups, guide future design decisions and also helped us to prioritize which features to focus on. In the remaining weeks, we built the final application based on these findings.
 
-**2. Dataset, Pixlise App and The Data Analysis Workflow**
+# 2. Dataset, Pixlise App and The Data Analysis Workflow
 
 PIXL data set is a collection of spatially localized spectroscopy data as the instrument on Perseverance rover passes over the sampling area. The microXRF data has 1024 ordinal channels, each with a count of x-rays sensed by the instrument at that particular channel. The dataset is organized into a CSV file that contains information on points, coordinate data (X, Y, Z), and spectrum data with more than 4000 points per each data point.
 
 The current data visualization tool facilitates the data analysis workflow through multiple interaction techniques (Figure 1). The main interaction touchpoint is the context image pane (Figure 1a) that displays the discrete points in the microXRF data. Using this map display allows scientists to visually isolate, select, and analyze discrete geological features within a sample data point [1]. As a first step, users have to assign elements to each data point. The spectrum pane (Figure 1b) visualizes the energy spectral density [5] of data points individually or in bulk. By looking at the peaks in the wavelength, users are able to infer element transitions. The instrument can detect over 20 elements, including Na, Mg, Al, Si, P, S, Cl, K, Ca, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Zn, Br, Rb, Sr, Y, Ga, Ge, As, Zr, Rb, Sr, Y and Zr at 10’s ppm level [2]. The element assignment process is semi-automatic as the tool can infer the presence of some elements, yet the domain knowledge of scientists are necessary to fine tune and validate the assignment.
 
-
-
-<p id="gdcalert1" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image1.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert2">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image1.png "image_tooltip")
+![report image 2](assets/report_img_2.png)
 
 
 Figure 1: Pixlise Interface
@@ -37,11 +32,7 @@ While the Pixlise tool supports the process of element assignment and quantifica
 We present an interactive data visualization tool, Pixlise+, that extends the current system in place. We built our tool as a standalone application instead of integrated development, as the current architecture has several authentication layers that makes the development process difficult. However, our tool builds on the current application in terms of interface layout, interaction styles, and overall design to maintain familiarity.
 
 
-
-<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image2.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image2.jpg "image_tooltip")
+![report image 1](assets/report_img_1.jpg)
 
 
 Figure 2: Pixlise+ Interface
